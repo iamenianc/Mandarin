@@ -123,6 +123,29 @@ class SessionFeedbackTest {
     }
 
     @Test
+    fun `advancing records the coaching theme on the progress row`() = runTest {
+        val viewModel = createViewModel()
+        viewModel.recordAttempt()
+        viewModel.onGetFeedbackClick()
+
+        viewModel.onNext()
+
+        assertEquals(listOf("ma1"), progressRepository.byId(ma1.id)?.feedbackThemes)
+    }
+
+    @Test
+    fun `a failed feedback does not add a coaching theme`() = runTest {
+        workflow.returns(WorkflowResult.Failure(WorkflowFailure.NetworkError("offline")))
+        val viewModel = createViewModel()
+        viewModel.recordAttempt()
+        viewModel.onGetFeedbackClick()
+
+        viewModel.onNext()
+
+        assertEquals(emptyList<String>(), progressRepository.byId(ma1.id)?.feedbackThemes)
+    }
+
+    @Test
     fun `a workflow failure renders the offline fallback`() = runTest {
         workflow.returns(WorkflowResult.Failure(WorkflowFailure.NetworkError("offline")))
         val viewModel = createViewModel()

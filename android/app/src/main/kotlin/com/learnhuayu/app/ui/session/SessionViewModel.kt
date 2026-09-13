@@ -56,6 +56,9 @@ const val SESSION_ATTEMPT_LABEL = "attempt"
 /** Shown when WF-8 yields nothing usable; the bundled path stays finishable (ADR 0010). */
 const val EXTRA_UNAVAILABLE_MESSAGE = "No extra practice available right now."
 
+/** How many recent WF-1 coaching themes a progress row keeps for recurring-problem reporting. */
+private const val MAX_FEEDBACK_THEMES = 5
+
 data class SessionPlayback(
     val state: PlaybackState = PlaybackState(),
     val hasPlayed: Boolean = false,
@@ -638,13 +641,15 @@ class SessionViewModel @Inject constructor(
 
     private suspend fun persistCurrent(item: ContentItem) {
         val now = clock.instant()
+        val feedback = _uiState.value.feedback as? FeedbackUiState.Available
+        val feedbackTheme = feedback?.feedback?.weakestUnit?.trim()?.takeIf { it.isNotEmpty() }
         val existing = progressRepository.byId(item.id)
         progressRepository.upsert(
             Progress(
                 contentItemId = item.id,
                 timesPracticed = (existing?.timesPracticed ?: 0) + 1,
                 lastPracticedAt = now,
-                feedbackThemes = existing?.feedbackThemes.orEmpty(),
+                feedbackThemes = mergeFeedbackThemes(existing?.feedbackThemes.orEmpty(), feedbackTheme),
             ),
         )
         val audioRef = _uiState.value.attemptAudioRef
@@ -657,12 +662,18 @@ class SessionViewModel @Inject constructor(
                     contentItemId = item.id,
                     recordedAt = now,
                     userAudioRef = audioRef,
-                    feedbackText = (_uiState.value.feedback as? FeedbackUiState.Available)?.let { available ->
+                    feedbackText = feedback?.let { available ->
                         "${available.feedback.weakestUnit}: ${available.feedback.tip}"
                     },
                 ),
             )
         }
+    }
+
+    /** Keeps the most recent coaching themes, newest last, without duplicates. */
+    private fun mergeFeedbackThemes(existing: List<String>, theme: String?): List<String> {
+        if (theme == null || theme in existing) return existing
+        return (existing + theme).takeLast(MAX_FEEDBACK_THEMES)
     }
 
     private fun startRecording() {
