@@ -568,7 +568,13 @@ class SessionViewModel @Inject constructor(
                 val file = recordingStore.newRecordingFile(SESSION_ATTEMPT_LABEL)
                 wavCodec.write(file, audio)
                 attemptPcm = audio
-                _uiState.update { it.copy(attemptAudioRef = file.path, feedback = FeedbackUiState.None) }
+                _uiState.update {
+                    it.copy(
+                        attemptAudioRef = file.path,
+                        recorderState = RecorderState.Idle,
+                        feedback = FeedbackUiState.None,
+                    )
+                }
                 audioPlayer.play(AudioSource.LocalFile(file.path))
             } catch (cancellation: CancellationException) {
                 throw cancellation
