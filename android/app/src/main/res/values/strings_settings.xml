@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="settings_title">Settings</string>
+    <string name="settings_consent_title">Sending recordings to the AI provider</string>
+    <string name="settings_consent_explanation">A recording is sent to the AI provider only to answer a request, such as pronunciation feedback or spoken practice. Recordings stay on this device otherwise. Consent can be withdrawn at any time; offline listening drills keep working.</string>
+    <string name="settings_consent_toggle">Allow recordings to be sent</string>
+    <string name="settings_consent_version">Consent version: %1$s</string>
+    <string name="settings_hangul_title">Hangul phonetic aid</string>
+    <string name="settings_hangul_explanation">Show Hangul beside pinyin as an optional reading aid. Pinyin with tone numbers always stays visible.</string>
+    <string name="settings_hangul_toggle">Show Hangul phonetic aid</string>
+    <string name="settings_data_title">Stored data</string>
+    <string name="settings_data_explanation">Practice history, transcripts, cached audio, and recordings are stored on this device. Deleting removes them and resets settings to their defaults. This cannot be undone.</string>
+    <string name="settings_delete_action">Delete all my data</string>
+    <string name="settings_delete_confirm_title">Delete all data?</string>
+    <string name="settings_delete_confirm_message">This removes recordings, practice history, and transcripts from this device, and resets settings to their defaults. This cannot be undone.</string>
+    <string name="settings_delete_confirm">Delete</string>
+    <string name="settings_delete_cancel">Cancel</string>
+    <string name="settings_delete_working">Deleting…</string>
+    <string name="settings_delete_success">All data was deleted and settings were reset.</string>
+    <string name="settings_delete_failure">The data could not be fully deleted. Try again.</string>
+</resources>
