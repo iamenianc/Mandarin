@@ -275,6 +275,16 @@ and gentle-correction coaching UX move to the backlog because FR-32 keeps the mi
 non-coaching. The latency item is satisfied by enforced client-side timeouts, with the
 numeric budget measured on device. M4 is complete and M5 is current.
 
+Wave 4 (in flight 2026-09-14): 4a progress and recurring-problem reporting (WF-5, FR-34)
+owns `:app` only, worktree `progress report` (`wt-1789337117125-32`, session
+`ses_f633259dbffeaNbIfXsw6fIsWY`); 4b consent management and one-tap data deletion (NFR-4,
+NFR-9) owns `:app` and `:core:data`, worktree `consent deletion` (`wt-1789337119282-33`,
+session `ses_f63324f80ffe0wunF6kbDDjNv9`). Both are based on `3e2c2c9`; the consent worktree
+was fast-forwarded by the conductor after seeding a stale tip. Each slice owns new app
+files and its own `res/values/strings_<feature>.xml`, leaving the shared app `strings.xml`
+untouched, so the two can run in parallel. 4c accessibility and performance and 4d
+release/Play-track documentation follow.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
