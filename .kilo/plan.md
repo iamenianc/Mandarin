@@ -207,6 +207,12 @@ M3 remainder (2026-09-14): the end-of-speech VAD item is not yet wired into the 
 `AudioRecorder` does not expose frames or consume the detector, so the next slice adds an
 end-of-speech hook to `:core:audio` and auto-stop in `:app`; M3 is complete after that.
 
+VAD auto-stop (in flight 2026-09-14): worktree `vad autostop` (`wt-1789332881433-28`),
+branch `app/vad-autostop`, session `ses_f6372fcceffe70Iu5NFmMese4x`, based on `206c504`.
+`:core:audio` gains an optional end-of-speech detector on `AudioRecordRecorder` exposed as
+a flow, and `:app` auto-stops the production record modes exactly once on `SpeechEnded`;
+manual stop is unchanged. Owns `:core:audio` and `:app`.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
