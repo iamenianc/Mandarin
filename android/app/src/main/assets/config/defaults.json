@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "First-run and fallback values for user preferences. DataStore is the source of truth after the first write, so these values apply only before a setting is stored (docs/02-architecture.md).",
+  "preferences": [
+    {
+      "key": "dailyGoalMinutes",
+      "type": "integer",
+      "unit": "minutes",
+      "default": null,
+      "proposedRange": [5, 60],
+      "setIn": "onboarding",
+      "source": "docs/03-design.md (onboarding step 3)",
+      "notes": "The learner chooses a daily goal; no value is assumed before onboarding."
+    },
+    {
+      "key": "sessionLengthMinutes",
+      "type": "integer",
+      "unit": "minutes",
+      "default": null,
+      "proposedRange": [3, 30],
+      "setIn": "onboarding",
+      "source": "docs/03-design.md (onboarding step 3)",
+      "notes": "Session length is chosen together with the daily goal."
+    },
+    {
+      "key": "showHangul",
+      "type": "boolean",
+      "default": false,
+      "setIn": "onboarding",
+      "source": "FR-4, FR-5; ADR 0004",
+      "notes": "Hangul is an optional phonetic aid. It stays off until the learner enables it; pinyin is always shown."
+    },
+    {
+      "key": "eyesFreeMode",
+      "type": "boolean",
+      "default": false,
+      "setIn": "settings",
+      "source": "FR-13; docs/03-design.md",
+      "notes": "Eyes-free mode is an option, not the default."
+    },
+    {
+      "key": "consent.recordingsToProvider",
+      "type": "boolean",
+      "default": false,
+      "setIn": "onboarding",
+      "source": "docs/02-architecture.md (content and consent); NFR-4, NFR-5",
+      "notes": "Consent is explicit and revocable and stays false until the learner grants it. See ../legal/consent.md."
+    },
+    {
+      "key": "consent.version",
+      "type": "string",
+      "default": "0",
+      "setIn": "onboarding",
+      "source": "docs/02-architecture.md (content and consent)",
+      "notes": "The accepted consent text version. 0 means no consent on record; the current text is version 1 in ../legal/consent.md."
+    }
+  ]
+}

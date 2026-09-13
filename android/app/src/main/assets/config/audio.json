@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "Audio constants shared by playback, capture, upload, and assessment. Values are fixed by ADR 0006 and docs/02-architecture.md where noted.",
+  "playback": {
+    "library": "Media3 / ExoPlayer",
+    "role": "Reference audio, learner playback, and AI replies."
+  },
+  "referenceAudio": {
+    "generator": "Kokoro-82M",
+    "generatedAt": "build-time",
+    "input": "pinyin with tone numbers",
+    "sampleRateHz": 24000,
+    "channels": 1,
+    "bundled": true,
+    "licence": "Apache-2.0",
+    "source": "ADR 0006"
+  },
+  "capture": {
+    "api": "AudioRecord",
+    "format": "raw PCM",
+    "clipping": "clipped per attempt",
+    "endOfSpeech": "voice-activity detection (VAD)",
+    "source": "docs/02-architecture.md (proposed stack)"
+  },
+  "upload": {
+    "workflow": "WF-1",
+    "parts": ["reference clip", "learner attempt"],
+    "encoding": "two base64 input_audio parts",
+    "asrStage": false,
+    "note": "The multimodal model transcribes and reasons over the audio in one call; there is no separate ASR stage (ADR 0005)."
+  }
+}

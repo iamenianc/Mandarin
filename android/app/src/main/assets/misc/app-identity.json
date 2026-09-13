@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "name": "LearnHuayu",
+  "description": "A private, audio-first Android app that teaches beginners to listen to and speak Mandarin Chinese.",
+  "applicationId": null,
+  "applicationIdStatus": "To be set when the Android project is scaffolded (docs/04-roadmap.md, M1).",
+  "version": null,
+  "versionSource": "Build-time from the Gradle version catalog; do not duplicate the version here (docs/02-architecture.md).",
+  "distribution": "Release APK copied to a personal Drive folder (docs/06-pipeline.md).",
+  "workerHealthPath": "/",
+  "documentation": {
+    "vision": "docs/00-vision.md",
+    "requirements": "docs/01-requirements.md",
+    "architecture": "docs/02-architecture.md",
+    "design": "docs/03-design.md",
+    "pipeline": "docs/06-pipeline.md"
+  }
+}
