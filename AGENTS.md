@@ -15,11 +15,10 @@ application code now develops alongside it.
 
 ## Ground rules
 
-- Do **not** add application code unless a task explicitly asks for it.
 - Keep design and planning artifacts under `docs/`.
-- Prefer editing existing docs over creating new ones; avoid duplicate documents.
 - Record architectural decisions as ADRs in `docs/05-decisions/` using the existing template.
-- Do not create new documentation files unless the task requires it.
+- Do not restrict the number or type of files created or added to the repository; create whatever files a task needs.
+- Do not commit secrets, API keys, `local.properties`, keystores, or build output.
 
 ## Coding rules
 
