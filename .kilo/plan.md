@@ -123,6 +123,16 @@ therefore sequenced as:
 Each sub-wave is fanned out only after the previous one merges, because 3a touches
 `:app` and `:core:model` and every later slice touches at least one feature module.
 
+3a (merged 2026-09-13): shared drill engine and tones tracer. Worktree `drill engine
+tones` (`wt-1789304982862-21`), branch `app/drill-engine`, session
+`ses_f651bd542ffe3WHzGboumTgxeY`; commits `6cba917` and `e612c54`; merged as `fd46173`.
+Independent verification: the diff is confined to `:core:model`, the `ContentModule`
+signatures, `:app`, `:feature:tones`, and the placeholder override signatures; no hanzi;
+`:app:assembleDebug test lint spotlessCheck --rerun-tasks` is green on the branch with
+every module at 0 failures (SessionViewModelTest 17, TonesLearningModuleTest 3,
+LearningModuleContractTest 5) and again on the merged tree. The decision is recorded as
+ADR 0018; wave 3b is unblocked.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
@@ -197,6 +207,11 @@ After each wave:
   and ExoPlayer asset/local playback have not been exercised on a device or emulator.
   The first on-device run of the audio check is the remaining M1 risk and is folded into
   the wave 5 verification pass.
+- Reference-clip naming: the corpus `audioAssetRef` values and the Kokoro generator's
+  output filenames have not been reconciled against a real generated set, and a clean
+  checkout has no reference `.ogg`, so drills degrade to the non-fatal message until the
+  generator runs. Wave 5 verifies that the generator output matches the corpus refs before
+  the release build.
 
 ## Validation of this loop
 

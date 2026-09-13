@@ -37,9 +37,10 @@ the mic, and plays it back.
 
 ## M2 - Tones, listening, vocabulary, and fundamentals modules (current)
 
-- [ ] Shared lesson/practice drill engine driven by `ContentItem`.
-- [ ] **Tones module:** the four tones and the neutral tone, contours, tone pairs, and the
-  tone-number notation; hear-and-name and production drills (beginner-first).
+- [x] Shared lesson/practice drill engine driven by `ContentItem` (ADR 0018).
+- [x] **Tones module:** the four tones and the neutral tone, contours, tone pairs, and the
+  tone-number notation; hear-and-name and production drills (beginner-first). The bundled
+  tones lessons and practices run through the engine; measured feedback is M3.
 - [ ] **Listening module:** hear-and-respond drill loop with large, low-attention controls
   (spoken answers via WF-4; tap-only works offline).
 - [ ] **Vocabulary module:** audio-first word/phrase lessons and practice over
@@ -47,9 +48,10 @@ the mic, and plays it back.
   the pronunciation key, Hangul optional, no hanzi).
 - [ ] **Fundamentals module:** syllable anatomy, the pinyin sound system (initials, finals,
   spelling conventions, tone numbers), tone sandhi, and read-aloud pinyin practice.
-- [ ] Offline playback of bundled lessons.
-- [ ] Ship the curated preloaded exercise set (`source = bundled`), fully usable offline.
-- [ ] Session progress persisted locally.
+- [x] Offline playback of bundled lessons: the engine plays `audio/reference/**` from APK
+  assets; the generated clips are build-time inputs (ADR 0006).
+- [x] Ship the curated preloaded exercise set (`source = bundled`), fully usable offline.
+- [x] Session progress persisted locally (Progress and Attempt repositories).
 
 Exit criteria: a learner can complete an offline session in any of the four modules.
 
