@@ -1,110 +1,94 @@
-# Plan: ground WF-1 with measured tone evidence
+# Plan: drive LearnHuayu to production level
 
-Status: implemented. Docs-only changes; no application code yet (AGENTS.md: planning repo).
+Status: in flight. Orchestrator-owned. Updated after every wave.
 
 ## Directive
 
-`docs/09-opensmile-acoustic-features.md` found that WF-1's accuracy is limited by asking a
-multimodal LLM to judge pitch from raw audio, and recommended measured per-syllable
-evidence as the fix. This plan turns that into decisions: accept the architecture and the
-WF-1 input change now (ADR 0014), and put the extractor choice and the accuracy claim
-behind a cheap, ordered M3 validation gate before any native dependency is adopted.
+Take the repository from the M0/M1 boundary (docs and content assets only) to a
+production-level app: roadmap milestones M1-M5 complete, exit criteria met, CI green,
+release build producible, docs consistent, all guardrails satisfied.
 
-## Recommendation
+The orchestrator (this session) owns: roadmap/README/doc consistency, ADRs, wave
+sequencing, reviews, and merges. Delegated work runs in Agent Manager worktrees.
 
-1. **Ground WF-1, keep the contract.** WF-1 keeps sending both audio clips and keeps its
-   coaching-only output schema (ADR 0005); its input gains a compact, versioned
-   per-syllable `acousticEvidence` object. The LLM never measures and never receives raw
-   contours - only named observations (direction, span, onset/offset, voicing, duration,
-   relative loudness, note).
-2. **Deterministic pipeline on-device:** extract F0/voicing/loudness -> DTW-align the
-   attempt against the reference -> normalize to a speaker-relative five-level scale
-   (T-value method) -> compare against the expected tone -> emit the evidence object.
-   DTW first; a forced aligner stays an optional fallback, not the default (no extra
-   model call on the critical path).
-3. **Validation order (cheap first).** Doc 09 builds the Android AAR before the accuracy
-   claim is tested; reorder so the expensive native work happens only for the winning
-   arm:
-   1. Desktop extraction spike (openSMILE Python) on Kokoro reference clips and recorded
-      attempts - including creaky tone 3 and noisy input.
-   2. Pipeline prototype (DTW + normalization + tone comparison); sanity-check against a
-      human listener.
-   3. A/B: the same attempts through WF-1 with and without the evidence object, fixed
-      prompt and model. This is the adoption gate.
-   4. Feature ablation: full openSMILE breadth vs F0/voicing/loudness alone.
-   5. Android integration only for the winner; measure native/library size and latency.
-4. **Extractor default.** The evidence object needs only F0/voicing/loudness, so the
-   default expectation is a small pure-Kotlin extractor (no NDK; one implementation used
-   both in the app and in a build-time task that precomputes reference features). Adopt
-   the openSMILE AAR only if the ablation shows its extra features - voice quality,
-   formants, spectral detail - materially improve feedback; that choice also locks the
-   project to private use under the audEERING Research License. This refines doc 09's
-   "openSMILE preferred" recommendation: the preference is conditional on the ablation.
-5. **Reference data at build time.** Kokoro gives no timestamps: precompute reference
-   evidence and syllable boundaries at content-build time for the curated set (small,
-   one-time author review); generated items align by DTW, confirmed in the spike.
-6. **Degrade safely.** Extraction failure or a slow device falls back to today's
-   audio-only WF-1 request. On-device DSP is deterministic and off the AI budget, so
-   NFR-1 is unaffected.
-7. **Rejected:** openSMILE in the Worker (Wasm; option C in doc 09), raw feature dumps in
-   the prompt, forced alignment on the default path.
+## Loop exit condition
 
-## Decision to record (ADR 0014)
+All of the following hold on `master`:
 
-New `docs/05-decisions/0014-grounded-pronunciation-feedback.md` (template per 0001):
+- M1: app builds; shows registered modules; plays a reference clip; records mic; plays back.
+- M2: a learner can complete an offline session in each of tones, listening, vocabulary,
+  fundamentals; curated bundled content ships; progress persists locally.
+- M3: speak-and-repeat with measured tone evidence and Worker-proxied WF-1 feedback.
+- M4: WF-2/WF-3 conversation, Raymond (WF-7), runtime generation (WF-8), and the daily
+  LAMP field loop (WF-9, WF-10, WF-3) with offline fallback.
+- M5: progress reporting (WF-5), hands-free modes, consent + one-tap deletion,
+  accessibility pass, release configuration (signed AAB path documented).
+- `gradlew.bat build` and tests green locally; CI workflow present and coherent.
+- `docs/04-roadmap.md` fully checked; all other docs consistent with shipped behavior.
+- Guardrails: no hanzi, pinyin with tone numbers, no first person in docs, no secrets or
+  build output committed, ADR numbering intact.
 
-- Status: **accepted**. The direction is decided now; the M3 gate is written into the
-  consequences, and a failed A/B supersedes the ADR.
-- **Context:** ADR 0005 chose soft, uncalibrated comparison; speech-LLM benchmarks (MSPB,
-  PitchBench) show pitch/prosody judgment from raw audio is unreliable; the fix is
-  measurement, not more prompt engineering (doc 09).
-- **Decision:** WF-1 input gains versioned, per-syllable measured evidence, computed
-  deterministically on-device; audio still sent; output schema and coaching-only contract
-  unchanged; extractor and exact schema selected by the M3 spike (decision rule above).
-- **Consequences:** amends ADR 0005; the openSMILE AAR path carries the private-use
-  license lock and native build burden; NFR-4/NFR-5 unchanged (derived voice data, same
-  request); deterministic tone history could later feed WF-5 themes (separate decision);
-  superseded if the M3 A/B shows no measurable gain.
-- **Amends:** 0005-reference-vs-attempt-feedback.md.
+## Compliance (mandatory for every session)
 
-## Planned file changes
+Every delegated brief must require, before any work:
 
-1. `docs/05-decisions/0014-grounded-pronunciation-feedback.md` (new) - as above.
-2. `docs/05-decisions/0005-reference-vs-attempt-feedback.md` - status line: accepted
-   (amended by 0014); one sentence pointing forward.
-3. `docs/08-ai-workflows.md` - WF-1 input gains `acousticEvidence` (sketch per doc 09,
-   schema versioned with the workflow); Notes: on-device deterministic evidence, named
-   observations only, no raw contours, audio still sent; fallback degrades to today's
-   audio-only request.
-4. `docs/02-architecture.md` - stack row for the evidence pipeline; `:core:assessment`
-   owns extraction, alignment, normalization, and tone comparison; WF-1 pipeline diagram;
-   audio-handling note (deterministic DSP, not on-device AI inference - consistent with
-   ADR 0003); deferred list gains "openSMILE in the Worker (Wasm)".
-5. `docs/01-requirements.md` - FR-8 gains the measured-evidence clause; confirm the
-   no-separate-ASR out-of-scope line still holds (DTW alignment is not ASR).
-6. `docs/04-roadmap.md` - M0 checked line for ADR 0014; M1 note that the WF-1 request
-   model includes the optional evidence field; M3 adds the five validation tasks and the
-   finalize-schema task.
-7. `docs/07-speech-assessment-models.md` - one sentence in the chosen-approach paragraph
-   pointing to ADR 0014 (cross-link already present).
-8. `docs/09-opensmile-acoustic-features.md` - status line: direction adopted (ADR 0014);
-   extractor deferred to the M3 spike. Research body unchanged.
-9. `README.md` - no change needed (09 already listed; table stays in sync).
-10. `docs/03-design.md` - no change needed (feedback UX wording is unchanged).
+1. Read `AGENTS.md` and `conductor.md`.
+2. Read `docs/00-vision.md`, `docs/01-requirements.md`, `docs/04-roadmap.md`, then the
+   task-relevant docs and ADRs.
+3. Obey the guardrails: no hanzi; pinyin always shown with tone numbers (ADR 0011, 0012);
+   Hangul optional (ADR 0004); English/pinyin UI only; no first person in docs; ADR
+   template and numbering; no secrets, `local.properties`, keystores, or build output.
+4. Touch only the files the slice owns; orchestrator-owned files are off limits unless
+   explicitly listed. Single-writer rule prevents merge conflicts.
+
+Orchestrator-owned (sessions must not edit): `docs/04-roadmap.md`, `docs/02-architecture.md`,
+`docs/08-ai-workflows.md`, `README.md`, `.kilo/plan.md`. Updates to these land from the
+orchestrator after merges.
+
+## Waves
+
+| Wave | Sessions (worktrees) | Depends on |
+| --- | --- | --- |
+| 1 | Android scaffold; Worker WF endpoints; hands-free design | none |
+| 2 | `:core:data`, `:core:audio`, `:core:ai`, `:core:assessment`, `:core:ui`; content pipeline | wave 1 merged |
+| 3 | Features: home, tones, vocabulary, listening, speech, fundamentals, field, raymond | wave 2 merged |
+| 4 | Progress/reporting, consent + deletion, hands-free modes, accessibility, release config | wave 3 merged |
+| 5 | Full verification: build, lint, tests, release AAB; docs consistency pass | wave 4 merged |
+
+Wave 1 in flight:
+
+1. `scaffold/android-project` - Gradle multi-module scaffold per `docs/02-architecture.md`;
+   all `:core:*` and `:feature:*` modules pre-registered with compiling stubs;
+   `:core:model` contracts per the architecture doc; runnable Compose shell listing
+   registered modules (FR-22); CI workflow per `docs/06-pipeline.md`; verified
+   `build`/`lint`/`test` commands added to `AGENTS.md` (the one exception to
+   orchestrator-owned files, for this session only).
+2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
+   and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
+3. `design/hands-free` - fold the remaining hands-free design questions into
+   `docs/03-design.md` (M0 checkbox); FR-13, FR-14, NFR-7; that file only.
+
+## Merge protocol
+
+After each wave:
+
+1. Inspect each finished worktree: `git status`, log, diff versus `master`.
+2. Verify the slice's acceptance points against the task and the docs.
+3. Run its checks in the worktree (build, tests) where the environment allows.
+4. Merge to `master` (user-confirmed), one branch at a time, subtrees disjoint.
+5. Update roadmap/README/doc consistency on `master`; commit.
 
 ## Open questions (non-blocking)
 
-- Reference syllable boundaries: build-time precomputation with author review is the
-  proposal; confirm in the spike whether DTW alone suffices.
-- Octave errors and tone-3 creak are the known pitch-tracking failure modes to test.
-- Whether deterministic tone-error history should feed WF-5 progress themes later.
-- What triggers the A/B "measurably better" threshold: proposed on a fixed attempt set,
-  grounded feedback names the correct weak tone more often than ungrounded, judged by the
-  author.
+- Play Store publication itself needs the author's developer account; "production level"
+  means release-ready, not published.
+- WF-3 (Kokoro TTS) provider path: the Worker cannot run Kokoro; the worker session must
+  follow `docs/08-ai-workflows.md` and record any contract gap in `api/README.md`.
+- M3 extractor choice is gated by the ADR 0014 spike; the pipeline ships with the
+  pure-Kotlin default and the gate documented.
 
-## Validation
+## Validation of this loop
 
-- ADR numbering sequential, 0001 template followed, cross-references resolve (0005
-  amended by 0014; 0003, 0006, 0009, 0011, 0012 consistent).
-- No application code; all changes under `docs/`; no new build/lint/test commands.
-- No hanzi anywhere; pinyin with tone numbers in all schemas (ADR 0012).
+- Every wave leaves `master` coherent and green.
+- No session edits a file another session owns; merges stay conflict-free.
+- `.kilo/plan.md` reflects the current wave until the exit condition above is met.
