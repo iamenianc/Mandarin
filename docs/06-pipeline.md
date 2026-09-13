@@ -36,7 +36,7 @@ flowchart TD
         B1["Source changes in api/"]
         B2["node --check worker.js<br/>npm test"]
         B3["npm run deploy<br/>(wrangler deploy)"]
-        B4["Deploy to learnhuayu-api.&lt;account&gt;.workers.dev"]
+        B4["Deploy to mandarin.&lt;account&gt;.workers.dev"]
         B1 --> B2 --> B3 --> B4
     end
 
@@ -94,6 +94,21 @@ git-ignored properties file.
 3. Verify with `Get-Item -LiteralPath "G:\My Drive\myApps\LearnHuayu.apk"`: non-zero
    `Length` and a fresh `LastWriteTime`.
 
+### Play Store internal testing track
+
+The Drive APK above is the sideloading path. For the Play Store internal testing track the
+author uploads an App Bundle instead, and Play re-signs the delivered artifact:
+
+1. Build the bundle from `android/`: `.\gradlew.bat :app:bundleRelease`, producing
+   `android/app/build/outputs/bundle/release/app-release.aab`. The same signing rules as the
+   APK apply (`android/keystore.properties` when present, otherwise the debug keystore).
+2. In the Play Console, enable Play App Signing and upload the `.aab` to the internal
+   testing track, then add the author's account as a tester.
+3. Set the version code and name before each upload; both come from the Gradle version
+   properties, so a release is a code change plus a rebuild.
+4. Internal testing is author-driven; GitHub Actions stays CI only and never holds the
+   upload key.
+
 ## Cloudflare Worker API pipeline
 
 The Worker is **required, not optional**: it proxies multimodal audio understanding
@@ -107,7 +122,7 @@ limits. Offline listening drills work without it; AI coaching does not.
 | Syntax check | `node --check worker.js` | Fast failure before deploy. |
 | Tests | `npm test` | Offline `node:test` suite. |
 | Deploy | `npm run deploy` | Wraps `wrangler deploy`. |
-| Verify | Reach `learnhuayu-api.<account>.workers.dev` | Confirm the new version is live; Wrangler prints the URL and version ID. |
+| Verify | Reach `mandarin.<account>.workers.dev` | Confirm the new version is live; Wrangler prints the URL and version ID. |
 
 ### Manual fallback
 
@@ -131,6 +146,7 @@ out of git.
 ## Open questions
 
 - Where release APKs should live long-term (Drive vs. GitHub Releases).
-- The Worker is deployed under the name in `api/wrangler.jsonc` (currently `mandarin`),
-  while this document targets `learnhuayu-api.<account>.workers.dev`. Decide the final
-  Worker name and align the config and these URLs.
+- The Worker deploys under the name in `api/wrangler.jsonc` (`mandarin`), so its URL is
+  `mandarin.<account>.workers.dev`; the health check still reports the service label
+  `learnhuayu-api`. Renaming the Worker later means updating the config and these URLs
+  together.
