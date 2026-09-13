@@ -100,6 +100,39 @@ node assets/content/validate.mjs
 The script prints a summary and exits zero on success; on failure it prints every error
 and exits non-zero.
 
+## Bundling into the APK
+
+The corpus and the bundled audio ship inside the app. Gradle copies them into a
+build-generated assets directory rather than committing a duplicate under `android/`.
+
+| Task | Type | Purpose |
+| --- | --- | --- |
+| `:app:validateContent` | `Exec` | Runs `node assets/content/validate.mjs` from the repository root; a non-zero exit fails the build with the validator output. |
+| `:app:syncContentAssets` | `Sync` | Copies the corpus and the bundled audio into `android/app/build/generated/contentAssets/`; it depends on `:app:validateContent`, so the copy is gated on validation passing. |
+
+Wiring:
+
+- `:app:preBuild` depends on `:app:validateContent`, so every build validates the corpus.
+- The `main` source set adds `layout.buildDirectory.dir("generated/contentAssets")` as an
+  asset directory, and the asset-merge tasks (`MergeSourceSetFolders`) depend on
+  `:app:syncContentAssets`, so `:app:assembleDebug` and `:app:assembleRelease` sync the
+  assets before packaging.
+- The generated directory is build output under `android/app/build/` and is never
+  committed.
+
+### APK asset layout
+
+| Repository path | APK asset path |
+| --- | --- |
+| `assets/content/**` | `assets/content/**` |
+| `assets/audio/reference/**` | `assets/audio/reference/**` |
+| `assets/audio/drills/**` | `assets/audio/drills/**` |
+| `assets/audio/samples/**` | `assets/audio/samples/**` |
+
+An item's `audioAssetRef` is relative to `assets/audio/`, so
+`reference/tones/tones-ma1.wav` resolves at runtime to the APK asset
+`assets/audio/reference/tones/tones-ma1.wav`.
+
 ## What does not belong here
 
 - Han script in any form, and Hangul outside the optional `hangul` field.

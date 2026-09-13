@@ -1,3 +1,4 @@
+import com.android.build.gradle.tasks.MergeSourceSetFolders
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -7,6 +8,9 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
+
+val repoRootDir = rootProject.projectDir.parentFile
+val generatedContentAssetsDir = layout.buildDirectory.dir("generated/contentAssets")
 
 android {
     namespace = "com.learnhuayu.app"
@@ -34,12 +38,44 @@ android {
     buildFeatures {
         compose = true
     }
+
+    sourceSets {
+        getByName("main") {
+            assets.srcDir(generatedContentAssetsDir)
+        }
+    }
 }
 
 kotlin {
     compilerOptions {
         jvmTarget.set(JvmTarget.JVM_17)
     }
+}
+
+val validateContent by tasks.registering(Exec::class) {
+    group = "verification"
+    description = "Validates the bundled content corpus with node assets/content/validate.mjs."
+    workingDir(repoRootDir)
+    commandLine("node", "assets/content/validate.mjs")
+}
+
+val syncContentAssets by tasks.registering(Sync::class) {
+    group = "build"
+    description = "Copies validated content and audio into the generated app assets directory."
+    dependsOn(validateContent)
+    into(generatedContentAssetsDir)
+    from(repoRootDir.resolve("assets/content")) { into("content") }
+    from(repoRootDir.resolve("assets/audio/reference")) { into("audio/reference") }
+    from(repoRootDir.resolve("assets/audio/drills")) { into("audio/drills") }
+    from(repoRootDir.resolve("assets/audio/samples")) { into("audio/samples") }
+}
+
+tasks.named("preBuild") {
+    dependsOn(validateContent)
+}
+
+tasks.withType<MergeSourceSetFolders>().configureEach {
+    dependsOn(syncContentAssets)
 }
 
 dependencies {
