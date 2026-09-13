@@ -106,17 +106,19 @@ module's lesson/practice to a runnable session; `LearningModule.lessons()/practi
 is synchronous while the bundled corpus loads through suspend repositories. Wave 3 is
 therefore sequenced as:
 
-- 3a foundation: a generic drill engine in `:app` (lesson browse, hear-and-name,
-  listen-and-choose, speak-and-repeat over `ContentItem`s from `:core:data`), a
-  `DrillMode` on `PracticeSpec`, and a suspend `LearningModule` contract in
-  `:core:model`; the `:app` nav host gains a session route and `ModuleScreen` rows
-  become runnable. To be recorded as ADR 0018 after the interfaces settle in review.
-- 3b M2 modules: home, tones, vocabulary, listening, fundamentals each map their
-  bundled corpus to specs and modes; listening adds tap-only offline drills and WF-4
-  spoken answers with the local matcher.
-- 3c M3 speech: WF-1 feedback and measured tone evidence wired into the
-  speak-and-repeat drill.
-- 3d M4: field loop (WF-9, WF-10, WF-3), Raymond (WF-7), and endless practice (WF-8).
+- 3a foundation and tracer bullet: a generic drill engine in `:app` (lesson browse,
+  hear-and-name, listen-and-choose, speak-and-repeat over `ContentItem`s from
+  `:core:data`), a `DrillMode` on `PracticeSpec`, and a suspend `LearningModule`
+  contract in `:core:model`; the `:app` nav host gains a session route, `ModuleScreen`
+  rows become runnable, and the `tones` module is wired end to end (bundled specs plus
+  mode mapping) to prove the path. To be recorded as ADR 0018 after the interfaces
+  settle in review.
+- 3b remaining M2 modules: vocabulary, listening (tap-only offline), and fundamentals
+  each map their bundled corpus to specs and modes, in parallel worktrees (distinct
+  module directories, no shared files).
+- 3c AI-supported drills: speech with WF-1 feedback and measured tone evidence,
+  listening with WF-4 spoken answers and the local matcher, and WF-8 endless practice.
+- 3d M4: field loop (WF-9, WF-10, WF-3) and Raymond (WF-7).
 
 Each sub-wave is fanned out only after the previous one merges, because 3a touches
 `:app` and `:core:model` and every later slice touches at least one feature module.
