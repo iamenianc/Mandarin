@@ -14,9 +14,9 @@ class ModuleRegistryTest {
         override val id: String,
         override val title: String,
     ) : LearningModule {
-        override fun lessons(): List<LessonSpec> = emptyList()
+        override suspend fun lessons(): List<LessonSpec> = emptyList()
 
-        override fun practices(): List<PracticeSpec> = emptyList()
+        override suspend fun practices(): List<PracticeSpec> = emptyList()
     }
 
     @Test

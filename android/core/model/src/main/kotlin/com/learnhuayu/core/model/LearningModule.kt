@@ -4,7 +4,7 @@ interface LearningModule {
     val id: String
     val title: String
 
-    fun lessons(): List<LessonSpec>
+    suspend fun lessons(): List<LessonSpec>
 
-    fun practices(): List<PracticeSpec>
+    suspend fun practices(): List<PracticeSpec>
 }
