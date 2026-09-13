@@ -172,6 +172,12 @@ hanzi; `:app:testDebugUnitTest` (SessionFeedbackTest 6, SessionViewModelTest 17)
 `:feature:speech:testDebugUnitTest` (3) re-run green, `:app:assembleDebug` and
 `spotlessCheck` green, all with `--no-daemon`.
 
+3c-2 (in flight 2026-09-13): spoken answers via WF-4 in the listening drill, tap-only kept
+as the always-available fallback. Adds `DrillMode.LISTEN_AND_ANSWER_SPOKEN`, maps the
+listening word practice to it, and gives the engine a spoken-answer step that calls
+`ResponseTranscriptionWorkflow` and falls back to tappable choices on any failure. Owns
+`:app`, `:feature:listening`, and the one `DrillMode` value; based on `71b829c`.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
