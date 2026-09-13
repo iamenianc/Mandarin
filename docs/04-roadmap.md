@@ -61,13 +61,14 @@ Exit criteria met: a learner can complete an offline session in any of the four 
 - [ ] Speech capture with voice-activity detection (end-of-speech).
 - [x] Generate reference audio with Kokoro-82M from pinyin and bundle it per phrase (ADR 0006).
   The generator, manifest, and bundling path exist; clips are build-time inputs.
-- [ ] **Acoustic-evidence spike (ADR 0014):** desktop extraction with openSMILE Python on
-  Kokoro references and recorded attempts (including creaky tone 3 and noisy input);
-  pipeline prototype (DTW alignment, speaker-relative normalization, tone comparison).
-- [ ] **Extractor decision:** feature ablation (openSMILE breadth vs F0/voicing/loudness)
-  and the grounded-vs-ungrounded WF-1 A/B (the adoption gate); Android integration only
-  for the winning extractor; precompute reference evidence and syllable boundaries at
-  content-build time; finalize the versioned evidence schema and WF-1 contract.
+- [x] **Extractor decision:** adopt the pure-Kotlin F0/voicing/loudness extractor
+  (`BaselineAcousticFeatureExtractor`) for tone and rhythm (ADR 0019). The openSMILE
+  validation oracle, the feature ablation, and the grounded-vs-ungrounded WF-1 A/B remain
+  documented follow-ups (ADR 0014) rather than v1 blockers, and the versioned evidence
+  schema and WF-1 contract are unchanged from the wave-2 interfaces.
+- [x] Reference evidence is measured on device from the bundled clip and cached per item
+  (ADR 0019), because the extractor cannot be hosted by a Gradle build task without a
+  module split.
 - [x] **Speech and tones modules:** Worker-proxied reference-vs-attempt comparison via
   Muse Spark (WF-1, ADR 0005). The speech module runs coached speak-and-repeat with an
   offline fallback; the measured-evidence seam (`AttemptEvidenceSource`) is in place.

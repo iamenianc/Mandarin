@@ -186,17 +186,26 @@ tappable choices on any failure. Independent verification: diff confined to `:ap
 (3, 0) re-run green, `:app:assembleDebug` and `spotlessCheck` green on the branch; the
 integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green.
 
-3c-1b (in flight 2026-09-13): measured tone evidence behind the `AttemptEvidenceSource`
-seam. Decision: reference features are computed from the bundled reference clip on device
-and cached per item, instead of a content-build-time task, because the pure-Kotlin
-extractor lives in an Android-library module that a Gradle build task cannot host without
-a module split; the ADR 0014 default extractor is unchanged and its validation gate stays
-open. Adds `SyllableAutoSegmenter` in `:core:assessment` to derive syllable spans from the
-reference clip, a `ReferencePcmDecoder` seam in `:app` (MediaExtractor/MediaCodec for OGG,
-the WAV helper otherwise), and an `AssessmentAttemptEvidenceSource` that decodes,
-precomputes, aligns, classifies, maps `ToneEvidence` to `:core:ai.AcousticEvidence`, and
-returns null on any failure so the audio-only fallback is preserved. Owns
-`:core:assessment` and `:app`; based on `292e396`.
+3c-1b (merged 2026-09-14): measured tone evidence behind the `AttemptEvidenceSource` seam.
+Worktree `tone evidence` (`wt-1789331749091-27`), branch `app/tone-evidence`, session
+`ses_f638443ebffe5J0MwBDi0xga60`, based on `7685e4f`; commits `222bf4f` and `2a41798`;
+merged as `e503fdf`. Reference features are computed from the bundled clip on device and
+cached per item: `SyllableAutoSegmenter` in `:core:assessment` recovers syllable spans from
+the clip's energy contour, and `AssessmentAttemptEvidenceSource` in `:app` decodes the clip
+(`ReferencePcmDecoder`: MediaExtractor/MediaCodec, or the WAV helper), precomputes, aligns,
+classifies, and maps `ToneEvidence` to `:core:ai.AcousticEvidence`, returning null on any
+failure so the audio-only fallback is preserved. Recorded as ADR 0019; the ADR 0014 oracle
+stays a documented follow-up. Independent verification: diff confined to `:core:assessment`
+and `:app` (8 files, +962/-11); no hanzi; `:core:assessment:testDebugUnitTest` and
+`:app:testDebugUnitTest` re-run green (new `SyllableAutoSegmenterTest`,
+`AssessmentAttemptEvidenceSourceTest`), plus `:app:assembleDebug`, `:app:lintDebug`, and
+`spotlessCheck` on the branch; the integrated `:app:assembleDebug test lint spotlessCheck`
+on merged master is green.
+
+M3 remainder (2026-09-14): the end-of-speech VAD item is not yet wired into the drill.
+`:core:audio` ships `EndOfSpeechDetector`/`EnergyZeroCrossingEndOfSpeechDetector` but
+`AudioRecorder` does not expose frames or consume the detector, so the next slice adds an
+end-of-speech hook to `:core:audio` and auto-stop in `:app`; M3 is complete after that.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
