@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="progress_title">Progress</string>
+    <string name="progress_intro">Your practice history and the themes that keep coming back.</string>
+    <string name="progress_empty_title">No practice history yet</string>
+    <string name="progress_empty_body">Finish a lesson, a practice, or a field debrief and the summary appears here.</string>
+    <string name="progress_loading">Loading progress…</string>
+    <string name="progress_offline_message">The online summary is unavailable right now. Your local practice themes are shown below.</string>
+    <string name="progress_summary_title">Summary</string>
+    <string name="progress_focus_title">Focus areas</string>
+    <string name="progress_focus_empty">No focus areas yet.</string>
+    <string name="progress_play_summary">Play summary</string>
+    <string name="progress_playing_summary">Playing summary…</string>
+    <string name="progress_feedback_themes_title">Recurring feedback</string>
+    <string name="progress_debrief_themes_title">Recurring debrief themes</string>
+    <string name="progress_most_practised_title">Most practised</string>
+    <string name="progress_times_practised">Practised %1$d times</string>
+    <string name="progress_no_themes">Nothing recurring yet.</string>
+</resources>
