@@ -285,6 +285,24 @@ files and its own `res/values/strings_<feature>.xml`, leaving the shared app `st
 untouched, so the two can run in parallel. 4c accessibility and performance and 4d
 release/Play-track documentation follow.
 
+Wave 4a/4b (merged 2026-09-14): 4b consent management and one-tap deletion first, worktree
+`consent deletion` (`wt-1789337119282-33`), session `ses_f63324f80ffe0wunF6kbDDjNv9`, based
+on `3e2c2c9`; commits `419a1be` and `77d0201`; merged as `acda2a2`. Adds
+`DataDeletionService` in `:core:data` (clears all tables, resets DataStore, deletes local
+recordings), a shared `LocalRecordings` path used by the recorder, and a settings
+destination (consent toggle writing the consent version, Hangul toggle, confirmed deletion
+with success and failure states). Independent verification: diff confined to `:core:data`
+and `:app` (11 files, +681/-1); no hanzi; `:core:data:testDebugUnitTest`,
+`:app:testDebugUnitTest` (`SettingsViewModelTest` 7), `assembleDebug`, `lintDebug`, and
+`spotlessCheck` green on the branch. Then 4a progress reporting, worktree
+`progress report` (`wt-1789337117125-32`), session `ses_f633259dbffeaNbIfXsw6fIsWY`, based
+on `166e695`; commits `0dcc13d` and `5c67839`; merged as `4b74a04`. Adds a progress
+destination that always shows local themes and most-practised items, calls WF-5 for a
+summary with focus areas, voices it through WF-3, and falls back with a friendly note.
+Independent verification: 9 files, +904; no hanzi; `:app:testDebugUnitTest` green
+(`ProgressViewModelTest`), `assembleDebug`, `lintDebug`, `spotlessCheck` green; the
+integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.

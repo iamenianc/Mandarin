@@ -113,9 +113,14 @@ five-local field mission) and completes a full daily loop (rehearse, five locals
 
 ## M5 - Progress, polish, and release (current)
 
-- [ ] Progress and recurring-problem reporting (audio-first) via WF-5, including debrief
-  themes.
-- [ ] Consent management and one-tap data deletion.
+- [x] Progress and recurring-problem reporting (audio-first) via WF-5, including debrief
+  themes. Shipped as a feature destination: local themes and most-practised items are always
+  computed, WF-5 adds a short summary with focus areas, the summary can be voiced through
+  WF-3, and a workflow failure keeps the local view with a friendly note.
+- [x] Consent management and one-tap data deletion. A settings destination persists the
+  recording-to-provider consent and the Hangul aid, and `Delete all my data` clears every
+  Room table, resets the preferences, and removes the local recordings behind a confirmation
+  dialog.
 - [ ] Accessibility pass, performance, Play Store internal testing track.
 
 ## Backlog / deferred
