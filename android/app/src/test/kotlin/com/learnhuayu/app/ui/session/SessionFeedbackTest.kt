@@ -41,6 +41,7 @@ class SessionFeedbackTest {
     private val progressRepository = FakeProgressRepository()
     private val attemptRepository = FakeAttemptRepository()
     private val workflow = FakePronunciationFeedbackWorkflow(WorkflowResult.Success(feedback))
+    private val responseWorkflow = FakeResponseTranscriptionWorkflow()
     private val evidenceSource = FakeAttemptEvidenceSource(evidence)
     private val contentRepository = FakeBundledContentRepository(items = mapOf(ma1.id to ma1))
     private val registry = ModuleRegistry(
@@ -68,6 +69,7 @@ class SessionFeedbackTest {
         attemptRepository = attemptRepository,
         preferencesRepository = FakePreferencesRepository(),
         feedbackWorkflow = workflow,
+        responseWorkflow = responseWorkflow,
         referenceClipReader = referenceClipReader,
         evidenceSource = evidenceSource,
         clock = fixedClock,

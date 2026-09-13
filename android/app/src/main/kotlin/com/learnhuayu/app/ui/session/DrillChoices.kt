@@ -31,11 +31,13 @@ object DrillChoices {
     /**
      * The expected on-screen answer for one item: the tone sequence for hear-and-name
      * (tones written as numbers, joined with `-` when longer than one; ADR 0012) and the
-     * pinyin for listen-and-choose.
+     * pinyin for listen-and-choose and the spoken-answer drill, whose WF-4 transcript is
+     * matched against these same pinyin labels.
      */
     fun answerLabel(item: ContentItem, mode: DrillMode): String = when (mode) {
         DrillMode.HEAR_AND_NAME -> item.targetTones.joinToString("-")
         DrillMode.LISTEN_AND_CHOOSE,
+        DrillMode.LISTEN_AND_ANSWER_SPOKEN,
         DrillMode.LESSON,
         DrillMode.SPEAK_AND_REPEAT,
         DrillMode.SPEAK_AND_REPEAT_FEEDBACK,

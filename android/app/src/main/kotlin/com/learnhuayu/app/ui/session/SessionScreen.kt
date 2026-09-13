@@ -272,6 +272,12 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
                 viewModel = viewModel,
             )
 
+            DrillMode.LISTEN_AND_ANSWER_SPOKEN -> SpokenAnswerContent(
+                uiState = uiState,
+                item = item,
+                viewModel = viewModel,
+            )
+
             null -> Unit
         }
 
@@ -335,6 +341,68 @@ private fun SpeakContent(uiState: SessionUiState, item: ContentItem, viewModel: 
     HangulAidText(hangul = item.hangul.takeIf { uiState.showHangul })
     Text(text = item.meaning, style = MaterialTheme.typography.bodyLarge)
 
+    RecordControls(uiState = uiState, viewModel = viewModel)
+}
+
+/**
+ * The spoken-answer drill: the reference plays, the learner records the pinyin they heard,
+ * and the attempt is sent to WF-4 (ADR 0009). The same pinyin choices stay on screen and
+ * tappable, so the drill completes when the worker is unreachable or the transcript does
+ * not match. Pinyin is revealed only after the answer, as in the tap drills.
+ */
+@Composable
+private fun SpokenAnswerContent(
+    uiState: SessionUiState,
+    item: ContentItem,
+    viewModel: SessionViewModel,
+) {
+    Text(
+        text = stringResource(R.string.session_listen_and_answer_prompt),
+        style = MaterialTheme.typography.bodyLarge,
+    )
+
+    RecordControls(uiState = uiState, viewModel = viewModel)
+
+    when {
+        uiState.transcribing -> Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.session_spoken_answer_checking),
+                modifier = Modifier.padding(top = 8.dp),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        uiState.attemptAudioRef != null && !uiState.answerRevealed -> Button(
+            onClick = viewModel::onAnswerClick,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !uiState.processing && !uiState.isRecording,
+        ) {
+            Text(text = stringResource(R.string.session_spoken_answer_action))
+        }
+    }
+
+    if (uiState.spokenAnswerFallback) {
+        Text(
+            text = stringResource(R.string.session_spoken_answer_fallback),
+            color = MaterialTheme.colorScheme.error,
+            style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+
+    ChoiceContent(
+        uiState = uiState,
+        item = item,
+        prompt = stringResource(R.string.session_tap_fallback_prompt),
+        viewModel = viewModel,
+    )
+}
+
+@Composable
+private fun RecordControls(uiState: SessionUiState, viewModel: SessionViewModel) {
     RecordButton(
         state = uiState.recordButtonState(),
         onClick = viewModel::onRecordClick,

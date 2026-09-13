@@ -10,6 +10,9 @@ import com.learnhuayu.core.ai.AudioFormat
 import com.learnhuayu.core.ai.PronunciationFeedback
 import com.learnhuayu.core.ai.PronunciationFeedbackRequest
 import com.learnhuayu.core.ai.PronunciationFeedbackWorkflow
+import com.learnhuayu.core.ai.ResponseTranscription
+import com.learnhuayu.core.ai.ResponseTranscriptionRequest
+import com.learnhuayu.core.ai.ResponseTranscriptionWorkflow
 import com.learnhuayu.core.ai.WorkflowResult
 import com.learnhuayu.core.audio.capture.AudioRecorder
 import com.learnhuayu.core.audio.capture.RecorderState
@@ -37,6 +40,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Clock
 import java.time.Instant
+import java.util.Locale
 import javax.inject.Inject
 
 const val SESSION_ATTEMPT_LABEL = "attempt"
@@ -82,6 +86,8 @@ data class SessionUiState(
     val recorderState: RecorderState = RecorderState.Idle,
     val level: Float = 0f,
     val processing: Boolean = false,
+    val transcribing: Boolean = false,
+    val spokenAnswerFallback: Boolean = false,
     val attemptAudioRef: String? = null,
     val attemptPlayback: SessionPlayback = SessionPlayback(),
     val feedback: FeedbackUiState = FeedbackUiState.None,
@@ -98,7 +104,13 @@ data class SessionUiState(
         get() = recorderState is RecorderState.Recording
 
     val isChoiceMode: Boolean
-        get() = mode == DrillMode.HEAR_AND_NAME || mode == DrillMode.LISTEN_AND_CHOOSE
+        get() = mode == DrillMode.HEAR_AND_NAME ||
+            mode == DrillMode.LISTEN_AND_CHOOSE ||
+            mode == DrillMode.LISTEN_AND_ANSWER_SPOKEN
+
+    /** The spoken-answer drill: the learner speaks, but the tap choices remain the fallback. */
+    val isSpokenAnswerMode: Boolean
+        get() = mode == DrillMode.LISTEN_AND_ANSWER_SPOKEN
 
     val isFeedbackMode: Boolean
         get() = mode == DrillMode.SPEAK_AND_REPEAT_FEEDBACK
@@ -115,7 +127,11 @@ data class SessionUiState(
                 DrillMode.SPEAK_AND_REPEAT_FEEDBACK,
                 -> true
 
-                DrillMode.HEAR_AND_NAME, DrillMode.LISTEN_AND_CHOOSE -> answerRevealed
+                DrillMode.HEAR_AND_NAME,
+                DrillMode.LISTEN_AND_CHOOSE,
+                DrillMode.LISTEN_AND_ANSWER_SPOKEN,
+                -> answerRevealed
+
                 null -> false
             }
         }
@@ -123,9 +139,9 @@ data class SessionUiState(
 
 /**
  * Runs one lesson or practice spec end to end against the bundled corpus. The mode decides
- * the interaction (browse, hear-and-name, listen-and-choose, speak-and-repeat); the item
- * stream and reference audio are shared across modes (ADR 0007). Progress is written as
- * the learner moves past each item; a speaking attempt also records an [Attempt].
+ * the interaction (browse, hear-and-name, listen-and-choose, speak-and-repeat, spoken answer);
+ * the item stream and reference audio are shared across modes (ADR 0007). Progress is written
+ * as the learner moves past each item; a speaking attempt also records an [Attempt].
  */
 @HiltViewModel
 class SessionViewModel @Inject constructor(
@@ -139,6 +155,7 @@ class SessionViewModel @Inject constructor(
     private val attemptRepository: AttemptRepository,
     private val preferencesRepository: PreferencesRepository,
     private val feedbackWorkflow: PronunciationFeedbackWorkflow,
+    private val responseWorkflow: ResponseTranscriptionWorkflow,
     private val referenceClipReader: ReferenceClipReader,
     private val evidenceSource: AttemptEvidenceSource,
     private val clock: Clock,
@@ -308,6 +325,69 @@ class SessionViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Submits the recorded attempt to WF-4 to interpret the spoken answer (ADR 0009). The
+     * transcript is matched against the same pinyin choices the tap drill shows; a match
+     * selects and reveals that option, and any failure (no attempt, offline, worker not
+     * configured, unmatched transcript) leaves the choices tappable instead. The workflow
+     * never blocks advancing, and a late result never overwrites a tapped answer.
+     */
+    fun onAnswerClick() {
+        val state = _uiState.value
+        if (!state.isSpokenAnswerMode || state.answerRevealed || state.transcribing) return
+        if (state.processing || state.isRecording) return
+        if (state.currentItem == null) return
+        val attempt = attemptPcm ?: run {
+            _uiState.update { it.copy(spokenAnswerFallback = true) }
+            return
+        }
+        val options = state.choices
+        _uiState.update { it.copy(transcribing = true, spokenAnswerFallback = false) }
+        viewModelScope.launch {
+            val result = try {
+                responseWorkflow.transcribe(
+                    ResponseTranscriptionRequest(
+                        audio = AudioClip(wavCodec.encode(attempt), AudioFormat.WAV),
+                        expectedOptions = options,
+                    ),
+                )
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (error: Exception) {
+                null
+            }
+            applySpokenAnswer(result, options)
+        }
+    }
+
+    private fun applySpokenAnswer(
+        result: WorkflowResult<ResponseTranscription>?,
+        options: List<String>,
+    ) {
+        val matched = when (result) {
+            is WorkflowResult.Success -> result.value.matchedChoice(options)
+            else -> null
+        }
+        val state = _uiState.value
+        if (state.answerRevealed || !state.isSpokenAnswerMode) {
+            _uiState.update { it.copy(transcribing = false) }
+            return
+        }
+        if (matched == null) {
+            _uiState.update { it.copy(transcribing = false, spokenAnswerFallback = true) }
+            return
+        }
+        _uiState.update {
+            it.copy(
+                transcribing = false,
+                spokenAnswerFallback = false,
+                selectedChoice = matched,
+                answerRevealed = true,
+                answerCorrect = matched == it.correctAnswer,
+            )
+        }
+    }
+
     /** Clears the attempt and coaching so the learner can record the item again. */
     fun onTryAgainClick() {
         val state = _uiState.value
@@ -318,6 +398,8 @@ class SessionViewModel @Inject constructor(
                 attemptAudioRef = null,
                 attemptPlayback = SessionPlayback(),
                 feedback = FeedbackUiState.None,
+                transcribing = false,
+                spokenAnswerFallback = false,
                 recorderError = null,
             )
         }
@@ -362,6 +444,8 @@ class SessionViewModel @Inject constructor(
                 attemptAudioRef = null,
                 attemptPlayback = SessionPlayback(),
                 feedback = FeedbackUiState.None,
+                transcribing = false,
+                spokenAnswerFallback = false,
                 recorderState = RecorderState.Idle,
                 level = 0f,
                 errorMessage = null,
@@ -406,6 +490,8 @@ class SessionViewModel @Inject constructor(
                 recorderState = RecorderState.Idle,
                 level = 0f,
                 processing = false,
+                transcribing = false,
+                spokenAnswerFallback = false,
                 attemptAudioRef = null,
                 attemptPlayback = SessionPlayback(),
                 feedback = FeedbackUiState.None,
@@ -420,7 +506,11 @@ class SessionViewModel @Inject constructor(
         val state = _uiState.value
         val item = state.currentItem ?: return
         val mode = state.mode
-        val choices = if (mode == DrillMode.HEAR_AND_NAME || mode == DrillMode.LISTEN_AND_CHOOSE) {
+        val choices = if (
+            mode == DrillMode.HEAR_AND_NAME ||
+            mode == DrillMode.LISTEN_AND_CHOOSE ||
+            mode == DrillMode.LISTEN_AND_ANSWER_SPOKEN
+        ) {
             DrillChoices.forItem(item, state.items, mode)
         } else {
             emptyList()
@@ -478,7 +568,13 @@ class SessionViewModel @Inject constructor(
                 val file = recordingStore.newRecordingFile(SESSION_ATTEMPT_LABEL)
                 wavCodec.write(file, audio)
                 attemptPcm = audio
-                _uiState.update { it.copy(attemptAudioRef = file.path, feedback = FeedbackUiState.None) }
+                _uiState.update {
+                    it.copy(
+                        attemptAudioRef = file.path,
+                        recorderState = RecorderState.Idle,
+                        feedback = FeedbackUiState.None,
+                    )
+                }
                 audioPlayer.play(AudioSource.LocalFile(file.path))
             } catch (cancellation: CancellationException) {
                 throw cancellation
@@ -487,6 +583,8 @@ class SessionViewModel @Inject constructor(
             } finally {
                 _uiState.update { it.copy(processing = false) }
             }
+            val state = _uiState.value
+            if (state.isSpokenAnswerMode && state.attemptAudioRef != null) onAnswerClick()
         }
     }
 
@@ -520,6 +618,27 @@ class SessionViewModel @Inject constructor(
         val audioRef = _uiState.value.attemptAudioRef ?: return false
         return source is AudioSource.LocalFile && source.path == audioRef
     }
+
+    /**
+     * Resolves a WF-4 result to one of the drill's pinyin choices: its `matchedOptionId`
+     * when it names a choice, otherwise its transcript compared case-insensitively, then
+     * tone-insensitively when that leaves exactly one candidate. An ambiguous transcript
+     * (for example `ma` against `ma1` and `ma2`) resolves to nothing so the learner taps.
+     */
+    private fun ResponseTranscription.matchedChoice(options: List<String>): String? {
+        matchedOptionId?.let { id ->
+            options.firstOrNull { it == id }?.let { return it }
+            options.singleOrNull { normalizedAnswer(it) == normalizedAnswer(id) }?.let { return it }
+        }
+        options.firstOrNull { it.equals(transcript, ignoreCase = true) }?.let { return it }
+        val normalizedTranscript = normalizedAnswer(transcript)
+        if (normalizedTranscript.isEmpty()) return null
+        return options.singleOrNull { normalizedAnswer(it) == normalizedTranscript }
+    }
+
+    private fun normalizedAnswer(value: String): String = value
+        .lowercase(Locale.ROOT)
+        .filter { it.isLetter() }
 
     private fun SessionPlayback.with(playback: PlaybackState): SessionPlayback = SessionPlayback(
         state = playback,

@@ -14,8 +14,10 @@ import javax.inject.Inject
 
 /**
  * The listening module: audio-first hear-and-identify drills that name a tone then choose the
- * matching pinyin or meaning, with no speaking required (FR-10). Content is the bundled
- * corpus; this module only maps the corpus practices to their drill modes.
+ * matching pinyin or meaning, with no speaking required (FR-10). The hear-the-word practice
+ * answers by speech through WF-4, while keeping the tap choices available offline (ADR 0009).
+ * Content is the bundled corpus; this module only maps the corpus practices to their drill
+ * modes.
  */
 class ListeningLearningModule @Inject constructor(
     private val contentRepository: BundledContentRepository,
@@ -30,7 +32,7 @@ class ListeningLearningModule @Inject constructor(
     private fun PracticeSpec.withListeningMode(): PracticeSpec = when (id) {
         LISTENING_PRACTICE_HEAR_THE_TONE -> copy(mode = DrillMode.HEAR_AND_NAME)
 
-        LISTENING_PRACTICE_HEAR_THE_WORD -> copy(mode = DrillMode.LISTEN_AND_CHOOSE)
+        LISTENING_PRACTICE_HEAR_THE_WORD -> copy(mode = DrillMode.LISTEN_AND_ANSWER_SPOKEN)
 
         else -> this
     }

@@ -18,4 +18,12 @@ enum class DrillMode {
      * the reference clip is missing or the Worker is unreachable.
      */
     SPEAK_AND_REPEAT_FEEDBACK,
+
+    /**
+     * Listen-and-answer with a spoken answer: the reference plays, the learner says the
+     * pinyin they heard, and WF-4 transcribes the attempt so the matching choice is
+     * selected (ADR 0009). The same tap choices stay visible and tappable, so the drill
+     * still completes when the worker is unreachable or the transcript does not match.
+     */
+    LISTEN_AND_ANSWER_SPOKEN,
 }

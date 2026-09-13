@@ -26,8 +26,8 @@ class ListeningLearningModuleTest {
      * The corpus shapes fix the mapping: the hear-the-tone practice draws on word and
      * minimalPair items whose targetTones are the answer, so the learner hears audio and
      * names the tone (HEAR_AND_NAME). The hear-the-word practice draws on phrase items whose
-     * answer is the matching pinyin or meaning, so the learner selects a choice
-     * (LISTEN_AND_CHOOSE). Both remain tap-only and offline.
+     * answer is the matching pinyin or meaning, so the learner answers by speech with WF-4
+     * (LISTEN_AND_ANSWER_SPOKEN), keeping the tap choices as the offline fallback (ADR 0009).
      */
     @Test
     fun `practices map their ids to the expected drill modes`() = runTest {
@@ -36,7 +36,7 @@ class ListeningLearningModuleTest {
         assertEquals(
             mapOf(
                 "listening-practice-hear-the-tone" to DrillMode.HEAR_AND_NAME,
-                "listening-practice-hear-the-word" to DrillMode.LISTEN_AND_CHOOSE,
+                "listening-practice-hear-the-word" to DrillMode.LISTEN_AND_ANSWER_SPOKEN,
             ),
             modes,
         )
