@@ -336,7 +336,7 @@ class SessionViewModel @Inject constructor(
         val state = _uiState.value
         if (!state.isSpokenAnswerMode || state.answerRevealed || state.transcribing) return
         if (state.processing || state.isRecording) return
-        val item = state.currentItem ?: return
+        if (state.currentItem == null) return
         val attempt = attemptPcm ?: run {
             _uiState.update { it.copy(spokenAnswerFallback = true) }
             return
