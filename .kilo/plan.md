@@ -220,6 +220,14 @@ integrated `:app:assembleDebug test lint spotlessCheck` on merged master is gree
 first attempt failed transiently and passed on re-run). M3 is complete; the roadmap marks
 it so and M4 is current.
 
+3d-1 (in flight 2026-09-14): feature-destination contract plus the Raymond chat (FR-25,
+WF-7). Worktree `raymond chat` (`wt-1789333870141-29`), branch `app/raymond-feature`,
+session `ses_f6363e5c9ffeghSiIV6QbuJoXf`, based on `f77b237`. Adds a `FeatureDestination`
+contract in `:core:ui` that feature modules bind with Hilt `@IntoSet` and the shell renders
+at `feature/{id}` and lists on Home, and implements Raymond in `:feature:raymond`: a typed
+or voice question, WF-7 with accumulated history, pinyin examples and follow-up chips, and
+a friendly offline message. Owns `:core:ui`, `:feature:raymond`, and `:app`.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
