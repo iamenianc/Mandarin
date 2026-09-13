@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LearnHuayu - Marketing Pitch</title>
+<style>
+  :root {
+    --ink: #12151c;
+    --muted: #5b6472;
+    --accent: #d2452f;
+    --accent-2: #f0a202;
+    --paper: #ffffff;
+    --bg: #10131a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body {
+    background: radial-gradient(1200px 600px at 50% -10%, #1d2330, var(--bg));
+    color: var(--ink);
+    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    line-height: 1.55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .deck {
+    position: relative;
+    width: 100%;
+    max-width: 880px;
+    aspect-ratio: 16 / 10;
+    background: var(--paper);
+    border-radius: 18px;
+    box-shadow: 0 30px 70px rgba(0,0,0,.45);
+    overflow: hidden;
+  }
+  .page {
+    position: absolute;
+    inset: 0;
+    padding: 48px 56px;
+    display: none;
+    flex-direction: column;
+  }
+  .page.active { display: flex; }
+  .kicker {
+    font-size: 12px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  h1 { font-size: 44px; line-height: 1.1; margin: 0 0 14px; }
+  h2 { font-size: 30px; line-height: 1.15; margin: 0 0 16px; }
+  p { font-size: 17px; margin: 0 0 12px; }
+  .lead { font-size: 20px; color: var(--muted); }
+  ul { margin: 0; padding-left: 20px; }
+  li { font-size: 17px; margin-bottom: 9px; }
+  strong { color: var(--ink); }
+  .mark { color: var(--accent); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 6px; }
+  .card {
+    border: 1px solid #e4e7ee;
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: #fafbfe;
+  }
+  .card h3 { margin: 0 0 4px; font-size: 15px; }
+  .card p { font-size: 14px; color: var(--muted); margin: 0; }
+  .cover { justify-content: center; text-align: center; align-items: center; }
+  .cover h1 { font-size: 58px; }
+  .cover .lead { max-width: 560px; }
+  .badge {
+    display: inline-block;
+    background: var(--ink);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    padding: 7px 14px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+  }
+  .tag {
+    display: inline-block;
+    border: 1px solid var(--accent-2);
+    color: #8a5c00;
+    background: #fff6e0;
+    font-size: 13px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    margin: 0 6px 6px 0;
+  }
+  .spacer { flex: 1; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  .dots { display: flex; gap: 8px; }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #cfd4de; border: 0; padding: 0; cursor: pointer;
+  }
+  .dot.active { background: var(--accent); }
+  .nav {
+    display: flex; gap: 8px;
+  }
+  button.ctl {
+    font: inherit;
+    font-size: 14px;
+    border: 1px solid #d6dae3;
+    background: #fff;
+    color: var(--ink);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button.ctl:hover { background: #f3f5f9; }
+  button.ctl:disabled { opacity: .4; cursor: default; }
+  .pageno { font-size: 13px; color: var(--muted); }
+  .cta { border-left: 4px solid var(--accent); padding-left: 14px; margin-top: 6px; }
+  .cta p:last-child { margin: 0; }
+  @media (max-width: 640px) {
+    .deck { aspect-ratio: auto; min-height: 82vh; }
+    .page { padding: 30px 26px; }
+    h1, .cover h1 { font-size: 34px; }
+    h2 { font-size: 24px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+  @media print {
+    body { background: #fff; padding: 0; display: block; }
+    .deck { box-shadow: none; border-radius: 0; max-width: none; aspect-ratio: auto; }
+    .page { display: flex; position: static; page-break-after: always; min-height: 100vh; }
+    .foot { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="deck">
+
+  <section class="page cover active">
+    <span class="badge">Marketing pitch - product one-pager</span>
+    <h1>LearnHuayu</h1>
+    <p class="lead" style="font-size:24px;color:var(--ink)">Listen. Speak. Be understood.</p>
+    <p class="lead" style="font-size:15px"><em>hu&aacute;y&#468;</em> - Mandarin Chinese</p>
+    <p class="lead">An audio-first Android app that teaches a total beginner to hear and
+      speak Mandarin - no characters, no flashcards, no freezing when someone talks to you.</p>
+  </section>
+
+  <section class="page">
+    <div class="kicker">The problem</div>
+    <h2>Everyone teaches you to read. Nobody teaches you to talk.</h2>
+    <p class="lead">Mainstream apps are built around characters, stroke order, and
+      screen translation. You can rack up hundreds of hanzi and still panic the moment a
+      real person speaks.</p>
+    <ul>
+      <li><strong>Tones get skipped.</strong> The one thing that decides meaning gets a
+        footnote instead of a module.</li>
+      <li><strong>Recognition, not production.</strong> Tapping the right answer is not
+        the same as saying it out loud.</li>
+      <li><strong>Hanzi is the gate.</strong> Reading ability becomes a prerequisite for
+        skills that need no reading at all.</li>
+      <li><strong>Practice never reaches the field.</strong> Drills end where real
+        conversation begins.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <div class="kicker">The product</div>
+    <h2>An ear-first trainer for absolute beginners.</h2>
+    <p class="lead">Every lesson is heard and spoken, never read. Visuals support the
+      sound - and every word on screen is <strong>English or pinyin</strong>. Hanzi is
+      out of scope, by design.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Tones come first</h3>
+        <p>A dedicated tones module teaches the four tones and the neutral tone before
+          a single vocabulary word.</p>
+      </div>
+      <div class="card">
+        <h3>Pinyin is the key</h3>
+        <p>The sound system is explicitly taught and always visible, with tones written
+          as numbers - <em>ma1, ma2, ma3, ma4</em>. Hangul optional.</p>
+      </div>
+      <div class="card">
+        <h3>Built to grow</h3>
+        <p>Modules for vocabulary, listening, speech, and fundamentals share one drill
+          shape. New modules cost the learner nothing.</p>
+      </div>
+      <div class="card">
+        <h3>No hanzi, ever</h3>
+        <p>Nothing to memorize, nothing to draw. Just sound in, sound out.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="kicker">How it works</div>
+    <h2>Short sessions. Specific feedback. Real exchanges.</h2>
+    <ul>
+      <li><strong>Fast, named feedback.</strong> The app compares your attempt to the
+        reference and says what is wrong in words you can act on: "the second syllable
+        sounds flat - it should be tone 2."</li>
+      <li><strong>The Daily LAMP field loop.</strong> Rehearse one bite-sized exchange,
+        run it past <strong>five simulated locals</strong> - each a different voice and
+        personality - then debrief what tripped you up.</li>
+      <li><strong>Raymond, the always-on helper.</strong> Ask anything about Mandarin and
+        get an answer, any time.</li>
+      <li><strong>Never a dead end.</strong> Preloaded exercises work offline; AI
+        generates fresh examples without limit.</li>
+      <li><strong>Eyes-free when you want it.</strong> The whole session can run on audio
+        alone - commute, cooking, walking.</li>
+    </ul>
+    <p style="margin-top:6px">
+      <span class="tag">Tones</span>
+      <span class="tag">Vocabulary</span>
+      <span class="tag">Listening</span>
+      <span class="tag">Speech</span>
+      <span class="tag">Fundamentals</span>
+    </p>
+  </section>
+
+  <section class="page">
+    <div class="kicker">The pitch</div>
+    <h2>Practice that survives contact with a real conversation.</h2>
+    <p class="lead">Success is not a streak or a score. It is holding a short spoken
+      exchange, with all five locals, on the day's topic - and then using it outside the
+      app.</p>
+    <div class="cta">
+      <p><strong>The promise:</strong> a learner can hear and produce the four tones,
+        read a new pinyin word aloud with the right sounds <em>before</em> hearing it, and
+        complete a session without reading a single character.</p>
+      <p><strong>The ask:</strong> this app was designed for exactly one person - you.
+        Build it.</p>
+    </div>
+    <div class="spacer"></div>
+    <p class="pageno">Product: LearnHuayu &nbsp;|&nbsp; Platform: Android &nbsp;|&nbsp;
+      Audience: one absolute beginner &nbsp;|&nbsp; Private, non-commercial</p>
+  </section>
+
+  <div class="foot" style="position:absolute;left:0;right:0;bottom:0;padding:14px 22px;background:linear-gradient(#ffffff00,#ffffff 45%)">
+    <div class="dots" id="dots"></div>
+    <div class="nav">
+      <button class="ctl" id="prev" aria-label="Previous page">Prev</button>
+      <span class="pageno" id="counter"></span>
+      <button class="ctl" id="next" aria-label="Next page">Next</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  var pages = Array.prototype.slice.call(document.querySelectorAll(".page"));
+  var current = 0;
+  var dots = document.getElementById("dots");
+  var counter = document.getElementById("counter");
+
+  pages.forEach(function (_, i) {
+    var d = document.createElement("button");
+    d.className = "dot";
+    d.setAttribute("aria-label", "Go to page " + (i + 1));
+    d.addEventListener("click", function () { show(i); });
+    dots.appendChild(d);
+  });
+  var dotEls = Array.prototype.slice.call(dots.children);
+
+  function show(i) {
+    current = Math.max(0, Math.min(pages.length - 1, i));
+    pages.forEach(function (p, n) { p.classList.toggle("active", n === current); });
+    dotEls.forEach(function (d, n) { d.classList.toggle("active", n === current); });
+    counter.textContent = (current + 1) + " / " + pages.length;
+    document.getElementById("prev").disabled = current === 0;
+    document.getElementById("next").disabled = current === pages.length - 1;
+  }
+
+  document.getElementById("prev").addEventListener("click", function () { show(current - 1); });
+  document.getElementById("next").addEventListener("click", function () { show(current + 1); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "PageDown") { show(current + 1); }
+    if (e.key === "ArrowLeft" || e.key === "PageUp") { show(current - 1); }
+  });
+
+  show(0);
+</script>
+</body>
+</html>

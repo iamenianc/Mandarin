@@ -1,0 +1,30 @@
+# Android / Gradle
+.gradle/
+build/
+local.properties
+*.apk
+*.aab
+*.ap_
+*.dex
+*.class
+captures/
+.cxx/
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+*.hprof
+
+# Keystores and secrets
+*.jks
+*.keystore
+keystore.properties
+secrets.properties
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
