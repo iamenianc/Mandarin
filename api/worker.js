@@ -3,9 +3,12 @@
 // Secret: npx wrangler secret put OPENROUTER_API_KEY
 // Local:  copy .dev.vars.example to .dev.vars and fill in the key
 //
-// This is the initial LLM template: a health route plus a single bounded
-// OpenRouter endpoint. Split it into one endpoint per workflow (docs/08) as
-// the app grows; do not widen this endpoint to cover new tasks.
+// One route per workflow (docs/08-ai-workflows.md, ADR 0009). Prompts and
+// provider selection stay server-side (ADR 0003).
+
+import { chatCompletion, proxySpeech, transcribeAudio } from './openrouter.js';
+import { isPlainObject } from './validate.js';
+import { workflowBySlug } from './workflows.js';
 
 const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const DEFAULT_MODEL = 'openai/gpt-5.6-luna';
@@ -33,9 +36,105 @@ export default {
       return chat(request, env);
     }
 
-    return json({ error: 'not found' }, 404);
+    if (request.method === 'POST' && pathname.startsWith('/v1/wf/')) {
+      const workflow = workflowBySlug(pathname.slice('/v1/wf/'.length));
+      if (!workflow) return json({ error: 'not found', status: 404 }, 404);
+      return handleWorkflow(request, env, workflow);
+    }
+
+    return json({ error: 'not found', status: 404 }, 404);
   },
 };
+
+async function handleWorkflow(request, env, workflow) {
+  const declared = Number(request.headers.get('content-length'));
+  if (Number.isFinite(declared) && declared > workflow.maxBodyBytes) {
+    return tooLarge();
+  }
+
+  const raw = await request.text();
+  if (raw.length > workflow.maxBodyBytes) {
+    return tooLarge();
+  }
+
+  let body;
+  try {
+    body = JSON.parse(raw);
+  } catch {
+    return json({ error: 'invalid json', status: 400 }, 400);
+  }
+
+  if (!isPlainObject(body)) {
+    return json({ error: 'body must be a JSON object', status: 400 }, 400);
+  }
+
+  const parsed = workflow.validateInput(body);
+  if (parsed.error) {
+    const status = parsed.status ?? 400;
+    return json({ error: parsed.error, status }, status);
+  }
+
+  if (workflow.kind === 'tts') return handleSpeechSynthesis(env, workflow, parsed.value);
+  if (workflow.kind === 'stt') return handleTranscription(env, workflow, parsed.value);
+  return handleChat(env, workflow, parsed.value);
+}
+
+async function handleChat(env, workflow, value) {
+  const result = await chatCompletion(env, {
+    model: env[workflow.envModel] || workflow.model,
+    messages: workflow.buildMessages(value),
+    temperature: workflow.temperature,
+    maxTokens: workflow.maxTokens,
+    timeoutMs: workflow.timeoutMs,
+  });
+
+  if (!result.ok) return json({ error: result.error, status: result.status }, result.status);
+
+  let output;
+  try {
+    output = JSON.parse(result.content);
+  } catch {
+    return invalidUpstream();
+  }
+
+  const validated = workflow.validateOutput(output);
+  if (!validated) return invalidUpstream();
+  return json(validated);
+}
+
+async function handleTranscription(env, workflow, value) {
+  const result = await transcribeAudio(env, {
+    model: env[workflow.envModel] || workflow.model,
+    audio: value.audio[0],
+    timeoutMs: workflow.timeoutMs,
+  });
+
+  if (!result.ok) return json({ error: result.error, status: result.status }, result.status);
+
+  const output = { transcript: result.transcript };
+  if (result.confidence !== undefined) output.confidence = result.confidence;
+  if (result.matchedOptionId !== undefined) output.matchedOptionId = result.matchedOptionId;
+
+  const validated = workflow.validateOutput(output);
+  if (!validated) return invalidUpstream();
+  return json(validated);
+}
+
+async function handleSpeechSynthesis(env, workflow, value) {
+  const result = await proxySpeech(env, {
+    input: value.input,
+    voice: value.voice,
+    language: value.language,
+    timeoutMs: workflow.timeoutMs,
+  });
+
+  if (!result.ok) return json({ error: result.error, status: result.status }, result.status);
+
+  return new Response(result.body, {
+    status: 200,
+    headers: { ...CORS, 'Content-Type': result.contentType },
+  });
+}
 
 async function chat(request, env) {
   const raw = await request.text();
@@ -77,6 +176,14 @@ async function chat(request, env) {
 
   const data = await upstream.json();
   return json({ content: data.choices?.[0]?.message?.content ?? null });
+}
+
+function tooLarge() {
+  return json({ error: 'payload too large', status: 413 }, 413);
+}
+
+function invalidUpstream() {
+  return json({ error: 'invalid upstream response', status: 502 }, 502);
 }
 
 function json(payload, status = 200) {
