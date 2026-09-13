@@ -93,8 +93,11 @@ offline fallback otherwise.
   a friendly offline message.
 - [ ] **Endless practice:** runtime exercise generation (WF-8) with schema validation,
   deduplication, "extra" labeling, and offline fallback to bundled items.
-- [ ] **Daily LAMP field loop:** script rehearsal (WF-9), a field mission with five
+- [x] **Daily LAMP field loop:** script rehearsal (WF-9), a field mission with five
   simulated locals (WF-10 + WF-3), and debrief logging; bundled mission fallback offline.
+  Shipped as a feature destination (ADR 0020): three steps, five in-character locals with
+  voiced replies when TTS succeeds, per-local sessions and turns persisted, and debrief
+  entries logged as pinyin.
 - [ ] Latency budget met per `docs/01-requirements.md`.
 
 Exit criteria: a learner holds a short, natural spoken exchange with the coach and

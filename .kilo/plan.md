@@ -235,16 +235,30 @@ verification: diff confined to `:core:ui`, `:feature:raymond`, and `:app` (14 fi
 and `spotlessCheck` on the branch; the integrated `:app:assembleDebug test lint
 spotlessCheck` on merged master is green.
 
-3d-2 / 3d-3 (in flight 2026-09-14, parallel): with the feature-destination contract in
-place, the remaining M4 work splits into disjoint owners. 3d-2 is the daily LAMP field
-loop in `:feature:field` only (script rehearsal WF-9, a field mission with five simulated
-locals WF-10 + WF-3, debrief logging, bundled offline fallback). 3d-3 is endless practice
-(WF-8) in the `:app` engine plus any `:core:data` store it needs (schema validation,
-deduplication, extra labeling, offline fallback to bundled items). Worktrees `field loop`
-(`wt-1789334859286-30`, session `ses_f6354cd46ffeMBAyuSd81zx7PG`) and `endless practice`
-(`wt-1789334861522-31`, session `ses_f6354c295ffeZX9VVPojmas83V`), both based on `3245e03`.
-The two owners are disjoint (`:feature:field` against `:app`), so they run at the same
-time; master verification runs serially after each merge.
+3d-2 (merged 2026-09-14): the daily LAMP field loop in `:feature:field`. Worktree `field
+loop` (`wt-1789334859286-30`), branch `feature/field-loop`, session
+`ses_f6354cd46ffeMBAyuSd81zx7PG`, based on `3245e03` (rebased onto `981add9`); commit
+`146a072`; merged as `2b70f44`. Adds `FieldFeatureDestination` (FeatureDestination,
+ADR 0020) and a three-step loop: rehearsal (WF-9 or the bundled fallback mission, with
+reference playback via WF-3 when it succeeds), mission (five locals, manual and VAD
+auto-stop recording, WF-10 in-character replies, per-local sessions and turns persisted,
+WF-3 voiced replies with a text fallback), and debrief (pinyin entries persisted through
+`DebriefEntryRepository`, finish requires at least one entry). Independent verification:
+diff confined to `:feature:field` (10 files, +1719); no hanzi;
+`:feature:field:testDebugUnitTest` 7/7, `:feature:field:lintDebug`, `:app:assembleDebug`,
+and `spotlessCheck` green on the branch; the integrated run on merged master follows.
+
+Field-loop open questions (non-blocking): rehearsal omits WF-1 speak-back feedback (the
+brief scoped the loop to script plus reference playback); a WF-10 failure shows the offline
+note with retry rather than scripted local lines; debrief entries are keyed by mission id
+because mission sessions are per-local. These are assessed during the wave-5 consistency
+pass.
+
+3d-3 (in flight 2026-09-14): endless practice WF-8 in `:app`. Worktree `endless practice`
+(`wt-1789334861522-31`), branch `app/endless-practice`, session
+`ses_f6354c295ffeZX9VVPojmas83V`. Its Step 0 check raced the parallel dispatch commits and
+it began on `e6c4c14`; the conductor sent a base-sync correction, it fast-forwarded to
+`981add9`, and it re-read the engine before writing. Owns `:app` only.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
