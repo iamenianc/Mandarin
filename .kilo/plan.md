@@ -240,7 +240,11 @@ place, the remaining M4 work splits into disjoint owners. 3d-2 is the daily LAMP
 loop in `:feature:field` only (script rehearsal WF-9, a field mission with five simulated
 locals WF-10 + WF-3, debrief logging, bundled offline fallback). 3d-3 is endless practice
 (WF-8) in the `:app` engine plus any `:core:data` store it needs (schema validation,
-deduplication, extra labeling, offline fallback to bundled items).
+deduplication, extra labeling, offline fallback to bundled items). Worktrees `field loop`
+(`wt-1789334859286-30`, session `ses_f6354cd46ffeMBAyuSd81zx7PG`) and `endless practice`
+(`wt-1789334861522-31`, session `ses_f6354c295ffeZX9VVPojmas83V`), both based on `3245e03`.
+The two owners are disjoint (`:feature:field` against `:app`), so they run at the same
+time; master verification runs serially after each merge.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
