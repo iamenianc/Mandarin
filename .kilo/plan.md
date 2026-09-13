@@ -116,8 +116,9 @@ therefore sequenced as:
 - 3b remaining M2 modules: vocabulary, listening (tap-only offline), and fundamentals
   each map their bundled corpus to specs and modes, in parallel worktrees (distinct
   module directories, no shared files).
-- 3c AI-supported drills: speech with WF-1 feedback and measured tone evidence,
-  listening with WF-4 spoken answers and the local matcher, and WF-8 endless practice.
+- 3c AI-supported drills: 3c-1 speech speak-and-repeat with WF-1 feedback and an
+  evidence seam; 3c-1b reference-feature precompute for measured tone evidence; 3c-2
+  listening WF-4 spoken answers with the local matcher and WF-8 endless practice.
 - 3d M4: field loop (WF-9, WF-10, WF-3) and Raymond (WF-7).
 
 Each sub-wave is fanned out only after the previous one merges, because 3a touches
@@ -148,6 +149,21 @@ hung Java processes were killed, and the conductor finished the slice: `spotless
 scoped test (`:feature:fundamentals:testDebugUnitTest` 3/3), `:app:assembleDebug`, and
 `spotlessCheck`, all with `--no-daemon`, then committed and merged. The slice's files were
 complete on disk; only verification and commit were lost.
+
+3c refinement (2026-09-13): speech needs WF-1 feedback and grounded tone evidence, but
+reference clips publish as OGG (ADR 0006) and reference features with syllable boundaries
+are not precomputed, so grounded evidence cannot be computed at runtime from the bundled
+clips. 3c is sequenced as: 3c-1 speech speak-and-repeat with WF-1 feedback over the
+reference and attempt clips, with an `AttemptEvidenceSource` seam that returns null until
+reference features exist; 3c-1b precompute reference features and syllable boundaries at
+content-build time and wire the seam; 3c-2 listening WF-4 spoken answers with the local
+matcher and WF-8 endless practice. Only one 3c slice runs at a time because all three
+extend the `:app` engine.
+
+3c-1 (in flight 2026-09-13): worktree `speech wf1` (`wt-1789318537609-25`), branch
+`app/speech-feedback`, session `ses_f644ddaf7ffeeKNk1Vgm51u6an`, based on `1f640c0`.
+Owns `:app`, `:feature:speech`, and the one `DrillMode.SPEAK_AND_REPEAT_FEEDBACK` value in
+`:core:model`.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
