@@ -55,32 +55,44 @@ orchestrator after merges.
 | 4 | Progress/reporting, consent + deletion, accessibility, release config | wave 3 merged |
 | 5 | Full verification: build, lint, tests, release AAB; docs consistency pass | wave 4 merged |
 
-Wave 1 in flight:
+Wave 1 (merged): Android scaffold; Worker WF endpoints; content corpus; Kokoro pipeline.
+All four slices were reviewed, verified on their branches, and merged; master carries the
+scaffold (M1 core), `api/` with 31/31 tests, the validated content corpus, and the Kokoro
+generator with `--selftest` 15/15. Details are in the master notes below.
 
-1. `scaffold/android-project` - Gradle multi-module scaffold per `docs/02-architecture.md`;
-   all `:core:*` and `:feature:*` modules pre-registered with compiling stubs;
-   `:core:model` contracts per the architecture doc; runnable Compose shell listing
-   registered modules (FR-22); CI workflow per `docs/06-pipeline.md`; verified
-   `build`/`lint`/`test` commands added to `AGENTS.md` (the one exception to
-   orchestrator-owned files, for this session only). Status: takeover session
-   `ses_f65676c3cffecVapS7gPS4c3a5` (worktree `scaffold-android-project-fix`) cherry-picked
-   the checkpoint as `aa36a28` and is actively fixing the build (wrapper written 21:48).
-   The original session in worktree `scaffold-android-project-18774aeda770df09`
-   (`e841822`) is wedged and is not managed by this workspace, so it cannot be stopped or
-   prompted from here; it needs cleanup in the Agent Manager UI, and its worktree is
-   superseded by the takeover.
-2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
-   and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
-   Reviewed: compliant; 31/31 tests pass. Merged in 6b8d3ec after the WF-7 audio-only fix
-   and tone-number (1-5, ADR 0012) validation landed.
-3. `assets/content-corpus` - curated bundled `ContentItem` corpus for the five modules plus
-   schema and an offline validator, under `assets/content/**`. Merged: `node
-   assets/content/validate.mjs` passes (tones 10 lessons/30 items, fundamentals 11/53,
-   vocabulary 14/103, listening 4/13, speech 4/9); no Han script; all 26 files under
-   `assets/content/`; author review of pinyin and tone choices remains open.
-4. `assets/kokoro-pipeline` - build-time Kokoro reference-audio generation with offline
-   `--dry-run`/`--selftest`, under `assets/audio/**` (ADR 0006). Merged: `--selftest`
-   passes 15/15 and `--dry-run` plans the fixture clips; generated audio stays ignored.
+Wave 2 in flight (started 2026-09-13, Agent Manager worktrees; branch seeds):
+
+1. `core/data` - Room schema, DataStore preferences, and a bundled-corpus repository that
+   reads the APK asset convention `content/**` (JSON) and resolves `audioAssetRef` under
+   `audio/**`; JVM/SQLite tests.
+2. `core/audio` - Media3 playback wrapper, AudioRecord capture, a swappable end-of-speech
+   VAD hook, and in-repo WAV helpers; JVM tests.
+3. `core/ai` - typed WF-1..WF-5 and WF-7..WF-10 interfaces plus the Ktor Worker client
+   (ktor-client-mock tests). Closes the M1 item: one endpoint per workflow (ADR 0009) and
+   the optional WF-1 evidence field (ADR 0014). Prompts stay server-side.
+4. `core/assessment` - deterministic F0/voicing/loudness extraction, DTW alignment,
+   speaker-relative normalization, tone comparison, and a named-observation `ToneEvidence`
+   model; the extractor choice remains gated by the M3 spike (ADR 0014).
+5. `core/ui` - design system, `PinyinText` (tone numbers, never diacritics), optional
+   Hangul aid line, audio drill controls, accessibility semantics.
+6. `pipeline/content-assets` - Gradle tasks that validate the corpus and bundle
+   `assets/content/**` and the reference/drill/sample audio into APK assets at build time
+   (no committed copies).
+
+Wave 2.5 (planned): M1 audio demo in `:app` - microphone permission flow, reference clip
+playback, and record/playback wiring against the merged core modules; satisfies the M1
+exit criteria. Then wave 3 features.
+
+Session IDs and worktree names are recorded in the Agent Manager overview; each brief
+requires a completion report as a peer reply, with verification run independently before
+merge.
+
+Wave 2 session IDs: `core/data` `ses_f655089b9ffeR7ZeraemxcxTRQ`; `core/audio`
+`ses_f65508453ffedHgaory3GwMfiK`; `core/ai` `ses_f65507b60fferrHEX5IF5TMeBQ`;
+`core/assessment` `ses_f655073d4ffeLsHBhFZK7aHctS`; `core/ui`
+`ses_f65506bdaffezlnsIfxZ1LDyg0`; `pipeline/content-assets`
+`ses_f655060bfffegGactmwp3viDbn`. Checkpoints are required before risky fixes; the
+orchestrator verifies each branch's diff and checks before merging, one branch at a time.
 
 Scope change (2026-09-13): the author dropped hands-free and eyes-free session modes.
 Recorded as ADR 0015; FR-13/FR-14 marked Won't (v1); the vision criterion, both roadmap
@@ -93,8 +105,20 @@ reviewed and is valid. The Worker slice is merged; `docs/02-architecture.md` now
 `api/` tree is identical to the reviewed head `b49f8f4`, and `npm test` passes 31/31.
 Kokoro is merged; `--selftest` passes 15/15 on master. The merged wave-1 worktrees
 (worker, content corpus, Kokoro) and the stale empty `assets-*` worktrees were stopped and
-removed per the conductor hygiene rule. The unmerged `assets-folder` worktree is kept for
-the author's decision; the wedged original scaffold worktree needs UI cleanup.
+removed per the conductor hygiene rule. No `assets-folder` worktree exists on disk or in
+the Agent Manager overview at takeover, so there is nothing to keep for the author.
+
+Formatting config closed on master as `f08f8f1`: Spotless + ktlint 1.4.1 for Kotlin and
+Gradle scripts, with ktlint's `function-naming` rule ignoring `@Composable` names
+(ADR 0017); `spotlessCheck` and the Worker tests are wired into CI; `AGENTS.md` records
+`spotlessCheck`/`spotlessApply`; the version catalog gained the wave-2 dependency set and
+the serialization plugin. Orchestrator verification on master: `.\gradlew.bat
+:app:assembleDebug test lint spotlessCheck` ended BUILD SUCCESSFUL with the debug APK
+present; `spotlessApply` changed import order only. The superseded straggler worktree
+`scaffold-android-project-18774aeda770df09` held no unique content (on disk only
+lint-cache jars; its branch's only delta was a stale `eyesFreeMode` preference superseded
+by ADR 0015) and was removed; its branch `scaffold/android-project` is kept only as an
+inert ref.
 
 Session conduct (conductor.md, updated in 203eab6): waits are capped at 60 seconds and the
 loop ends its turn for peer replies; sessions are watched with evidence (activity, git
