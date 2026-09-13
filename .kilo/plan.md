@@ -60,7 +60,16 @@ All four slices were reviewed, verified on their branches, and merged; master ca
 scaffold (M1 core), `api/` with 31/31 tests, the validated content corpus, and the Kokoro
 generator with `--selftest` 15/15. Details are in the master notes below.
 
-Wave 2 in flight (started 2026-09-13, Agent Manager worktrees; branch seeds):
+Wave 2 (merged 2026-09-13): all six Agent Manager worktree slices below were reviewed,
+merged to `master` with `--no-ff`, and verified together. Merge commits: `cf61a11`
+(data), `9b08057` (audio), `6bd77fb` (ai), `d958254` (assessment), `0ceafec` (ui),
+`f601e69` (content assets). The first integrated run exposed one task-dependency gap:
+`syncContentAssets` fed `app/build/generated/contentAssets` to the app lint tasks without
+a declared dependency; `b36ca1c` adds it (case-insensitive `lint` task match). The
+corrected `.\gradlew.bat :app:assembleDebug test lint spotlessCheck` run on the merged tree
+ended BUILD SUCCESSFUL, so `master` is green and the debug APK is produced.
+
+The slice list (branch seeds, kept for the record):
 
 1. `core/data` - Room schema, DataStore preferences, and a bundled-corpus repository that
    reads the APK asset convention `content/**` (JSON) and resolves `audioAssetRef` under
