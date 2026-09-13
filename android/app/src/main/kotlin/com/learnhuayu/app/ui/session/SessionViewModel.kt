@@ -21,6 +21,7 @@ import com.learnhuayu.core.audio.playback.AudioPlayer
 import com.learnhuayu.core.audio.playback.AudioSource
 import com.learnhuayu.core.audio.playback.PlaybackState
 import com.learnhuayu.core.audio.playback.PlaybackStatus
+import com.learnhuayu.core.audio.vad.VadEvent
 import com.learnhuayu.core.audio.wav.WavCodec
 import com.learnhuayu.core.data.content.BundledContentRepository
 import com.learnhuayu.core.data.prefs.PreferencesRepository
@@ -36,6 +37,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.Clock
@@ -173,6 +175,11 @@ class SessionViewModel @Inject constructor(
         }
         viewModelScope.launch {
             audioRecorder.level.collect { level -> _uiState.update { it.copy(level = level) } }
+        }
+        viewModelScope.launch {
+            audioRecorder.vadEvents
+                .filter { it is VadEvent.SpeechEnded }
+                .collect { onSpeechEnded() }
         }
         viewModelScope.launch {
             audioPlayer.state.collect { state -> onPlaybackState(state) }
@@ -586,6 +593,29 @@ class SessionViewModel @Inject constructor(
             val state = _uiState.value
             if (state.isSpokenAnswerMode && state.attemptAudioRef != null) onAnswerClick()
         }
+    }
+
+    /**
+     * Auto-stops a speaking drill when the recorder signals end of speech. The recorder
+     * only signals; the stop policy lives here. The signal is applied at most once: a
+     * signal that arrives while no recording is active, while a previous stop is still
+     * running, or in a mode without a spoken attempt is ignored. [stopRecording] is the
+     * same path the manual stop button uses, so both behave identically.
+     */
+    private fun onSpeechEnded() {
+        val state = _uiState.value
+        if (state.processing || !state.isRecording) return
+        if (!supportsVoiceAutoStop(state.mode)) return
+        stopRecording()
+    }
+
+    private fun supportsVoiceAutoStop(mode: DrillMode?): Boolean = when (mode) {
+        DrillMode.SPEAK_AND_REPEAT,
+        DrillMode.SPEAK_AND_REPEAT_FEEDBACK,
+        DrillMode.LISTEN_AND_ANSWER_SPOKEN,
+        -> true
+
+        else -> false
     }
 
     private fun onRecorderState(state: RecorderState) {

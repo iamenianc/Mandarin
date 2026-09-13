@@ -2,6 +2,7 @@ package com.learnhuayu.core.audio.capture
 
 import app.cash.turbine.test
 import com.google.common.truth.Truth.assertThat
+import com.learnhuayu.core.audio.vad.VadEvent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.runTest
@@ -146,5 +147,75 @@ class AudioRecordRecorderTest {
         assertThat(device.released).isTrue()
         assertThat(recorder.state.value).isEqualTo(RecorderState.Idle)
         assertThat(recorder.level.value).isEqualTo(0f)
+    }
+
+    @Test
+    fun `emits the detector's SpeechEnded event while capturing`() = runTest {
+        val device = FakePcmCaptureDevice(sampleRateHz = 1_000, bufferSizeInShorts = 4)
+        device.enqueue(ShortArray(4))
+        val detector = FakeEndOfSpeechDetector(framesPerUtterance = 1, speechEndedAtMs = 120L)
+        val recorder = AudioRecordRecorder(device, UnconfinedTestDispatcher(testScheduler), detector)
+        try {
+            recorder.vadEvents.test {
+                recorder.start()
+
+                assertThat(awaitItem()).isEqualTo(VadEvent.SpeechEnded(120L))
+                assertThat(detector.acceptedFrames).isEqualTo(1)
+                cancelAndIgnoreRemainingEvents()
+            }
+        } finally {
+            recorder.release()
+        }
+    }
+
+    @Test
+    fun `resets the detector after SpeechEnded so the next utterance is tracked independently`() = runTest {
+        val device = FakePcmCaptureDevice(sampleRateHz = 1_000, bufferSizeInShorts = 4)
+        repeat(4) { device.enqueue(ShortArray(4)) }
+        val detector = FakeEndOfSpeechDetector(framesPerUtterance = 2, speechEndedAtMs = 300L)
+        val recorder = AudioRecordRecorder(device, UnconfinedTestDispatcher(testScheduler), detector)
+        try {
+            recorder.vadEvents.test {
+                recorder.start()
+
+                assertThat(awaitItem()).isEqualTo(VadEvent.SpeechEnded(300L))
+                assertThat(awaitItem()).isEqualTo(VadEvent.SpeechEnded(300L))
+                assertThat(detector.resetCount).isEqualTo(3)
+                cancelAndIgnoreRemainingEvents()
+            }
+        } finally {
+            recorder.release()
+        }
+    }
+
+    @Test
+    fun `resets the detector each time a recording starts`() = runTest {
+        val device = FakePcmCaptureDevice()
+        val detector = FakeEndOfSpeechDetector()
+        val recorder = AudioRecordRecorder(device, UnconfinedTestDispatcher(testScheduler), detector)
+        try {
+            recorder.start()
+
+            assertThat(detector.resetCount).isEqualTo(1)
+        } finally {
+            recorder.release()
+        }
+    }
+
+    @Test
+    fun `a recorder without a detector never signals vad events`() = runTest {
+        val device = FakePcmCaptureDevice(sampleRateHz = 1_000, bufferSizeInShorts = 4)
+        device.enqueue(ShortArray(4))
+        val recorder = AudioRecordRecorder(device, UnconfinedTestDispatcher(testScheduler))
+        try {
+            recorder.vadEvents.test {
+                recorder.start()
+
+                expectNoEvents()
+                cancelAndIgnoreRemainingEvents()
+            }
+        } finally {
+            recorder.release()
+        }
     }
 }
