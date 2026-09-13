@@ -518,7 +518,7 @@ def _load_kokoro_pipeline(voice: str, checkpoint: str):
     except ImportError as exc:
         raise PipelineUnavailable(
             "Kokoro is not installed. Install the build-time dependencies with "
-            "`pip install kokoro misaki[zh]` (see pipeline/README.md)."
+            '`pip install kokoro "misaki[zh]"` (see pipeline/README.md).'
         ) from exc
 
     repo = checkpoint_repo(checkpoint)

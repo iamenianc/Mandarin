@@ -31,7 +31,7 @@ clips with a pinned Kokoro Mandarin voice. Kokoro is imported lazily, so `--dry-
 
 - Python 3.12 (the version on the build host).
 - `pip install pyyaml` - manifest reading and writing.
-- `pip install kokoro misaki[zh]` - Kokoro-82M and the Mandarin G2P. This pulls the
+- `pip install kokoro "misaki[zh]"` - Kokoro-82M and the Mandarin G2P. This pulls the
   PyTorch runtime and downloads `hexgrad/Kokoro-82M` on first use. Run it in a virtual
   environment if the host Python should stay clean.
 
