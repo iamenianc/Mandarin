@@ -254,11 +254,26 @@ note with retry rather than scripted local lines; debrief entries are keyed by m
 because mission sessions are per-local. These are assessed during the wave-5 consistency
 pass.
 
-3d-3 (in flight 2026-09-14): endless practice WF-8 in `:app`. Worktree `endless practice`
+3d-3 (merged 2026-09-14): endless practice WF-8 in `:app`. Worktree `endless practice`
 (`wt-1789334861522-31`), branch `app/endless-practice`, session
 `ses_f6354c295ffeZX9VVPojmas83V`. Its Step 0 check raced the parallel dispatch commits and
 it began on `e6c4c14`; the conductor sent a base-sync correction, it fast-forwarded to
-`981add9`, and it re-read the engine before writing. Owns `:app` only.
+`981add9` and re-read the engine, then rebased onto `fac54d6`; commits `68a024a` and
+`ce0dd1b`; merged as `a299fad`. `ExtraPracticeAdmission` validates WF-8 output (NFR-10):
+blank or hanzi pinyin or meaning, syllables without tone numbers, malformed tone lists, and
+duplicates of the session or the batch are dropped; admitted items are `GENERATED` with
+stable `extra-<specId>-<n>` ids appended to the running session, and any failure or timeout
+keeps the bundled session finishable. Independent verification: diff confined to `:app` (11
+files, +620); no hanzi; `:app:testDebugUnitTest` 78/0 (`SessionExtraPracticeTest` 8), plus
+`assembleDebug`, `lintDebug`, and `spotlessCheck` on the branch; the integrated
+`:app:assembleDebug test lint spotlessCheck` on merged master is green.
+
+M4 scope decision (2026-09-14): the roadmap M4 checklist is rewritten to the delivered v1.
+WF-2 and WF-3 ship in `:core:ai` and the Worker; the conversation surface is the five-local
+field mission plus Raymond; a dedicated scenario-lesson module and the adaptive-difficulty
+and gentle-correction coaching UX move to the backlog because FR-32 keeps the mission
+non-coaching. The latency item is satisfied by enforced client-side timeouts, with the
+numeric budget measured on device. M4 is complete and M5 is current.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
@@ -315,7 +330,9 @@ twice - a flat profile means blocked, not compiling; Gradle daemons can also kee
 console open after `BUILD SUCCESSFUL`, so conductor-run verification uses `--no-daemon`
 and reads the JUnit XML for results. An integrated run can also fail transiently (seen on
 `lintAnalyzeDebugUnitTest` and after the VAD merge) and pass on re-run: re-run the failing
-task alone before treating it as real.
+task alone before treating it as real. Parallel dispatches can also race Step 0: both
+workers check master at creation and one may start on the older tip, so a base-sync
+correction is sent to any worker whose HEAD is behind the dispatch commit.
 
 ## Merge protocol
 

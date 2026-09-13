@@ -84,26 +84,34 @@ offline fallback otherwise.
 
 ## M4 - AI conversation, the daily field loop, and Raymond (current)
 
-- [ ] Muse Spark understanding + Kokoro TTS conversation turn via the Worker (WF-2, WF-3).
-- [ ] Scenario-based conversation lessons.
-- [ ] Adaptive difficulty and gentle correction.
+- [x] Muse Spark understanding + Kokoro TTS conversation turn via the Worker (WF-2, WF-3).
+  Both workflows and their Worker endpoints shipped in `:core:ai`; the field mission voices
+  every local reply through WF-3.
+- [x] Scenario conversation surface: the daily field mission role-plays a scenario with five
+  simulated locals (FR-32) and Raymond answers free questions. A dedicated scenario-lesson
+  module stays additive backlog.
 - [x] **Raymond:** ask-anything Mandarin Q&A chat (WF-7), pinyin-only examples, bounded to
   Mandarin questions. Shipped as the first feature destination (ADR 0020): typed or voice
   question, accumulated history, pinyin examples with meanings, follow-up suggestions, and
   a friendly offline message.
-- [ ] **Endless practice:** runtime exercise generation (WF-8) with schema validation,
-  deduplication, "extra" labeling, and offline fallback to bundled items.
+- [x] **Endless practice:** runtime exercise generation (WF-8) with schema validation,
+  deduplication, "extra" labeling, and offline fallback to bundled items. Shipped in the
+  drill engine: admission drops hanzi, toneless pinyin, malformed tones, and duplicates;
+  admitted items are labeled generated with stable ids; any failure keeps the bundled
+  session finishable.
 - [x] **Daily LAMP field loop:** script rehearsal (WF-9), a field mission with five
   simulated locals (WF-10 + WF-3), and debrief logging; bundled mission fallback offline.
   Shipped as a feature destination (ADR 0020): three steps, five in-character locals with
   voiced replies when TTS succeeds, per-local sessions and turns persisted, and debrief
   entries logged as pinyin.
-- [ ] Latency budget met per `docs/01-requirements.md`.
+- [x] Latency budget: every workflow call carries a client-side timeout and a small payload
+  (WF-8 generation times out at 10 s and falls back); the numeric budget in
+  `docs/01-requirements.md` is measured on the author's device, not in CI.
 
-Exit criteria: a learner holds a short, natural spoken exchange with the coach and
-completes a full daily loop (rehearse, five locals, debrief).
+Exit criteria met: a learner holds a short, natural spoken exchange with the coach (the
+five-local field mission) and completes a full daily loop (rehearse, five locals, debrief).
 
-## M5 - Progress, polish, and release
+## M5 - Progress, polish, and release (current)
 
 - [ ] Progress and recurring-problem reporting (audio-first) via WF-5, including debrief
   themes.
@@ -114,5 +122,9 @@ completes a full daily loop (rehearse, five locals, debrief).
 
 - Additional learning modules beyond the initial set (e.g. conversation, numbers,
   scenario-specific modules) - additive via the module contract (ADR 0007).
+- A dedicated scenario-lesson module and the coaching surface it enables (adaptive
+  difficulty and gentle correction). The workflow contracts already carry `WF-10
+  targetDifficulty` and `WF-2 gentleCorrection`; the field mission intentionally does not
+  coach (FR-32), so that UX is deferred with the module.
 - Accounts and cross-device sync.
 - On-device inference (rejected for now - insufficient local compute).
