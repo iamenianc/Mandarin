@@ -1,0 +1,182 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "Machine-readable licence inventory. Mirrors attribution.md; update both when a dependency is added or pinned. Option dependencies are listed but not shipped unless adopted.",
+  "canonicalTexts": [
+    {
+      "id": "apache-2.0",
+      "file": "licenses/apache-2.0.txt",
+      "source": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+      "id": "audeering-research",
+      "file": null,
+      "status": "to add when openSMILE is adopted",
+      "source": "audEERING openSMILE licence page"
+    },
+    {
+      "id": "gpl",
+      "file": null,
+      "status": "to add only if TarsosDSP is adopted",
+      "source": "GNU General Public License"
+    }
+  ],
+  "components": [
+    {
+      "name": "AndroidX / Jetpack Compose",
+      "use": "UI, lifecycle, navigation",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "Media3 / ExoPlayer",
+      "use": "Audio playback",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "Room",
+      "use": "Local database",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "DataStore",
+      "use": "Preferences",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "Hilt / Dagger",
+      "use": "Dependency injection",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "Kotlin, kotlinx-coroutines, kotlinx-serialization",
+      "use": "Language and runtime",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "Ktor or OkHttp",
+      "use": "HTTP and WebSocket",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": true,
+      "licence": "Apache-2.0",
+      "licenceVerified": false,
+      "canonicalTextId": "apache-2.0",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "Kokoro-82M reference clips",
+      "use": "Bundled reference audio",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": true,
+      "canonicalTextId": "apache-2.0",
+      "source": "ADR 0006"
+    },
+    {
+      "name": "openSMILE",
+      "use": "Tone evidence extraction",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": true,
+      "licence": "audEERING Research License",
+      "licenceVerified": true,
+      "canonicalTextId": "audeering-research",
+      "source": "docs/09-opensmile-acoustic-features.md",
+      "notes": "Private, non-commercial use only; blocks public or paid distribution."
+    },
+    {
+      "name": "TarsosDSP",
+      "use": "Pitch tracking",
+      "shippedInApk": true,
+      "buildTimeOnly": false,
+      "option": true,
+      "licence": "GPL-family",
+      "licenceVerified": false,
+      "canonicalTextId": "gpl",
+      "source": "docs/10-libraries-and-dependencies.md",
+      "notes": "Verify before any public distribution."
+    },
+    {
+      "name": "Kokoro-82M and misaki[zh]",
+      "use": "Reference-audio generation",
+      "shippedInApk": false,
+      "buildTimeOnly": true,
+      "option": false,
+      "licence": "Apache-2.0",
+      "licenceVerified": true,
+      "canonicalTextId": "apache-2.0",
+      "source": "ADR 0006"
+    },
+    {
+      "name": "pypinyin, cn2an, jieba",
+      "use": "G2P and number normalization for synthesis",
+      "shippedInApk": false,
+      "buildTimeOnly": true,
+      "option": false,
+      "licence": "to verify",
+      "licenceVerified": false,
+      "canonicalTextId": null,
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "soundfile, numpy, librosa",
+      "use": "Audio I/O and analysis",
+      "shippedInApk": false,
+      "buildTimeOnly": true,
+      "option": false,
+      "licence": "to verify",
+      "licenceVerified": false,
+      "canonicalTextId": null,
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "name": "ffmpeg",
+      "use": "Format conversion",
+      "shippedInApk": false,
+      "buildTimeOnly": true,
+      "option": true,
+      "licence": "to verify",
+      "licenceVerified": false,
+      "canonicalTextId": null,
+      "source": "docs/10-libraries-and-dependencies.md"
+    }
+  ]
+}
