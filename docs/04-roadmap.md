@@ -20,22 +20,22 @@ listening and speaking, not on reading or writing.
 
 Exit criteria: requirements and architecture are stable enough to scaffold code.
 
-## M1 - Project scaffold and audio foundation (current)
+## M1 - Project scaffold and audio foundation (complete)
 
 - [x] Create Android project (Kotlin, Compose, Gradle version catalog).
 - [x] Set up multi-module layout: `:app`, `:core:*`, `:feature:*` (ADR 0007).
 - [x] Define the `LearningModule` contract, `ContentItem`, and DI multibinding registry.
-- [ ] Define the `:core:ai` workflow interfaces and one Worker endpoint per workflow
+- [x] Define the `:core:ai` workflow interfaces and one Worker endpoint per workflow
   (ADR 0009); the WF-1 request model includes the optional evidence field (ADR 0014).
-- [ ] Microphone permission flow and audio capture/playback plumbing.
+- [x] Microphone permission flow and audio capture/playback plumbing.
 - [x] CI and lint/format config.
 - [x] Add `build` / `lint` / `test` commands to `AGENTS.md`.
-- [ ] Bundled reference clips and a Room schema.
+- [x] Bundled reference clips and a Room schema.
 
-Exit criteria: app builds, lists registered modules, plays a model clip, records the mic,
-and plays it back.
+Exit criteria met: the app builds, lists registered modules, plays a model clip, records
+the mic, and plays it back.
 
-## M2 - Tones, listening, vocabulary, and fundamentals modules
+## M2 - Tones, listening, vocabulary, and fundamentals modules (current)
 
 - [ ] Shared lesson/practice drill engine driven by `ContentItem`.
 - [ ] **Tones module:** the four tones and the neutral tone, contours, tone pairs, and the

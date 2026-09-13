@@ -91,12 +91,15 @@ The slice list (branch seeds, kept for the record):
    `assets/content/**` and the reference/drill/sample audio into APK assets at build time
    (no committed copies).
 
-Wave 2.5 (in flight 2026-09-13): M1 audio demo in `:app` - microphone permission
-flow, reference clip playback, and record/playback wiring against the merged core
-modules; satisfies the M1 exit criteria. Worktree `app audio demo`
-(`wt-1789304417717-20`), branch `app/audio-demo`, session
-`ses_f65255017ffeUGzYGhOvT0d4UE`; the brief requires a completion report as a peer
-reply, independently verified before merge.
+Wave 2.5 (merged 2026-09-13): M1 audio demo in `:app` - microphone permission flow,
+reference clip playback, and record/playback wiring against the merged core modules.
+Worktree `app audio demo` (`wt-1789304417717-20`), branch `app/audio-demo`, session
+`ses_f65255017ffeUGzYghOvT0d4UE`; merged as `e08111f`. Independent verification: the
+diff is confined to `android/app/**`, no hanzi, `.\gradlew.bat :app:assembleDebug test
+lint spotlessCheck` is green on the merged tree with 17/17 app unit tests, and the
+debug APK packages `assets/audio/reference/tones/tone1-contour.wav`. The roadmap marks
+M1 complete and M2 current.
+
 
 Wave 3 refinement (2026-09-13): wave 2 left no shared drill engine and no path from a
 module's lesson/practice to a runnable session; `LearningModule.lessons()/practices()`
@@ -181,6 +184,10 @@ After each wave:
   follow `docs/08-ai-workflows.md` and record any contract gap in `api/README.md`.
 - M3 extractor choice is gated by the ADR 0014 spike; the pipeline ships with the
   pure-Kotlin default and the gate documented.
+- Wave 2.5 tests cover the audio-check wiring at the JVM level; real microphone capture
+  and ExoPlayer asset/local playback have not been exercised on a device or emulator.
+  The first on-device run of the audio check is the remaining M1 risk and is folded into
+  the wave 5 verification pass.
 
 ## Validation of this loop
 
