@@ -8,7 +8,7 @@ The app bundles these assets so listening and speaking practice works offline.
 
 | Path | Purpose |
 | --- | --- |
-| `examples/` | Example phrases, dialogues, and usage examples |
+| `examples/` | Worked phrase sets, dialogues, and sound-system examples (see `examples/index.md`) |
 | `samples/` | Small sample materials that demonstrate the expected file formats |
 | `lessons/` | Lesson materials |
 | `knowledge/` | Reference knowledge: grammar, vocabulary, cultural notes |
@@ -23,4 +23,5 @@ conventions; follow the folder README when adding assets.
 - File names are lowercase kebab-case.
 - Mandarin text always appears with Hanyu Pinyin, with tones written as numbers
   (ADR 0011, ADR 0012); no asset contains hanzi (ADR 0002).
+- Tone numbers record the spoken surface tone, including common tone sandhi.
 - A text asset and its companion audio share the same file stem.
