@@ -1,8 +1,10 @@
 package com.learnhuayu.app.di
 
+import com.learnhuayu.app.audio.AndroidReferencePcmDecoder
+import com.learnhuayu.app.audio.ReferencePcmDecoder
+import com.learnhuayu.app.ui.session.AssessmentAttemptEvidenceSource
 import com.learnhuayu.app.ui.session.AssetReferenceClipReader
 import com.learnhuayu.app.ui.session.AttemptEvidenceSource
-import com.learnhuayu.app.ui.session.NoOpAttemptEvidenceSource
 import com.learnhuayu.app.ui.session.ReferenceClipReader
 import dagger.Module
 import dagger.Provides
@@ -25,5 +27,9 @@ internal object AppModule {
 
     @Provides
     @Singleton
-    fun provideAttemptEvidenceSource(source: NoOpAttemptEvidenceSource): AttemptEvidenceSource = source
+    fun provideReferencePcmDecoder(decoder: AndroidReferencePcmDecoder): ReferencePcmDecoder = decoder
+
+    @Provides
+    @Singleton
+    fun provideAttemptEvidenceSource(source: AssessmentAttemptEvidenceSource): AttemptEvidenceSource = source
 }
