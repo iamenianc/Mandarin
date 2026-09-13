@@ -1,0 +1,6 @@
+# Fixed app sample clips.
+# A single entry is described by ../schema/track.schema.json.
+version: 1
+category: sample
+module: app
+tracks: []
