@@ -1,6 +1,7 @@
 package com.learnhuayu.app.audio
 
 import android.content.Context
+import com.learnhuayu.core.data.recordings.LocalRecordings
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.util.concurrent.atomic.AtomicLong
@@ -29,7 +30,7 @@ class CacheRecordingStore @Inject constructor(
     override fun newRecordingFile(label: String): File {
         val prefix = label.takeIf { it.isNotBlank() } ?: "recording"
         val unique = "${System.currentTimeMillis()}-${sequence.incrementAndGet()}"
-        val file = File(context.cacheDir, "recordings/$prefix-$unique.wav")
+        val file = LocalRecordings.file(context.cacheDir, "$prefix-$unique.wav")
         file.parentFile?.mkdirs()
         return file
     }

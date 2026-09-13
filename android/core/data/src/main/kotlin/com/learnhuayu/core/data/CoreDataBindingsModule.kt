@@ -4,6 +4,8 @@ import com.learnhuayu.core.data.content.AssetManagerContentSource
 import com.learnhuayu.core.data.content.BundledContentRepository
 import com.learnhuayu.core.data.content.ContentSource
 import com.learnhuayu.core.data.content.DefaultBundledContentRepository
+import com.learnhuayu.core.data.deletion.DataDeletionService
+import com.learnhuayu.core.data.deletion.DefaultDataDeletionService
 import com.learnhuayu.core.data.prefs.BundledPreferencesDefaultsSource
 import com.learnhuayu.core.data.prefs.DataStorePreferencesRepository
 import com.learnhuayu.core.data.prefs.PreferencesDefaultsSource
@@ -47,6 +49,9 @@ internal abstract class CoreDataBindingsModule {
 
     @Binds
     abstract fun bindPreferencesRepository(impl: DataStorePreferencesRepository): PreferencesRepository
+
+    @Binds
+    abstract fun bindDataDeletionService(impl: DefaultDataDeletionService): DataDeletionService
 
     @Binds
     abstract fun bindAttemptRepository(impl: RoomAttemptRepository): AttemptRepository
