@@ -32,6 +32,9 @@ describes its scope and sequence.
 | `beginner/speech/` | Say-the-tone and say-the-word |
 | `tourist/vocabulary/` | Food, directions, transport, hotel, shopping |
 | `survival/vocabulary/` | Emergencies and repair phrases |
+| `beginner/tones/diagrams/` | Tone contour diagram |
+| `beginner/fundamentals/diagrams/` | Syllable anatomy diagram |
+| `lessons.index.json` | Index of every lesson file |
 
 ## What belongs here
 
@@ -40,6 +43,7 @@ describes its scope and sequence.
 - Word, phrase, tone, and pattern lists that belong to a single lesson.
 - Lesson notes that record how the lesson is taught or how its reference audio is
   derived from pinyin at build time (ADR 0006).
+- Diagrams that support a lesson's idea, authored as SVG.
 
 ## What does not belong here
 
@@ -50,7 +54,17 @@ describes its scope and sequence.
 - File-format samples: `../samples/`.
 - Generated practice items and learner data: runtime-only, never committed (ADR 0010).
 - Product, architecture, and roadmap documents: `docs/`.
-- Hanzi, and binary files of any kind.
+- Hanzi. Diagrams are authored as SVG; audio belongs in `../audio/`.
+
+## Diagrams
+
+Diagrams support a lesson's idea without adding text to read. They are authored as
+SVG so they stay diffable and text-based, and they carry no hanzi.
+
+| File | Used by | Provenance |
+| --- | --- | --- |
+| `beginner/tones/diagrams/tone-contours.svg` | Tones and tone-number lessons | Authored for this scaffold; original work, no external source |
+| `beginner/fundamentals/diagrams/syllable-anatomy.svg` | Syllable-anatomy lesson | Authored for this scaffold; original work, no external source |
 
 ## Naming
 
@@ -73,6 +87,12 @@ describes its scope and sequence.
 - Reference audio is generated at build time from the pinyin with Kokoro-82M and
   bundled under `assets/audio/` (ADR 0006).
 - The lesson body teaches by ear; repetition belongs to practice.
+
+## Index
+
+`lessons.index.json` lists every lesson file with its id, path, module, lesson
+number, level, and topic. It mirrors the metadata tables in the lesson files and is
+updated in the same commit as any lesson change.
 
 Starter lesson content is illustrative and is reviewed by the author before it ships
 (WF-6, ADR 0010). The exact schema is provisional until the content contract is

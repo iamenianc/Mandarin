@@ -30,3 +30,4 @@ them easy to quote when feedback names a syllable.
 - Words carry one number per syllable: `ni3 hao3`, `xie4 xie5`.
 - Feedback quotes the same numbers, so coaching maps back to the pinyin on screen
   (ADR 0005, ADR 0012).
+- Diagram: `../tones/diagrams/tone-contours.svg`.

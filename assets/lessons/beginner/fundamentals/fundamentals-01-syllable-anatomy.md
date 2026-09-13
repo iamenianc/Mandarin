@@ -27,5 +27,6 @@ syllable easier to repeat.
 
 - `er4` has no initial; a syllable can begin directly on its final.
 - The initial is a sound, not a letter name; it is always heard with its final.
+- Diagram: `diagrams/syllable-anatomy.svg`.
 - Reference audio is generated at build time from the pinyin above and bundled under
   `assets/audio/` (ADR 0006).

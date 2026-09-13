@@ -15,4 +15,5 @@ contour and labelled with its tone number, then tone pairs (ADR 0008, ADR 0012).
 | `tones-06-tone-pairs.md` | Tone pairs | Two-syllable combinations |
 
 Tone numbers are written after the syllable (`ma1` to `ma5`) wherever a tone is named
-(ADR 0012). Every item is heard before it is labelled.
+(ADR 0012). Every item is heard before it is labelled. The contour diagram
+`diagrams/tone-contours.svg` supports the one-tone-at-a-time lessons.
