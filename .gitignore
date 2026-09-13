@@ -21,6 +21,8 @@ captures/
 keystore.properties
 secrets.properties
 .env
+.dev.vars
+OpenRouterApi.txt
 
 # OS
 .DS_Store
