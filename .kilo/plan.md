@@ -303,6 +303,15 @@ Independent verification: 9 files, +904; no hanzi; `:app:testDebugUnitTest` gree
 (`ProgressViewModelTest`), `assembleDebug`, `lintDebug`, `spotlessCheck` green; the
 integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green.
 
+Wave 4c (in flight 2026-09-14): accessibility and performance pass. Worktree
+`accessibility pass` (`wt-1789338415377-34`), branch `app/accessibility-pass`, session
+`ses_f631e8acbffekDZkcTgnX2gYHP`. Its worktree seeded stale and was fast-forwarded to
+`259ea08` before it wrote. Behavior-preserving: content descriptions and semantics on every
+control (especially the shared `:core:ui` playback, record, and level controls), 48dp touch
+targets, system-font-scale-safe text, state announcements, and light recomposition hygiene,
+with manual TalkBack and large-font checks captured in the report. Owns `:core:ui`, `:app`,
+and all `:feature:*`.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
