@@ -6,9 +6,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.learnhuayu.app.ui.audio.AudioCheckScreen
 
 private object Destinations {
     const val HOME = "home"
+    const val AUDIO_CHECK = "audio-check"
     const val MODULE = "module"
     const val MODULE_ID = "moduleId"
     const val MODULE_ROUTE = "$MODULE/{$MODULE_ID}"
@@ -24,7 +26,11 @@ fun LearnHuayuNavHost() {
         composable(Destinations.HOME) {
             HomeScreen(
                 onModuleClick = { moduleId -> navController.navigate(Destinations.module(moduleId)) },
+                onAudioCheckClick = { navController.navigate(Destinations.AUDIO_CHECK) },
             )
+        }
+        composable(Destinations.AUDIO_CHECK) {
+            AudioCheckScreen(onBack = { navController.popBackStack() })
         }
         composable(
             route = Destinations.MODULE_ROUTE,
