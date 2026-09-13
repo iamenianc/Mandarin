@@ -70,6 +70,7 @@ class SessionFeedbackTest {
         preferencesRepository = FakePreferencesRepository(),
         feedbackWorkflow = workflow,
         responseWorkflow = responseWorkflow,
+        exerciseWorkflow = FakeExerciseGenerationWorkflow(),
         referenceClipReader = referenceClipReader,
         evidenceSource = evidenceSource,
         clock = fixedClock,

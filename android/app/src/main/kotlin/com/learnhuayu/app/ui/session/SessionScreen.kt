@@ -282,6 +282,17 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
         }
 
         NavigationRow(uiState = uiState, viewModel = viewModel)
+
+        if (uiState.showKeepPractising || uiState.extraLoading) {
+            KeepPractisingRow(uiState = uiState, viewModel = viewModel)
+        }
+        uiState.extraMessage?.let { message ->
+            Text(
+                text = message,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
     }
 }
 
@@ -518,6 +529,31 @@ private fun OfflineFeedback() {
         text = stringResource(R.string.session_feedback_offline_tip),
         style = MaterialTheme.typography.bodyMedium,
     )
+}
+
+@Composable
+private fun KeepPractisingRow(uiState: SessionUiState, viewModel: SessionViewModel) {
+    if (uiState.extraLoading) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.session_keep_practising_loading),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        return
+    }
+    Button(
+        onClick = viewModel::onKeepPractisingClick,
+        modifier = Modifier.fillMaxWidth(),
+        enabled = uiState.showKeepPractising && !uiState.isRecording && !uiState.processing,
+    ) {
+        Text(text = stringResource(R.string.session_keep_practising))
+    }
 }
 
 @Composable

@@ -83,6 +83,7 @@ class SessionViewModelTest {
         preferencesRepository = preferences,
         feedbackWorkflow = feedbackWorkflow,
         responseWorkflow = responseWorkflow,
+        exerciseWorkflow = FakeExerciseGenerationWorkflow(),
         referenceClipReader = referenceClipReader,
         evidenceSource = evidenceSource,
         clock = fixedClock,
