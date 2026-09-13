@@ -65,8 +65,8 @@ Wave 1 in flight:
    orchestrator-owned files, for this session only).
 2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
    and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
-   Reviewed: compliant; 25/25 tests pass. Two fixes queued on the same branch before merge
-   (WF-7 audio-only spoken question; tone numbers 1-5 per ADR 0012). Merge after they land.
+   Reviewed: compliant; 31/31 tests pass. Merged in 6b8d3ec after the WF-7 audio-only fix
+   and tone-number (1-5, ADR 0012) validation landed.
 3. `assets/content-corpus` - curated bundled `ContentItem` corpus for the five modules plus
    schema and an offline validator, under `assets/content/**`.
 4. `assets/kokoro-pipeline` - build-time Kokoro reference-audio generation with offline
@@ -78,7 +78,8 @@ items, and the design-doc mention are removed; the design worktree session was s
 before producing changes.
 
 Master notes: the sibling cleanup commit 909e063 (leftover eyes-free references) was
-reviewed and is valid. Worker branch awaits its queued fixes before merge.
+reviewed and is valid. The Worker slice is merged; `docs/02-architecture.md` now points at
+`api/README.md` for the implemented routes.
 
 ## Merge protocol
 

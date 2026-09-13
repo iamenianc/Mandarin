@@ -171,10 +171,12 @@ Routes:
 `messages` array, rejects bodies over 64 KiB (413), and returns `content` from the first
 choice. Upstream failures surface as `{ "error": "upstream error", "status": <code> }`.
 
-`/v1/chat` is an initial template, not the final surface. The Worker is to expose one
-versioned endpoint per workflow (the `/v1/wf/<workflow>` form shown in the pipeline
-diagrams; registry in `docs/08-ai-workflows.md`); a new task adds a route rather than
-widening this one. Deployment is covered in `docs/06-pipeline.md`.
+`/v1/chat` is an initial template kept for compatibility. The Worker now exposes one
+versioned endpoint per runtime workflow (`POST /v1/wf/<workflow>`, WF-1 to WF-5 and WF-7
+to WF-10; WF-6 is build-time and unrouted), matching the registry in
+`docs/08-ai-workflows.md`. The implemented routes, per-workflow limits, and the WF-3
+provider gap are listed in `api/README.md`. A new task adds a route rather than widening
+this one. Deployment is covered in `docs/06-pipeline.md`.
 
 ## Audio and AI pipeline
 
