@@ -1,0 +1,86 @@
+{
+  "moduleId": "speech",
+  "items": [
+    {
+      "id": "speech-ma1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "mother (first tone)",
+      "pinyin": "ma1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/speech/speech-ma1.ogg"
+    },
+    {
+      "id": "speech-ma2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "hemp",
+      "pinyin": "ma2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/speech/speech-ma2.ogg"
+    },
+    {
+      "id": "speech-ma3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "horse",
+      "pinyin": "ma3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/speech/speech-ma3.ogg"
+    },
+    {
+      "id": "speech-ma4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to scold",
+      "pinyin": "ma4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/speech/speech-ma4.ogg"
+    },
+    {
+      "id": "speech-ma5",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "question particle",
+      "pinyin": "ma5",
+      "targetTones": [5],
+      "audioAssetRef": "reference/speech/speech-ma5.ogg"
+    },
+    {
+      "id": "speech-ni3-hao3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "hello",
+      "pinyin": "ni3 hao3",
+      "targetTones": [3, 3],
+      "audioAssetRef": "reference/speech/speech-ni3-hao3.ogg"
+    },
+    {
+      "id": "speech-xie4-xie5",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "thank you",
+      "pinyin": "xie4 xie5",
+      "targetTones": [4, 5],
+      "audioAssetRef": "reference/speech/speech-xie4-xie5.ogg"
+    },
+    {
+      "id": "speech-wo3-hen3-hao3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "I am fine",
+      "pinyin": "wo3 hen3 hao3",
+      "targetTones": [3, 3, 3],
+      "audioAssetRef": "reference/speech/speech-wo3-hen3-hao3.ogg"
+    },
+    {
+      "id": "speech-zai4-jian4",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "goodbye",
+      "pinyin": "zai4 jian4",
+      "targetTones": [4, 4],
+      "audioAssetRef": "reference/speech/speech-zai4-jian4.ogg"
+    }
+  ]
+}

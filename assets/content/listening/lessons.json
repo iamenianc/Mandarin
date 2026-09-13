@@ -1,0 +1,51 @@
+{
+  "moduleId": "listening",
+  "lessons": [
+    {
+      "id": "listening-01-hear-the-tone",
+      "moduleId": "listening",
+      "title": "Hear the tone",
+      "level": "beginner",
+      "topic": "tone identification",
+      "kind": "lesson",
+      "contentItemIds": ["listening-ma1", "listening-ma2", "listening-ma3", "listening-ma4", "listening-ma5"]
+    },
+    {
+      "id": "listening-02-hear-the-word",
+      "moduleId": "listening",
+      "title": "Hear the word",
+      "level": "beginner",
+      "topic": "word identification",
+      "kind": "lesson",
+      "contentItemIds": ["listening-ni3-hao3", "listening-xie4-xie5", "listening-zai4-jian4", "listening-dui4-bu5-qi3"]
+    },
+    {
+      "id": "listening-practice-hear-the-tone",
+      "moduleId": "listening",
+      "title": "Hear the tone practice",
+      "level": "beginner",
+      "topic": "tone identification",
+      "kind": "practice",
+      "contentItemIds": [
+        "listening-ma1",
+        "listening-ma2",
+        "listening-ma3",
+        "listening-ma4",
+        "listening-ma5",
+        "listening-pair-ma1-ma3",
+        "listening-pair-ma2-ma4",
+        "listening-pair-shi1-shi2",
+        "listening-pair-shi3-shi4"
+      ]
+    },
+    {
+      "id": "listening-practice-hear-the-word",
+      "moduleId": "listening",
+      "title": "Hear the word practice",
+      "level": "beginner",
+      "topic": "word identification",
+      "kind": "practice",
+      "contentItemIds": ["listening-ni3-hao3", "listening-xie4-xie5", "listening-zai4-jian4", "listening-dui4-bu5-qi3"]
+    }
+  ]
+}

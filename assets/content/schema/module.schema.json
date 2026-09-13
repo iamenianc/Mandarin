@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://learnhuayu.local/assets/content/schema/module.schema.json",
+  "title": "Module",
+  "description": "A learning module: tones, vocabulary, listening, speech, or fundamentals (docs/02-architecture.md, ADR 0007).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "theme", "lessonIds"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "theme": {
+      "type": "string",
+      "minLength": 1,
+      "description": "What the module teaches, in one line."
+    },
+    "lessonIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "description": "Ordered lesson and practice ids; the first lesson is the recommended start."
+    }
+  }
+}

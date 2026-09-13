@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://learnhuayu.local/assets/content/schema/lesson.schema.json",
+  "title": "Lesson",
+  "description": "An ordered teaching or practice sequence inside one module (docs/02-architecture.md, ADR 0007).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "moduleId", "title", "level", "topic", "kind", "contentItemIds"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "moduleId": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "level": {
+      "enum": ["beginner", "tourist", "survival"]
+    },
+    "topic": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": ["lesson", "practice"],
+      "description": "Lessons teach; practice is the repetition set. Both share the ContentItem engine (ADR 0007)."
+    },
+    "contentItemIds": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+      },
+      "description": "Ordered ContentItem ids used by the lesson."
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "moduleId": "speech",
+  "lessons": [
+    {
+      "id": "speech-01-say-the-tone",
+      "moduleId": "speech",
+      "title": "Say the tone",
+      "level": "beginner",
+      "topic": "tone production",
+      "kind": "lesson",
+      "contentItemIds": ["speech-ma1", "speech-ma2", "speech-ma3", "speech-ma4", "speech-ma5"]
+    },
+    {
+      "id": "speech-02-say-the-word",
+      "moduleId": "speech",
+      "title": "Say the word",
+      "level": "beginner",
+      "topic": "word production",
+      "kind": "lesson",
+      "contentItemIds": ["speech-ni3-hao3", "speech-xie4-xie5", "speech-wo3-hen3-hao3", "speech-zai4-jian4"]
+    },
+    {
+      "id": "speech-practice-say-the-tone",
+      "moduleId": "speech",
+      "title": "Say the tone practice",
+      "level": "beginner",
+      "topic": "tone production",
+      "kind": "practice",
+      "contentItemIds": ["speech-ma1", "speech-ma2", "speech-ma3", "speech-ma4", "speech-ma5"]
+    },
+    {
+      "id": "speech-practice-say-the-word",
+      "moduleId": "speech",
+      "title": "Say the word practice",
+      "level": "beginner",
+      "topic": "word production",
+      "kind": "practice",
+      "contentItemIds": ["speech-ni3-hao3", "speech-xie4-xie5", "speech-wo3-hen3-hao3", "speech-zai4-jian4"]
+    }
+  ]
+}

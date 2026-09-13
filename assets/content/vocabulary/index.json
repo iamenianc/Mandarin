@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "moduleId": "vocabulary",
+  "module": "module.json",
+  "lessons": "lessons.json",
+  "items": "items.json",
+  "lessonCount": 14,
+  "itemCount": 103
+}

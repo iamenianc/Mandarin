@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "moduleId": "speech",
+  "module": "module.json",
+  "lessons": "lessons.json",
+  "items": "items.json",
+  "lessonCount": 4,
+  "itemCount": 9
+}

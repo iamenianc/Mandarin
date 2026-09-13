@@ -1,0 +1,219 @@
+{
+  "moduleId": "fundamentals",
+  "lessons": [
+    {
+      "id": "fundamentals-01-syllable-anatomy",
+      "moduleId": "fundamentals",
+      "title": "Syllable anatomy",
+      "level": "beginner",
+      "topic": "syllable structure",
+      "kind": "lesson",
+      "contentItemIds": ["fundamentals-hao3", "fundamentals-ni3", "fundamentals-shui3", "fundamentals-ta1", "fundamentals-er4"]
+    },
+    {
+      "id": "fundamentals-02-initials",
+      "moduleId": "fundamentals",
+      "title": "Initials",
+      "level": "beginner",
+      "topic": "initials",
+      "kind": "lesson",
+      "contentItemIds": [
+        "fundamentals-ba1",
+        "fundamentals-pa4",
+        "fundamentals-ma1",
+        "fundamentals-fan4",
+        "fundamentals-da4",
+        "fundamentals-ta1",
+        "fundamentals-ni3",
+        "fundamentals-lai2",
+        "fundamentals-gou3",
+        "fundamentals-kan4",
+        "fundamentals-hao3",
+        "fundamentals-jia1",
+        "fundamentals-qi1",
+        "fundamentals-xi3",
+        "fundamentals-zhong1",
+        "fundamentals-chi1",
+        "fundamentals-shui3",
+        "fundamentals-ren2",
+        "fundamentals-zai4",
+        "fundamentals-cai4",
+        "fundamentals-san1"
+      ]
+    },
+    {
+      "id": "fundamentals-03-finals",
+      "moduleId": "fundamentals",
+      "title": "Finals",
+      "level": "beginner",
+      "topic": "finals",
+      "kind": "lesson",
+      "contentItemIds": [
+        "fundamentals-ma1",
+        "fundamentals-wo3",
+        "fundamentals-he1",
+        "fundamentals-ni3",
+        "fundamentals-bu4",
+        "fundamentals-yu2",
+        "fundamentals-mai3",
+        "fundamentals-mei2",
+        "fundamentals-hao3",
+        "fundamentals-gou3",
+        "fundamentals-san1",
+        "fundamentals-ren2",
+        "fundamentals-chang2",
+        "fundamentals-leng3",
+        "fundamentals-zhong1",
+        "fundamentals-jia1",
+        "fundamentals-shui3"
+      ]
+    },
+    {
+      "id": "fundamentals-04-tone-numbers",
+      "moduleId": "fundamentals",
+      "title": "Tone numbers",
+      "level": "beginner",
+      "topic": "tone notation",
+      "kind": "lesson",
+      "contentItemIds": ["fundamentals-ma1", "fundamentals-ma2", "fundamentals-ma3", "fundamentals-ma4", "fundamentals-ma5"]
+    },
+    {
+      "id": "fundamentals-05-tone-sandhi",
+      "moduleId": "fundamentals",
+      "title": "Tone sandhi",
+      "level": "beginner",
+      "topic": "tone change",
+      "kind": "lesson",
+      "contentItemIds": [
+        "fundamentals-ni3-hao3",
+        "fundamentals-bu4-shi4",
+        "fundamentals-yi1-ban4",
+        "fundamentals-yi1-tian1",
+        "fundamentals-ting1-bu5-dong3"
+      ]
+    },
+    {
+      "id": "fundamentals-practice-syllable-parts",
+      "moduleId": "fundamentals",
+      "title": "Hear the syllable parts",
+      "level": "beginner",
+      "topic": "syllable structure",
+      "kind": "practice",
+      "contentItemIds": [
+        "fundamentals-hao3",
+        "fundamentals-ni3",
+        "fundamentals-shui3",
+        "fundamentals-ta1",
+        "fundamentals-er4",
+        "fundamentals-pair-ni3-li3",
+        "fundamentals-pair-jin1-jing1"
+      ]
+    },
+    {
+      "id": "fundamentals-practice-initials",
+      "moduleId": "fundamentals",
+      "title": "Hear the initial",
+      "level": "beginner",
+      "topic": "initials",
+      "kind": "practice",
+      "contentItemIds": [
+        "fundamentals-ba1",
+        "fundamentals-pa4",
+        "fundamentals-ma1",
+        "fundamentals-fan4",
+        "fundamentals-da4",
+        "fundamentals-ta1",
+        "fundamentals-ni3",
+        "fundamentals-lai2",
+        "fundamentals-gou3",
+        "fundamentals-kan4",
+        "fundamentals-hao3",
+        "fundamentals-jia1",
+        "fundamentals-qi1",
+        "fundamentals-xi3",
+        "fundamentals-zhong1",
+        "fundamentals-chi1",
+        "fundamentals-shui3",
+        "fundamentals-ren2",
+        "fundamentals-zai4",
+        "fundamentals-cai4",
+        "fundamentals-san1",
+        "fundamentals-pair-zhi1-zi1",
+        "fundamentals-pair-chi1-qi1"
+      ]
+    },
+    {
+      "id": "fundamentals-practice-finals",
+      "moduleId": "fundamentals",
+      "title": "Hear the final",
+      "level": "beginner",
+      "topic": "finals",
+      "kind": "practice",
+      "contentItemIds": [
+        "fundamentals-ma1",
+        "fundamentals-wo3",
+        "fundamentals-he1",
+        "fundamentals-ni3",
+        "fundamentals-bu4",
+        "fundamentals-yu2",
+        "fundamentals-mai3",
+        "fundamentals-mei2",
+        "fundamentals-hao3",
+        "fundamentals-gou3",
+        "fundamentals-san1",
+        "fundamentals-ren2",
+        "fundamentals-chang2",
+        "fundamentals-leng3",
+        "fundamentals-zhong1",
+        "fundamentals-jia1",
+        "fundamentals-shui3",
+        "fundamentals-pair-jin1-jing1",
+        "fundamentals-pair-fen1-feng1"
+      ]
+    },
+    {
+      "id": "fundamentals-practice-tone-numbers",
+      "moduleId": "fundamentals",
+      "title": "Read the tone number",
+      "level": "beginner",
+      "topic": "tone notation",
+      "kind": "practice",
+      "contentItemIds": ["fundamentals-ma1", "fundamentals-ma2", "fundamentals-ma3", "fundamentals-ma4", "fundamentals-ma5"]
+    },
+    {
+      "id": "fundamentals-practice-tone-sandhi",
+      "moduleId": "fundamentals",
+      "title": "Hear the tone change",
+      "level": "beginner",
+      "topic": "tone change",
+      "kind": "practice",
+      "contentItemIds": [
+        "fundamentals-ni3-hao3",
+        "fundamentals-bu4-shi4",
+        "fundamentals-yi1-ban4",
+        "fundamentals-yi1-tian1",
+        "fundamentals-ting1-bu5-dong3"
+      ]
+    },
+    {
+      "id": "fundamentals-practice-spelling-conventions",
+      "moduleId": "fundamentals",
+      "title": "Read the spelling",
+      "level": "beginner",
+      "topic": "spelling conventions",
+      "kind": "practice",
+      "contentItemIds": [
+        "fundamentals-yu2",
+        "fundamentals-ju4",
+        "fundamentals-xu1",
+        "fundamentals-you3",
+        "fundamentals-wei4",
+        "fundamentals-yi1",
+        "fundamentals-wen4",
+        "fundamentals-cun1",
+        "fundamentals-liu4",
+        "fundamentals-shui3"
+      ]
+    }
+  ]
+}
