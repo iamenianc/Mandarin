@@ -62,12 +62,13 @@ Wave 1 in flight:
    `:core:model` contracts per the architecture doc; runnable Compose shell listing
    registered modules (FR-22); CI workflow per `docs/06-pipeline.md`; verified
    `build`/`lint`/`test` commands added to `AGENTS.md` (the one exception to
-   orchestrator-owned files, for this session only). Status: fresh session
-   `ses_f656f83abbfey9QSupd273q2Gh` fixing the build after the first session wedged on a
-   hung daemon; sources checkpointed at `e841822`; last recorded failure was a
-   version-catalog alias (`libs.androidx.media3.*` unresolved). The session is not
-   managed by this workspace, so it is monitored but cannot be prompted; escalate in the
-   Agent Manager UI if it stalls again.
+   orchestrator-owned files, for this session only). Status: takeover session
+   `ses_f65676c3cffecVapS7gPS4c3a5` (worktree `scaffold-android-project-fix`) cherry-picked
+   the checkpoint as `aa36a28` and is actively fixing the build (wrapper written 21:48).
+   The original session in worktree `scaffold-android-project-18774aeda770df09`
+   (`e841822`) is wedged and is not managed by this workspace, so it cannot be stopped or
+   prompted from here; it needs cleanup in the Agent Manager UI, and its worktree is
+   superseded by the takeover.
 2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
    and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
    Reviewed: compliant; 31/31 tests pass. Merged in 6b8d3ec after the WF-7 audio-only fix
@@ -78,8 +79,8 @@ Wave 1 in flight:
    vocabulary 14/103, listening 4/13, speech 4/9); no Han script; all 26 files under
    `assets/content/`; author review of pinyin and tone choices remains open.
 4. `assets/kokoro-pipeline` - build-time Kokoro reference-audio generation with offline
-   `--dry-run`/`--selftest`, under `assets/audio/**` (ADR 0006). Status: generator commit
-   `2fcd630` landed on the branch; session is verifying; merge pending.
+   `--dry-run`/`--selftest`, under `assets/audio/**` (ADR 0006). Merged: `--selftest`
+   passes 15/15 and `--dry-run` plans the fixture clips; generated audio stays ignored.
 
 Scope change (2026-09-13): the author dropped hands-free and eyes-free session modes.
 Recorded as ADR 0015; FR-13/FR-14 marked Won't (v1); the vision criterion, both roadmap
@@ -90,6 +91,18 @@ Master notes: the sibling cleanup commit 909e063 (leftover eyes-free references)
 reviewed and is valid. The Worker slice is merged; `docs/02-architecture.md` now points at
 `api/README.md` for the implemented routes. Orchestrator re-verified on `f374ffc`: the
 `api/` tree is identical to the reviewed head `b49f8f4`, and `npm test` passes 31/31.
+Kokoro is merged; `--selftest` passes 15/15 on master. The merged wave-1 worktrees
+(worker, content corpus, Kokoro) and the stale empty `assets-*` worktrees were stopped and
+removed per the conductor hygiene rule. The unmerged `assets-folder` worktree is kept for
+the author's decision; the wedged original scaffold worktree needs UI cleanup.
+
+Session conduct (conductor.md, updated in 203eab6): waits are capped at 60 seconds and the
+loop ends its turn for peer replies; sessions are watched with evidence (activity, git
+state, live process and log signals); a busy session with no writes, commits, or process
+is wedged and is stopped rather than nudged; every new brief requires a completion report
+as an Agent Manager peer reply (branch, commit SHAs, exact commands and results, open
+questions), verified independently before merge; merged slices are stopped and their
+worktrees removed.
 
 ## Merge protocol
 
