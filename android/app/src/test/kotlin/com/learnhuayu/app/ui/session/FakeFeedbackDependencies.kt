@@ -5,6 +5,10 @@ import com.learnhuayu.core.ai.AudioClip
 import com.learnhuayu.core.ai.PronunciationFeedback
 import com.learnhuayu.core.ai.PronunciationFeedbackRequest
 import com.learnhuayu.core.ai.PronunciationFeedbackWorkflow
+import com.learnhuayu.core.ai.ResponseTranscription
+import com.learnhuayu.core.ai.ResponseTranscriptionRequest
+import com.learnhuayu.core.ai.ResponseTranscriptionWorkflow
+import com.learnhuayu.core.ai.WorkflowFailure
 import com.learnhuayu.core.ai.WorkflowResult
 import com.learnhuayu.core.audio.pcm.PcmAudio
 import com.learnhuayu.core.model.ContentItem
@@ -20,6 +24,23 @@ class FakePronunciationFeedbackWorkflow(
     }
 
     override suspend fun evaluate(request: PronunciationFeedbackRequest): WorkflowResult<PronunciationFeedback> {
+        requests += request
+        return result
+    }
+}
+
+class FakeResponseTranscriptionWorkflow(
+    private var result: WorkflowResult<ResponseTranscription> =
+        WorkflowResult.Failure(WorkflowFailure.BaseUrlMissing()),
+) : ResponseTranscriptionWorkflow {
+
+    val requests = mutableListOf<ResponseTranscriptionRequest>()
+
+    fun returns(result: WorkflowResult<ResponseTranscription>) {
+        this.result = result
+    }
+
+    override suspend fun transcribe(request: ResponseTranscriptionRequest): WorkflowResult<ResponseTranscription> {
         requests += request
         return result
     }

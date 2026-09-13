@@ -56,6 +56,7 @@ class SessionViewModelTest {
     )
     private val referenceClipReader = FakeReferenceClipReader()
     private val evidenceSource = FakeAttemptEvidenceSource()
+    private val responseWorkflow = FakeResponseTranscriptionWorkflow()
     private val contentRepository = FakeBundledContentRepository(items = itemsById)
     private val registry = ModuleRegistry(
         setOf(
@@ -81,6 +82,7 @@ class SessionViewModelTest {
         attemptRepository = attemptRepository,
         preferencesRepository = preferences,
         feedbackWorkflow = feedbackWorkflow,
+        responseWorkflow = responseWorkflow,
         referenceClipReader = referenceClipReader,
         evidenceSource = evidenceSource,
         clock = fixedClock,

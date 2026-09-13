@@ -25,6 +25,11 @@
     <string name="session_hear_and_name_prompt">Which tone did you hear? Tap a tone number.</string>
     <string name="session_listen_and_choose_prompt">Which pinyin did you hear?</string>
     <string name="session_speak_and_repeat_prompt">Listen, then record yourself.</string>
+    <string name="session_listen_and_answer_prompt">Listen, then record your spoken answer.</string>
+    <string name="session_spoken_answer_action">Check spoken answer</string>
+    <string name="session_spoken_answer_checking">Checking your spoken answer…</string>
+    <string name="session_spoken_answer_fallback">The spoken answer was not matched. Tap a choice below instead.</string>
+    <string name="session_tap_fallback_prompt">Or tap the pinyin you heard.</string>
     <string name="session_lesson_prompt">Listen and follow along.</string>
     <string name="session_correct">Correct! %1$s</string>
     <string name="session_incorrect">Not quite. It was %1$s.</string>
