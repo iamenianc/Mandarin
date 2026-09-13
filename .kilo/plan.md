@@ -51,8 +51,11 @@ orchestrator after merges.
 | --- | --- | --- |
 | 1 | Android scaffold; Worker WF endpoints; content corpus; Kokoro pipeline | none |
 | 2 | `:core:data`, `:core:audio`, `:core:ai`, `:core:assessment`, `:core:ui`; content pipeline | wave 1 merged |
-| 3 | Features: home, tones, vocabulary, listening, speech, fundamentals, field, raymond | wave 2 merged |
-| 4 | Progress/reporting, consent + deletion, accessibility, release config | wave 3 merged |
+| 3a | Shared drill engine in `:app`; async lesson/practice specs in `:core:model` | wave 2.5 merged |
+| 3b | M2 modules: home, tones, vocabulary, listening, fundamentals | wave 3a merged |
+| 3c | M3 speech: WF-1 feedback and tone evidence in the speak-and-repeat drill | wave 3b merged |
+| 3d | M4: field loop (WF-9, WF-10, WF-3), Raymond (WF-7), endless practice (WF-8) | wave 3c merged |
+| 4 | Progress/reporting, consent + deletion, accessibility, release config | wave 3d merged |
 | 5 | Full verification: build, lint, tests, release AAB; docs consistency pass | wave 4 merged |
 
 Wave 1 (merged): Android scaffold; Worker WF endpoints; content corpus; Kokoro pipeline.
@@ -88,9 +91,32 @@ The slice list (branch seeds, kept for the record):
    `assets/content/**` and the reference/drill/sample audio into APK assets at build time
    (no committed copies).
 
-Wave 2.5 (planned): M1 audio demo in `:app` - microphone permission flow, reference clip
-playback, and record/playback wiring against the merged core modules; satisfies the M1
-exit criteria. Then wave 3 features.
+Wave 2.5 (in flight 2026-09-13): M1 audio demo in `:app` - microphone permission
+flow, reference clip playback, and record/playback wiring against the merged core
+modules; satisfies the M1 exit criteria. Worktree `app audio demo`
+(`wt-1789304417717-20`), branch `app/audio-demo`, session
+`ses_f65255017ffeUGzYGhOvT0d4UE`; the brief requires a completion report as a peer
+reply, independently verified before merge.
+
+Wave 3 refinement (2026-09-13): wave 2 left no shared drill engine and no path from a
+module's lesson/practice to a runnable session; `LearningModule.lessons()/practices()`
+is synchronous while the bundled corpus loads through suspend repositories. Wave 3 is
+therefore sequenced as:
+
+- 3a foundation: a generic drill engine in `:app` (lesson browse, hear-and-name,
+  listen-and-choose, speak-and-repeat over `ContentItem`s from `:core:data`), a
+  `DrillMode` on `PracticeSpec`, and a suspend `LearningModule` contract in
+  `:core:model`; the `:app` nav host gains a session route and `ModuleScreen` rows
+  become runnable. To be recorded as ADR 0018 after the interfaces settle in review.
+- 3b M2 modules: home, tones, vocabulary, listening, fundamentals each map their
+  bundled corpus to specs and modes; listening adds tap-only offline drills and WF-4
+  spoken answers with the local matcher.
+- 3c M3 speech: WF-1 feedback and measured tone evidence wired into the
+  speak-and-repeat drill.
+- 3d M4: field loop (WF-9, WF-10, WF-3), Raymond (WF-7), and endless practice (WF-8).
+
+Each sub-wave is fanned out only after the previous one merges, because 3a touches
+`:app` and `:core:model` and every later slice touches at least one feature module.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
