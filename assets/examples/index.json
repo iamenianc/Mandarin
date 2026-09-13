@@ -1,0 +1,142 @@
+{
+  "note": "Authoring index for assets/examples/. Not loaded by the app.",
+  "version": 1,
+  "examples": [
+    {
+      "id": "greetings-courtesy",
+      "file": "greetings-courtesy.md",
+      "kind": "phraseSet",
+      "theme": "greetings",
+      "module": "vocabulary",
+      "summary": "Greetings, thanks, apologies, and polite openers."
+    },
+    {
+      "id": "greetings-introduction-dialogue",
+      "file": "greetings-introduction-dialogue.md",
+      "kind": "dialogue",
+      "theme": "greetings",
+      "module": "vocabulary",
+      "summary": "Two people greet and introduce themselves."
+    },
+    {
+      "id": "numbers-money",
+      "file": "numbers-money.md",
+      "kind": "phraseSet",
+      "theme": "numbers",
+      "module": "vocabulary",
+      "summary": "Counting and payment phrases."
+    },
+    {
+      "id": "ordering-food",
+      "file": "ordering-food.md",
+      "kind": "phraseSet",
+      "theme": "food",
+      "module": "vocabulary",
+      "summary": "Ordering, dietary needs, and paying."
+    },
+    {
+      "id": "ordering-food-dialogue",
+      "file": "ordering-food-dialogue.md",
+      "kind": "dialogue",
+      "theme": "food",
+      "module": "vocabulary",
+      "summary": "A guest orders from a server."
+    },
+    {
+      "id": "directions-transport",
+      "file": "directions-transport.md",
+      "kind": "phraseSet",
+      "theme": "directions",
+      "module": "vocabulary",
+      "summary": "Asking the way and using transport."
+    },
+    {
+      "id": "directions-asking-dialogue",
+      "file": "directions-asking-dialogue.md",
+      "kind": "dialogue",
+      "theme": "directions",
+      "module": "vocabulary",
+      "summary": "A visitor asks a passer-by for directions."
+    },
+    {
+      "id": "hotel-stays",
+      "file": "hotel-stays.md",
+      "kind": "phraseSet",
+      "theme": "hotel",
+      "module": "vocabulary",
+      "summary": "Checking in, room needs, and checking out."
+    },
+    {
+      "id": "hotel-checkin-dialogue",
+      "file": "hotel-checkin-dialogue.md",
+      "kind": "dialogue",
+      "theme": "hotel",
+      "module": "vocabulary",
+      "summary": "A guest checks in and receives a room card."
+    },
+    {
+      "id": "shopping-prices",
+      "file": "shopping-prices.md",
+      "kind": "phraseSet",
+      "theme": "shopping",
+      "module": "vocabulary",
+      "summary": "Asking prices, comparing, and buying."
+    },
+    {
+      "id": "shopping-bargaining-dialogue",
+      "file": "shopping-bargaining-dialogue.md",
+      "kind": "dialogue",
+      "theme": "shopping",
+      "module": "vocabulary",
+      "summary": "A shopper agrees a lower price."
+    },
+    {
+      "id": "time-dates",
+      "file": "time-dates.md",
+      "kind": "phraseSet",
+      "theme": "time",
+      "module": "vocabulary",
+      "summary": "Time, days, and parts of the day."
+    },
+    {
+      "id": "emergencies-help",
+      "file": "emergencies-help.md",
+      "kind": "phraseSet",
+      "theme": "emergencies",
+      "module": "vocabulary",
+      "summary": "Asking for help when something goes wrong."
+    },
+    {
+      "id": "emergencies-reporting-dialogue",
+      "file": "emergencies-reporting-dialogue.md",
+      "kind": "dialogue",
+      "theme": "emergencies",
+      "module": "vocabulary",
+      "summary": "A visitor reports a lost wallet."
+    },
+    {
+      "id": "fundamentals-tone-contours",
+      "file": "fundamentals-tone-contours.md",
+      "kind": "soundSystem",
+      "theme": "tones",
+      "module": "tones",
+      "summary": "The four tones and the neutral tone."
+    },
+    {
+      "id": "fundamentals-tone-pairs",
+      "file": "fundamentals-tone-pairs.md",
+      "kind": "soundSystem",
+      "theme": "tones",
+      "module": "tones",
+      "summary": "Two-syllable tone combinations and sandhi."
+    },
+    {
+      "id": "fundamentals-syllable-anatomy",
+      "file": "fundamentals-syllable-anatomy.md",
+      "kind": "soundSystem",
+      "theme": "fundamentals",
+      "module": "fundamentals",
+      "summary": "Initial, final, and tone in one syllable."
+    }
+  ]
+}

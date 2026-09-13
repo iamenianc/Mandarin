@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 520" width="760" height="520" role="img" aria-labelledby="tone-contour-title tone-contour-desc">
+  <title id="tone-contour-title">Tone contours for the four Mandarin tones and the neutral tone</title>
+  <desc id="tone-contour-desc">A pitch diagram showing tone 1 as high level, tone 2 as rising, tone 3 as low dipping, tone 4 as falling, and the neutral tone as a short light syllable.</desc>
+  <rect x="0" y="0" width="760" height="520" fill="#ffffff"/>
+  <text x="32" y="42" font-family="sans-serif" font-size="24" font-weight="bold" fill="#111111">Tone contours</text>
+  <text x="32" y="68" font-family="sans-serif" font-size="14" fill="#555555">Pitch over the length of a syllable. Tone numbers follow ADR 0012.</text>
+
+  <text x="32" y="102" font-family="sans-serif" font-size="16" fill="#333333">1 - high level (ma1)</text>
+  <path d="M260 96 L660 96" fill="none" stroke="#1f77b4" stroke-width="5" stroke-linecap="round"/>
+
+  <text x="32" y="182" font-family="sans-serif" font-size="16" fill="#333333">2 - rising (ma2)</text>
+  <path d="M260 192 L660 112" fill="none" stroke="#2ca02c" stroke-width="5" stroke-linecap="round"/>
+
+  <text x="32" y="262" font-family="sans-serif" font-size="16" fill="#333333">3 - low dipping (ma3)</text>
+  <path d="M260 272 C350 332 430 332 510 272 C560 236 610 221 660 216" fill="none" stroke="#ff7f0e" stroke-width="5" stroke-linecap="round"/>
+
+  <text x="32" y="342" font-family="sans-serif" font-size="16" fill="#333333">4 - falling (ma4)</text>
+  <path d="M260 352 L660 442" fill="none" stroke="#d62728" stroke-width="5" stroke-linecap="round"/>
+
+  <text x="32" y="422" font-family="sans-serif" font-size="16" fill="#333333">5 - neutral (ma5)</text>
+  <path d="M260 432 L400 436" fill="none" stroke="#7f7f7f" stroke-width="5" stroke-linecap="round" stroke-dasharray="10 8"/>
+
+  <line x1="240" y1="80" x2="240" y2="452" stroke="#cccccc" stroke-width="2"/>
+  <text x="228" y="84" font-family="sans-serif" font-size="12" fill="#888888" text-anchor="end">high</text>
+  <text x="228" y="448" font-family="sans-serif" font-size="12" fill="#888888" text-anchor="end">low</text>
+
+  <text x="32" y="496" font-family="sans-serif" font-size="13" fill="#555555">Chao values: 55, 35, 214, 51. The neutral tone is short and takes its pitch from the preceding tone.</text>
+</svg>

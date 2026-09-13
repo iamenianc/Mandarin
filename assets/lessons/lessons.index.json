@@ -1,0 +1,33 @@
+{
+  "note": "Index of authored lesson files under assets/lessons/. Metadata mirrors each lesson's table; update this file when lessons change. The schema is provisional until the content contract is defined in M1 (docs/04-roadmap.md).",
+  "levels": ["beginner", "tourist", "survival"],
+  "modules": ["tones", "fundamentals", "vocabulary", "listening", "speech"],
+  "lessons": [
+    { "id": "tones-01-first-tone", "path": "beginner/tones/tones-01-first-tone.md", "module": "tones", "lesson": "01", "level": "beginner", "topic": "tone contours" },
+    { "id": "tones-02-second-tone", "path": "beginner/tones/tones-02-second-tone.md", "module": "tones", "lesson": "02", "level": "beginner", "topic": "tone contours" },
+    { "id": "tones-03-third-tone", "path": "beginner/tones/tones-03-third-tone.md", "module": "tones", "lesson": "03", "level": "beginner", "topic": "tone contours" },
+    { "id": "tones-04-fourth-tone", "path": "beginner/tones/tones-04-fourth-tone.md", "module": "tones", "lesson": "04", "level": "beginner", "topic": "tone contours" },
+    { "id": "tones-05-neutral-tone", "path": "beginner/tones/tones-05-neutral-tone.md", "module": "tones", "lesson": "05", "level": "beginner", "topic": "tone contours" },
+    { "id": "tones-06-tone-pairs", "path": "beginner/tones/tones-06-tone-pairs.md", "module": "tones", "lesson": "06", "level": "beginner", "topic": "tone combinations" },
+    { "id": "fundamentals-01-syllable-anatomy", "path": "beginner/fundamentals/fundamentals-01-syllable-anatomy.md", "module": "fundamentals", "lesson": "01", "level": "beginner", "topic": "syllable structure" },
+    { "id": "fundamentals-02-initials", "path": "beginner/fundamentals/fundamentals-02-initials.md", "module": "fundamentals", "lesson": "02", "level": "beginner", "topic": "initials" },
+    { "id": "fundamentals-03-finals", "path": "beginner/fundamentals/fundamentals-03-finals.md", "module": "fundamentals", "lesson": "03", "level": "beginner", "topic": "finals" },
+    { "id": "fundamentals-04-tone-numbers", "path": "beginner/fundamentals/fundamentals-04-tone-numbers.md", "module": "fundamentals", "lesson": "04", "level": "beginner", "topic": "tone notation" },
+    { "id": "fundamentals-05-tone-sandhi", "path": "beginner/fundamentals/fundamentals-05-tone-sandhi.md", "module": "fundamentals", "lesson": "05", "level": "beginner", "topic": "tone change" },
+    { "id": "vocabulary-01-greetings", "path": "beginner/vocabulary/vocabulary-01-greetings.md", "module": "vocabulary", "lesson": "01", "level": "beginner", "topic": "greetings" },
+    { "id": "vocabulary-02-courtesy", "path": "beginner/vocabulary/vocabulary-02-courtesy.md", "module": "vocabulary", "lesson": "02", "level": "beginner", "topic": "courtesy" },
+    { "id": "vocabulary-03-numbers", "path": "beginner/vocabulary/vocabulary-03-numbers.md", "module": "vocabulary", "lesson": "03", "level": "beginner", "topic": "numbers" },
+    { "id": "vocabulary-04-time", "path": "beginner/vocabulary/vocabulary-04-time.md", "module": "vocabulary", "lesson": "04", "level": "beginner", "topic": "time" },
+    { "id": "vocabulary-05-ordering-food", "path": "tourist/vocabulary/vocabulary-05-ordering-food.md", "module": "vocabulary", "lesson": "05", "level": "tourist", "topic": "ordering food" },
+    { "id": "vocabulary-06-directions", "path": "tourist/vocabulary/vocabulary-06-directions.md", "module": "vocabulary", "lesson": "06", "level": "tourist", "topic": "directions" },
+    { "id": "vocabulary-07-transport", "path": "tourist/vocabulary/vocabulary-07-transport.md", "module": "vocabulary", "lesson": "07", "level": "tourist", "topic": "transport" },
+    { "id": "vocabulary-08-hotel", "path": "tourist/vocabulary/vocabulary-08-hotel.md", "module": "vocabulary", "lesson": "08", "level": "tourist", "topic": "hotel" },
+    { "id": "vocabulary-09-shopping", "path": "tourist/vocabulary/vocabulary-09-shopping.md", "module": "vocabulary", "lesson": "09", "level": "tourist", "topic": "shopping" },
+    { "id": "vocabulary-10-emergencies", "path": "survival/vocabulary/vocabulary-10-emergencies.md", "module": "vocabulary", "lesson": "10", "level": "survival", "topic": "emergencies" },
+    { "id": "vocabulary-11-repair", "path": "survival/vocabulary/vocabulary-11-repair.md", "module": "vocabulary", "lesson": "11", "level": "survival", "topic": "repair phrases" },
+    { "id": "listening-01-hear-the-tone", "path": "beginner/listening/listening-01-hear-the-tone.md", "module": "listening", "lesson": "01", "level": "beginner", "topic": "tone identification" },
+    { "id": "listening-02-hear-the-word", "path": "beginner/listening/listening-02-hear-the-word.md", "module": "listening", "lesson": "02", "level": "beginner", "topic": "word identification" },
+    { "id": "speech-01-say-the-tone", "path": "beginner/speech/speech-01-say-the-tone.md", "module": "speech", "lesson": "01", "level": "beginner", "topic": "tone production" },
+    { "id": "speech-02-say-the-word", "path": "beginner/speech/speech-02-say-the-word.md", "module": "speech", "lesson": "02", "level": "beginner", "topic": "word production" }
+  ]
+}

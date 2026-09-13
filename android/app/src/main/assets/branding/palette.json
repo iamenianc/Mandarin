@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "Proposed colour tokens for the Material 3 theme in :core:ui. Values are a starting point and are not yet approved. The app supports the system dark theme from day one and optimizes for low visual attention (docs/03-design.md).",
+  "baseScheme": "Material 3 baseline, custom seed",
+  "colors": {
+    "ink900": { "value": "#0B1220", "role": "Dark background" },
+    "ink800": { "value": "#131C2E", "role": "Dark surface" },
+    "ink700": { "value": "#1D2942", "role": "Dark surface variant and outlines" },
+    "paper": { "value": "#F7F5F0", "role": "Light background" },
+    "surfaceLight": { "value": "#FFFFFF", "role": "Light surface" },
+    "primary": { "value": "#0FA3A3", "role": "Primary actions and accents" },
+    "onPrimary": { "value": "#04211F", "role": "Text and icons on primary" },
+    "accent": { "value": "#FF6B4A", "role": "Brand mark stroke, tone contour, speaking state" },
+    "onAccent": { "value": "#3A1108", "role": "Text and icons on accent" },
+    "success": { "value": "#2E9E6B", "role": "Positive feedback" },
+    "caution": { "value": "#E0A400", "role": "Caution and processing state" },
+    "error": { "value": "#D64545", "role": "Errors and destructive actions" },
+    "muted": { "value": "#6B7280", "role": "Muted microphone state and disabled text" }
+  },
+  "semantic": {
+    "micState": {
+      "listening": "#0FA3A3",
+      "processing": "#E0A400",
+      "speaking": "#FF6B4A",
+      "muted": "#6B7280",
+      "note": "Microphone states must be unmistakable (docs/03-design.md)."
+    },
+    "toneContour": {
+      "value": "#FF6B4A",
+      "role": "Tone-contour and pitch visualizations"
+    }
+  }
+}

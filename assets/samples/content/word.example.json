@@ -1,0 +1,9 @@
+{
+  "id": "word-cha2",
+  "type": "word",
+  "source": "bundled",
+  "meaning": "tea",
+  "audioAssetRef": "audio/reference/cha2.wav",
+  "pinyin": "cha2",
+  "targetTones": [2]
+}

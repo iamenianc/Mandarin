@@ -1,0 +1,6 @@
+# Voices pinned for build-time reference generation (Kokoro-82M, lang_code 'z').
+# An id is added only once a track uses it. See README.md and ../schema/track.schema.json.
+version: 1
+engine: kokoro-82m
+langCode: z
+voices: []

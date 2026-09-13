@@ -1,0 +1,27 @@
+{
+  "learnerLevel": "beginner",
+  "pinyin": "ni3 hao3",
+  "targetTones": [3, 3],
+  "referenceAudio": "<base64: reference clip omitted>",
+  "attemptAudio": "<base64: learner attempt omitted>",
+  "acousticEvidence": {
+    "phrase": "ni3 hao3",
+    "syllables": [
+      {
+        "pinyin": "ni3",
+        "expectedTone": 3,
+        "observed": "fall-then-flat",
+        "voicedMs": 210,
+        "loudness": "medium",
+        "note": "rise at the end missing"
+      },
+      {
+        "pinyin": "hao3",
+        "expectedTone": 3,
+        "observed": "match",
+        "voicedMs": 180,
+        "loudness": "medium"
+      }
+    ]
+  }
+}

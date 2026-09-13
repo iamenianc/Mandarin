@@ -1,0 +1,6 @@
+# Reference clips for the listening module.
+# A single entry is described by ../../schema/track.schema.json.
+version: 1
+category: reference
+module: listening
+tracks: []

@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "Client configuration for the Cloudflare Worker proxy. The Worker owns provider selection and credentials, so no key or token appears here (ADR 0003, ADR 0009).",
+  "baseUrl": {
+    "production": "https://learnhuayu-api.<account>.workers.dev",
+    "local": "http://localhost:8787",
+    "note": "The deployed Worker name is still an open question in docs/06-pipeline.md; confirm and replace '<account>' before M1."
+  },
+  "transport": {
+    "scheme": "https",
+    "streaming": "websocket-preferred for conversation (WF-2, WF-10)",
+    "payloadLimitBytes": 65536,
+    "payloadLimitNote": "64 KiB is the current cap on the template chat route in docs/02-architecture.md; per-workflow caps are enforced by the Worker."
+  },
+  "endpoints": [
+    {
+      "workflow": "WF-1",
+      "name": "pronunciation-feedback",
+      "path": "/v1/wf/pronunciation-feedback",
+      "latencyBudgetMs": 2000,
+      "requirement": "NFR-1",
+      "fallback": "Replay reference and attempt side by side with a stored generic tip."
+    },
+    {
+      "workflow": "WF-2",
+      "name": "conversation-turn",
+      "path": "/v1/wf/conversation-turn",
+      "latencyBudgetMs": 3000,
+      "requirement": "NFR-2",
+      "fallback": "A scripted scenario line keeps the exchange moving offline."
+    },
+    {
+      "workflow": "WF-3",
+      "name": "speech-synthesis",
+      "path": "/v1/wf/speech-synthesis",
+      "latencyBudgetMs": null,
+      "requirement": "Playback-bound",
+      "fallback": "Reference clips are always local; an unsynthesized reply is shown as text."
+    },
+    {
+      "workflow": "WF-4",
+      "name": "response-transcription",
+      "path": "/v1/wf/response-transcription",
+      "latencyBudgetMs": 2000,
+      "requirement": "NFR-1 (approximate)",
+      "fallback": "Tap-only drills, which always work offline."
+    },
+    {
+      "workflow": "WF-5",
+      "name": "progress-summary",
+      "path": "/v1/wf/progress-summary",
+      "latencyBudgetMs": null,
+      "requirement": "Off critical path",
+      "fallback": "A canned summary rendered from local counts."
+    },
+    {
+      "workflow": "WF-7",
+      "name": "raymond",
+      "path": "/v1/wf/raymond",
+      "latencyBudgetMs": 3000,
+      "requirement": "none (chat)",
+      "fallback": "An offline note, plus bundled fundamentals content."
+    },
+    {
+      "workflow": "WF-8",
+      "name": "exercise-generation",
+      "path": "/v1/wf/exercise-generation",
+      "latencyBudgetMs": 4000,
+      "requirement": "Off critical path",
+      "fallback": "Repeat and vary bundled items."
+    },
+    {
+      "workflow": "WF-9",
+      "name": "field-mission-generation",
+      "path": "/v1/wf/field-mission-generation",
+      "latencyBudgetMs": 4000,
+      "requirement": "Off critical path",
+      "fallback": "A bundled script and bundled persona set."
+    },
+    {
+      "workflow": "WF-10",
+      "name": "local-conversation-turn",
+      "path": "/v1/wf/local-conversation-turn",
+      "latencyBudgetMs": 3000,
+      "requirement": "NFR-2",
+      "fallback": "Scripted local lines from the bundled mission script."
+    }
+  ],
+  "excluded": [
+    {
+      "workflow": "WF-6",
+      "name": "content-authoring",
+      "reason": "Build-time authoring only; the app never calls it (docs/08-ai-workflows.md)."
+    }
+  ]
+}

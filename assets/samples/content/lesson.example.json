@@ -1,0 +1,12 @@
+{
+  "id": "lesson-greetings-01",
+  "moduleId": "module-vocabulary-greetings",
+  "title": "Saying hello",
+  "level": "beginner",
+  "topic": "greetings",
+  "contentItemIds": [
+    "phrase-ni3-hao3",
+    "phrase-xie4-xie5",
+    "dialogue-greetings-01"
+  ]
+}

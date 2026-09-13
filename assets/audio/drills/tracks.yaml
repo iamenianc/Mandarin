@@ -1,0 +1,5 @@
+# Drill tracks used across modules.
+# A single entry is described by ../schema/track.schema.json.
+version: 1
+category: drill
+tracks: []

@@ -1,0 +1,21 @@
+{
+  "items": [
+    {
+      "type": "phrase",
+      "meaning": "goodbye",
+      "pinyin": "zai4 jian4",
+      "targetTones": [4, 4],
+      "distractors": ["zai2 jian4", "zai4 jian2"],
+      "rationale": "same greeting theme with a falling-tone contrast"
+    },
+    {
+      "type": "minimalPair",
+      "meaning": "mother",
+      "pinyin": "ma1",
+      "hangul": "마",
+      "targetTones": [1],
+      "distractors": ["ma3", "ma4"],
+      "rationale": "tone contrast against a familiar syllable"
+    }
+  ]
+}

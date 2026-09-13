@@ -1,0 +1,239 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "Index of the general and miscellaneous assets bundled with the :app module. Update whenever a file is added or removed. Authored learning content and structured res/ resources are indexed elsewhere and are not part of this tree.",
+  "boundaries": {
+    "learningContent": "Authored learning content (examples, samples, lessons, knowledge, reference audio) lives in the repository-root assets/ tree and is bundled per learning module (ADR 0007, ADR 0010). It is not duplicated here.",
+    "structuredResources": "Launcher icons, UI strings, fonts, and themes belong under android/app/src/main/res/ and are out of scope for this tree.",
+    "secrets": "No provider credentials. The Cloudflare Worker is the trust boundary (ADR 0003)."
+  },
+  "assets": [
+    {
+      "path": "README.md",
+      "kind": "overview",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers",
+      "source": "AGENTS.md; docs/02-architecture.md"
+    },
+    {
+      "path": "manifest.json",
+      "kind": "index",
+      "format": "json",
+      "status": "present",
+      "consumer": "Maintainers and tooling",
+      "source": "This file"
+    },
+    {
+      "path": "config/README.md",
+      "kind": "overview",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers"
+    },
+    {
+      "path": "config/defaults.json",
+      "kind": "configuration",
+      "format": "json",
+      "status": "present",
+      "consumer": ":core:data (DataStore defaults)",
+      "source": "docs/02-architecture.md; docs/03-design.md"
+    },
+    {
+      "path": "config/worker.json",
+      "kind": "configuration",
+      "format": "json",
+      "status": "present",
+      "consumer": ":core:ai (endpoint map and budgets)",
+      "source": "ADR 0003; ADR 0009; docs/06-pipeline.md; docs/08-ai-workflows.md"
+    },
+    {
+      "path": "config/audio.json",
+      "kind": "configuration",
+      "format": "json",
+      "status": "present",
+      "consumer": ":core:audio, :core:assessment",
+      "source": "ADR 0005; ADR 0006; docs/02-architecture.md"
+    },
+    {
+      "path": "legal/README.md",
+      "kind": "overview",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers"
+    },
+    {
+      "path": "legal/consent.md",
+      "kind": "legal",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Onboarding and settings (consent)",
+      "source": "docs/02-architecture.md; NFR-4, NFR-5"
+    },
+    {
+      "path": "legal/privacy-notice.md",
+      "kind": "legal",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Settings",
+      "source": "docs/00-vision.md; docs/02-architecture.md"
+    },
+    {
+      "path": "legal/data-inventory.md",
+      "kind": "legal",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Settings (data deletion)",
+      "source": "docs/02-architecture.md; docs/08-ai-workflows.md"
+    },
+    {
+      "path": "legal/attribution.md",
+      "kind": "legal",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Settings (about/licences)",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "path": "legal/licenses.json",
+      "kind": "legal",
+      "format": "json",
+      "status": "present",
+      "consumer": "Settings (about/licences), build",
+      "source": "docs/10-libraries-and-dependencies.md"
+    },
+    {
+      "path": "legal/licenses/README.md",
+      "kind": "overview",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers"
+    },
+    {
+      "path": "legal/licenses/apache-2.0.txt",
+      "kind": "legal",
+      "format": "text",
+      "status": "present",
+      "consumer": "Licence display",
+      "source": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+    },
+    {
+      "path": "branding/README.md",
+      "kind": "overview",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers"
+    },
+    {
+      "path": "branding/brand.md",
+      "kind": "branding",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers and design",
+      "source": "docs/00-vision.md; docs/03-design.md"
+    },
+    {
+      "path": "branding/icon-spec.md",
+      "kind": "branding",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "res/ icon production",
+      "source": "Android adaptive icon guidelines"
+    },
+    {
+      "path": "branding/typography.md",
+      "kind": "branding",
+      "format": "markdown",
+      "status": "present",
+      "consumer": ":core:ui theme",
+      "source": "docs/03-design.md; NFR-7"
+    },
+    {
+      "path": "branding/palette.json",
+      "kind": "branding",
+      "format": "json",
+      "status": "present",
+      "consumer": ":core:ui theme",
+      "source": "docs/03-design.md"
+    },
+    {
+      "path": "branding/asset-manifest.json",
+      "kind": "index",
+      "format": "json",
+      "status": "present",
+      "consumer": "res/ icon production",
+      "source": "This tree"
+    },
+    {
+      "path": "branding/source/brand-mark.svg",
+      "kind": "branding",
+      "format": "svg",
+      "status": "present",
+      "consumer": "Brand artwork",
+      "provenance": "Hand-authored; no third-party content"
+    },
+    {
+      "path": "branding/source/launcher-foreground.svg",
+      "kind": "branding",
+      "format": "svg",
+      "status": "present",
+      "consumer": "res/ adaptive icon foreground",
+      "provenance": "Hand-authored; no third-party content"
+    },
+    {
+      "path": "branding/source/launcher-background.svg",
+      "kind": "branding",
+      "format": "svg",
+      "status": "present",
+      "consumer": "res/ adaptive icon background",
+      "provenance": "Hand-authored; no third-party content"
+    },
+    {
+      "path": "branding/source/launcher-monochrome.svg",
+      "kind": "branding",
+      "format": "svg",
+      "status": "present",
+      "consumer": "res/ themed icon monochrome layer",
+      "provenance": "Hand-authored; no third-party content"
+    },
+    {
+      "path": "branding/preview/brand-mark-512.png",
+      "kind": "branding",
+      "format": "png",
+      "status": "present",
+      "consumer": "Brand review and documentation",
+      "provenance": "Rendered offline from the SVG source geometry; not a runtime resource"
+    },
+    {
+      "path": "branding/preview/launcher-square-192.png",
+      "kind": "branding",
+      "format": "png",
+      "status": "present",
+      "consumer": "Brand review and documentation",
+      "provenance": "Rendered offline from the SVG source geometry; not a runtime resource"
+    },
+    {
+      "path": "branding/preview/launcher-round-192.png",
+      "kind": "branding",
+      "format": "png",
+      "status": "present",
+      "consumer": "Brand review and documentation",
+      "provenance": "Rendered offline from the SVG source geometry; not a runtime resource"
+    },
+    {
+      "path": "misc/README.md",
+      "kind": "overview",
+      "format": "markdown",
+      "status": "present",
+      "consumer": "Maintainers"
+    },
+    {
+      "path": "misc/app-identity.json",
+      "kind": "general",
+      "format": "json",
+      "status": "present",
+      "consumer": "About/settings and tooling",
+      "source": "README.md; docs/04-roadmap.md; docs/06-pipeline.md"
+    }
+  ]
+}

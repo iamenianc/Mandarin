@@ -1,0 +1,30 @@
+{
+  "id": "mission-greetings-2026-09-13",
+  "date": "2026-09-13",
+  "theme": "greetings",
+  "source": "bundled",
+  "script": [
+    {
+      "pinyin": "ni3 hao3",
+      "meaning": "hello",
+      "targetTones": [3, 3]
+    },
+    {
+      "pinyin": "xie4 xie5",
+      "meaning": "thank you",
+      "targetTones": [4, 5]
+    },
+    {
+      "pinyin": "bu2 ke4 qi5",
+      "meaning": "you are welcome",
+      "targetTones": [2, 4, 5]
+    }
+  ],
+  "localPersonaIds": [
+    "persona-local-01",
+    "persona-local-02",
+    "persona-local-03",
+    "persona-local-04",
+    "persona-local-05"
+  ]
+}
