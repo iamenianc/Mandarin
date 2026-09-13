@@ -79,7 +79,8 @@ before producing changes.
 
 Master notes: the sibling cleanup commit 909e063 (leftover eyes-free references) was
 reviewed and is valid. The Worker slice is merged; `docs/02-architecture.md` now points at
-`api/README.md` for the implemented routes.
+`api/README.md` for the implemented routes. Orchestrator re-verified on `f374ffc`: the
+`api/` tree is identical to the reviewed head `b49f8f4`, and `npm test` passes 31/31.
 
 ## Merge protocol
 
