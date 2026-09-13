@@ -5,7 +5,7 @@ import {
   findAudioPart,
   isAudioPart,
   isNonEmptyString,
-  isNumberArray,
+  isToneArray,
   isPlainObject,
   isStringArray,
 } from './validate.js';
@@ -67,7 +67,7 @@ function turnFields(value) {
   if (!isPlainObject(value)) return null;
   if (!isNonEmptyString(value.pinyin) || containsHanzi(value.pinyin)) return null;
   if (!isNonEmptyString(value.meaning) || containsHanzi(value.meaning)) return null;
-  if (!isNumberArray(value.targetTones) || value.targetTones.length === 0) return null;
+  if (!isToneArray(value.targetTones) || value.targetTones.length === 0) return null;
   return { pinyin: value.pinyin, meaning: value.meaning, targetTones: value.targetTones };
 }
 
@@ -115,8 +115,8 @@ export const WORKFLOWS = [
       if (audioCheck.error) return audioCheck;
       if (!isNonEmptyString(body.pinyin)) return fail('pinyin must be a non-empty string');
       if (containsHanzi(body.pinyin)) return fail('pinyin must not contain Chinese characters');
-      if (body.targetTones !== undefined && !isNumberArray(body.targetTones)) {
-        return fail('targetTones must be an array of numbers');
+      if (body.targetTones !== undefined && !isToneArray(body.targetTones)) {
+        return fail('targetTones must be an array of integers between 1 and 5');
       }
       if (body.learnerLevel !== undefined && !isNonEmptyString(body.learnerLevel)) {
         return fail('learnerLevel must be a non-empty string');
@@ -359,8 +359,12 @@ export const WORKFLOWS = [
         if (audioCheck.error) return audioCheck;
         audio = audioCheck.audio;
       }
-      if (!isNonEmptyString(body.question) || containsHanzi(body.question)) {
-        return fail('question must be a non-empty string without Chinese characters');
+      if (body.question !== undefined) {
+        if (!isNonEmptyString(body.question) || containsHanzi(body.question)) {
+          return fail('question must be a non-empty string without Chinese characters');
+        }
+      } else if (audio.length === 0) {
+        return fail('a text question or exactly one spoken-question audio part is required');
       }
       if (body.history !== undefined) {
         if (!Array.isArray(body.history) || !body.history.every((entry) => isPlainObject(entry) && RAYMOND_ROLES.has(entry.role) && isNonEmptyString(entry.text))) {
@@ -380,19 +384,11 @@ export const WORKFLOWS = [
       };
     },
     buildMessages(value) {
-      const content = [
-        {
-          type: 'text',
-          text: JSON.stringify({
-            question: value.question,
-            history: value.history ?? [],
-            learnerLevel: value.learnerLevel ?? null,
-          }),
-        },
-      ];
+      const metadata = { history: value.history ?? [], learnerLevel: value.learnerLevel ?? null };
+      if (value.question !== undefined) metadata.question = value.question;
       return [
         { role: 'system', content: WF7_PROMPT },
-        { role: 'user', content: content.concat(value.audio) },
+        { role: 'user', content: [{ type: 'text', text: JSON.stringify(metadata) }].concat(value.audio) },
       ];
     },
     validateOutput(output) {
@@ -462,7 +458,7 @@ export const WORKFLOWS = [
         if (!isNonEmptyString(item.meaning)) continue;
         if (!isNonEmptyString(item.pinyin) || containsHanzi(item.pinyin)) continue;
         if (item.hangul !== undefined && !isNonEmptyString(item.hangul)) continue;
-        if (!isNumberArray(item.targetTones) || item.targetTones.length === 0) continue;
+        if (!isToneArray(item.targetTones) || item.targetTones.length === 0) continue;
         if (!isStringArray(item.distractors)) continue;
         if (!isNonEmptyString(item.rationale)) continue;
         const cleaned = {
@@ -565,7 +561,7 @@ export const WORKFLOWS = [
       const script = [];
       for (const turn of body.mission.script) {
         const cleaned = turnFields(turn);
-        if (!cleaned) return fail('mission.script turns must include pinyin, meaning, and targetTones');
+        if (!cleaned) return fail('mission.script turns must include pinyin, meaning, and targetTones with integers 1-5');
         script.push(cleaned);
       }
       if (body.mission.goal !== undefined && !isNonEmptyString(body.mission.goal)) {

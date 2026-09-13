@@ -21,7 +21,7 @@ names in `docs/08-ai-workflows.md`; `/v1/wf/local-turn` follows the pipeline dia
 | `POST` | `/v1/wf/speech-synthesis` | WF-3 | exactly one of `pinyin` or `replyText`, plus `voice?`, `language?` | 24 kHz mono audio, or `501` when unconfigured |
 | `POST` | `/v1/wf/response-transcription` | WF-4 | `audio` (one part), `expectedOptions?`, `keywords?` | `{ transcript, matchedOptionId?, confidence }` |
 | `POST` | `/v1/wf/progress-summary` | WF-5 | `attemptCounts`, `feedbackThemes`, `moduleIds?`, `lessonIds?`, `debriefThemes?` | `{ summaryText, focusAreas }` |
-| `POST` | `/v1/wf/mandarin-qa` | WF-7 | `question`, `history?`, `learnerLevel?`, `audio?` (one part, spoken question) | `{ answerText, examples, followUps }` |
+| `POST` | `/v1/wf/mandarin-qa` | WF-7 | `question` or `audio` (one part, spoken question), `history?`, `learnerLevel?` | `{ answerText, examples, followUps }` |
 | `POST` | `/v1/wf/exercise-generation` | WF-8 | `moduleId`, `itemType`, `theme?`, `targetUnits?`, `difficulty?`, `feedbackThemes?`, `count?` | `{ items }` |
 | `POST` | `/v1/wf/field-mission-generation` | WF-9 | `theme`, `moduleContext?`, `coveredContent?`, `learnerLevel?`, `debriefThemes?`, `exchangeLength?` | `{ script, locals }` (exactly five locals) |
 | `POST` | `/v1/wf/local-turn` | WF-10 | `persona`, `mission`, `conversationState?`, `targetDifficulty?`, `audio` (one part) | `{ replyText, understandingSignal?, nextLocalPrompt? }` |
@@ -40,7 +40,8 @@ WF-1, WF-2, WF-4, and WF-10 (and the optional spoken question for WF-7) receive 
 base64 `input_audio` content parts, the shape OpenRouter uses
 (`{ "type": "input_audio", "input_audio": { "data": "<base64>", "format": "wav" } }`).
 Supported formats: `wav`, `mp3`, `m4a`, `ogg`, `webm`, `flac`. WF-1 requires exactly two
-parts (reference, then attempt); WF-2, WF-4, WF-10, and WF-7 require exactly one.
+parts (reference, then attempt); WF-2, WF-4, and WF-10 require exactly one; WF-7 accepts
+either a text question or exactly one spoken-question part.
 WF-5, WF-8, and WF-9 receive aggregated metadata and content context only (FR-24): the
 Worker rejects any `input_audio` part in those requests, and WF-5 also rejects
 `transcript`/`transcripts`.
@@ -55,8 +56,12 @@ Worker rejects any `input_audio` part in those requests, and WF-5 also rejects
 
 Pinyin fields must not contain Chinese characters; outputs are validated against the
 documented schema, and trailing-coaching fields are dropped where the schema marks them
-optional. Pinyin tone numbers are not pattern-checked server-side because the neutral
-tone is not written with a digit (ADR 0012); no-hanzi is enforced on input and output.
+optional. Numeric tone arrays are checked as integers 1-5 (the neutral tone is `5`)
+wherever the schema carries them (ADR 0012): WF-1 `targetTones`, WF-8 item `targetTones`,
+WF-9 script turns, and WF-10 mission script turns. The pinyin strings themselves are not
+pattern-checked server-side, because content validation owns pinyin spelling. No-hanzi is
+enforced on input and output. WF-1 rejects an out-of-range tone array with `400`; WF-8
+drops the invalid item per `docs/08-ai-workflows.md`; WF-9 and WF-10 fail the request.
 
 ### Errors
 

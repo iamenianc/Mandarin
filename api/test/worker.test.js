@@ -169,6 +169,9 @@ test('WF-1 rejects malformed audio and hanzi input without calling upstream', as
     { body: { pinyin: 'ni3 hao3', audio: [audioPart('AAAA', 'aiff'), audioPart()] }, error: /input_audio/ },
     { body: { pinyin: HANZI, audio: [audioPart(), audioPart()] }, error: /Chinese characters/ },
     { body: { pinyin: 'ni3 hao3', targetTones: ['3', '3'], audio: [audioPart(), audioPart()] }, error: /targetTones/ },
+    { body: { pinyin: 'ni3 hao3', targetTones: [0], audio: [audioPart(), audioPart()] }, error: /targetTones/ },
+    { body: { pinyin: 'ni3 hao3', targetTones: [6], audio: [audioPart(), audioPart()] }, error: /targetTones/ },
+    { body: { pinyin: 'ni3 hao3', targetTones: [2.5], audio: [audioPart(), audioPart()] }, error: /targetTones/ },
   ];
 
   for (const { body, error } of cases) {
@@ -194,6 +197,28 @@ test('WF-1 rejects an oversize audio part with 413', async (t) => {
   assert.equal(response.status, 413);
   assert.deepEqual(await response.json(), { error: 'audio part too large', status: 413 });
   assert.equal(mock.calls.length, 0);
+});
+
+test('WF-1 accepts the neutral tone 5 in targetTones', async (t) => {
+  const output = {
+    weakestUnit: 'ma5',
+    issue: 'The neutral tone is too strong.',
+    tip: 'Keep the last syllable short and light.',
+    encouragement: 'Clear first syllable.',
+    replayHint: 'Listen to how the final syllable fades.',
+  };
+  const mock = withFetch(() => chatContent(output));
+  t.after(mock.restore);
+
+  const response = await worker.fetch(post('/v1/wf/pronunciation-feedback', {
+    pinyin: 'ma5',
+    targetTones: [5],
+    audio: [audioPart(), audioPart()],
+  }), ENV);
+
+  assert.equal(response.status, 200);
+  const upstream = JSON.parse(mock.calls[0].init.body);
+  assert.match(upstream.messages[1].content[0].text, /"targetTones":\[5\]/);
 });
 
 test('WF-1 honors the per-workflow model override without an API key', async (t) => {
@@ -363,6 +388,37 @@ test('WF-7 answers with examples and follow-ups', async (t) => {
   assert.match(upstream.messages[0].content, /Raymond/);
 });
 
+test('WF-7 accepts an audio-only spoken question', async (t) => {
+  const output = {
+    answerText: 'The first tone is high and level.',
+    examples: [],
+    followUps: [],
+  };
+  const mock = withFetch(() => chatContent(output));
+  t.after(mock.restore);
+
+  const response = await worker.fetch(post('/v1/wf/mandarin-qa', {
+    audio: [audioPart()],
+    learnerLevel: 'beginner',
+  }), ENV);
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), output);
+
+  const upstream = JSON.parse(mock.calls[0].init.body);
+  assert.match(upstream.messages[0].content, /Raymond/);
+  const parts = upstream.messages[1].content;
+  assert.equal(parts.filter((part) => part.type === 'input_audio').length, 1);
+  assert.equal(parts[0].type, 'text');
+  assert.ok(!parts[0].text.includes('"question"'));
+});
+
+test('WF-7 requires a text question or a spoken question', async () => {
+  const response = await worker.fetch(post('/v1/wf/mandarin-qa', {}), ENV);
+  assert.equal(response.status, 400);
+  assert.match((await response.json()).error, /question/);
+});
+
 test('WF-7 rejects a hanzi question', async () => {
   const response = await worker.fetch(post('/v1/wf/mandarin-qa', { question: HANZI }), ENV);
   assert.equal(response.status, 400);
@@ -413,8 +469,65 @@ test('WF-8 drops invalid generated items and rejects raw audio input', async (t)
   assert.equal(mock.calls.length, 1);
 });
 
+test('WF-8 drops tone numbers outside 1-5 and accepts the neutral tone', async (t) => {
+  const wordItem = {
+    type: 'word',
+    meaning: 'hello',
+    pinyin: 'ni3 hao3',
+    targetTones: [3, 3],
+    distractors: [],
+    rationale: 'Common greeting.',
+  };
+  const neutralItem = {
+    type: 'word',
+    meaning: 'question particle',
+    pinyin: 'ma5',
+    targetTones: [5],
+    distractors: ['ma3'],
+    rationale: 'Neutral tone.',
+  };
+  const mock = withFetch(() => chatContent({
+    items: [wordItem, { ...wordItem, targetTones: [7] }, { ...wordItem, targetTones: [0] }, neutralItem],
+  }));
+  t.after(mock.restore);
+
+  const response = await worker.fetch(post('/v1/wf/exercise-generation', {
+    moduleId: 'tones',
+    itemType: 'word',
+  }), ENV);
+
+  assert.equal(response.status, 200);
+  assert.deepEqual(await response.json(), { items: [wordItem, neutralItem] });
+});
+
+test('WF-9 rejects a script turn with a tone number outside 1-5', async (t) => {
+  const mock = withFetch(() => chatContent({
+    script: [{ pinyin: 'ni3 hao3', meaning: 'hello', targetTones: [6] }],
+    locals: [LOCAL, LOCAL, LOCAL, LOCAL, LOCAL],
+  }));
+  t.after(mock.restore);
+
+  const response = await worker.fetch(post('/v1/wf/field-mission-generation', { theme: 'buying fruit' }), ENV);
+  assert.equal(response.status, 502);
+  assert.deepEqual(await response.json(), { error: 'invalid upstream response', status: 502 });
+});
+
+test('WF-10 rejects a mission turn with a tone number outside 1-5', async () => {
+  const response = await worker.fetch(post('/v1/wf/local-turn', {
+    audio: [audioPart()],
+    persona: LOCAL,
+    mission: { script: [{ pinyin: 'ma5', meaning: 'question particle', targetTones: [6] }] },
+  }), ENV);
+
+  assert.equal(response.status, 400);
+  assert.match((await response.json()).error, /1-5/);
+});
+
 test('WF-9 requires a script and exactly five locals', async (t) => {
-  const output = { script: [SCRIPT_TURN], locals: [LOCAL, LOCAL, LOCAL, LOCAL, LOCAL] };
+  const output = {
+    script: [SCRIPT_TURN, { pinyin: 'ma5', meaning: 'question particle', targetTones: [5] }],
+    locals: [LOCAL, LOCAL, LOCAL, LOCAL, LOCAL],
+  };
   const mock = withFetch(() => chatContent(output));
   t.after(mock.restore);
 
@@ -453,7 +566,7 @@ test('WF-10 returns an in-character reply with the persona and mission', async (
   const response = await worker.fetch(post('/v1/wf/local-turn', {
     audio: [audioPart()],
     persona: LOCAL,
-    mission: { script: [SCRIPT_TURN], goal: 'greet the shopkeeper' },
+    mission: { script: [SCRIPT_TURN, { pinyin: 'ma5', meaning: 'question particle', targetTones: [5] }], goal: 'greet the shopkeeper' },
     targetDifficulty: 'beginner',
   }), ENV);
 

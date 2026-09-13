@@ -15,8 +15,8 @@ export function isStringArray(value) {
   return Array.isArray(value) && value.every(isNonEmptyString);
 }
 
-export function isNumberArray(value) {
-  return Array.isArray(value) && value.every((entry) => typeof entry === 'number' && Number.isFinite(entry));
+export function isToneArray(value) {
+  return Array.isArray(value) && value.every((entry) => Number.isInteger(entry) && entry >= 1 && entry <= 5);
 }
 
 export function containsHanzi(value) {
