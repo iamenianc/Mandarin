@@ -1,5 +1,6 @@
 package com.learnhuayu.app.ui.session
 
+import com.learnhuayu.app.audio.ReferencePcmDecoder
 import com.learnhuayu.core.ai.AcousticEvidence
 import com.learnhuayu.core.ai.AudioClip
 import com.learnhuayu.core.ai.PronunciationFeedback
@@ -55,6 +56,26 @@ class FakeReferenceClipReader(
     override suspend fun read(audioAssetPath: String): AudioClip? {
         requestedPaths += audioAssetPath
         return clips[audioAssetPath]
+    }
+}
+
+class FakeReferencePcmDecoder(
+    private var result: PcmAudio? = null,
+) : ReferencePcmDecoder {
+
+    var decodeCount = 0
+        private set
+
+    val decodedClips = mutableListOf<AudioClip>()
+
+    fun returns(result: PcmAudio?) {
+        this.result = result
+    }
+
+    override suspend fun decode(clip: AudioClip): PcmAudio? {
+        decodeCount++
+        decodedClips += clip
+        return result
     }
 }
 

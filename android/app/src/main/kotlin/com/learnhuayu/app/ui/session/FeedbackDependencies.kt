@@ -11,7 +11,6 @@ import java.io.FileNotFoundException
 import java.io.IOException
 import java.util.Locale
 import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
  * Reads the bundled reference clip bytes for one content item so WF-1 can send them as the
@@ -55,15 +54,12 @@ fun detectAudioFormat(audioAssetPath: String): AudioFormat? = when (
 
 /**
  * Turns one recorded attempt into the compact, versioned per-syllable evidence WF-1 accepts
- * (ADR 0014). The default implementation is a no-op: measured evidence arrives once reference
- * features are precomputed at content-build time and the `:core:assessment` pipeline is
- * wired behind this seam. Until then the request degrades to the audio-only form.
+ * (ADR 0014). [AssessmentAttemptEvidenceSource] measures the attempt against the bundled
+ * reference clip on device: it decodes the clip, recovers its syllables from the energy
+ * contour, precomputes the reference features, runs the `:core:assessment` pipeline, and maps
+ * the result to `:core:ai.AcousticEvidence`. Any missing or failed step returns `null` so the
+ * request degrades to the audio-only form.
  */
 interface AttemptEvidenceSource {
     suspend fun evidenceFor(item: ContentItem, attempt: PcmAudio): AcousticEvidence?
-}
-
-@Singleton
-class NoOpAttemptEvidenceSource @Inject constructor() : AttemptEvidenceSource {
-    override suspend fun evidenceFor(item: ContentItem, attempt: PcmAudio): AcousticEvidence? = null
 }
