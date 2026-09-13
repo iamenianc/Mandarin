@@ -46,6 +46,11 @@ shared item type. The wave-2 implementation left two gaps:
   to a visible, non-fatal message and the learner can continue; `PlaybackStatus.Failed` and
   `RecorderState.Failed` surface as text. Shared `:core:audio` singletons are never
   released by a screen.
+- AI-backed drills stay modes too. `SPEAK_AND_REPEAT_FEEDBACK` records an attempt and asks
+  WF-1 (ADR 0005) to compare it with the bundled reference clip, rendering the coaching or
+  the offline fallback. Measured tone evidence enters through an `AttemptEvidenceSource`
+  seam that returns null until reference features are precomputed (ADR 0014); until then
+  the request is the audio-only form.
 
 ## Consequences
 
@@ -60,3 +65,5 @@ shared item type. The wave-2 implementation left two gaps:
   the tap.
 - Moving the practice-to-mode mapping into the content schema remains possible later; it
   was kept in feature modules because authored content is not edited by feature slices.
+- Coached speech is one engine mode, so the speech module adds no screen, and grounded
+  evidence stays isolated behind one seam that can be filled in without touching the engine.

@@ -160,10 +160,17 @@ content-build time and wire the seam; 3c-2 listening WF-4 spoken answers with th
 matcher and WF-8 endless practice. Only one 3c slice runs at a time because all three
 extend the `:app` engine.
 
-3c-1 (in flight 2026-09-13): worktree `speech wf1` (`wt-1789318537609-25`), branch
-`app/speech-feedback`, session `ses_f644ddaf7ffeeKNk1Vgm51u6an`, based on `1f640c0`.
-Owns `:app`, `:feature:speech`, and the one `DrillMode.SPEAK_AND_REPEAT_FEEDBACK` value in
-`:core:model`.
+3c-1 (merged 2026-09-13): worktree `speech wf1` (`wt-1789318537609-25`), branch
+`app/speech-feedback`, session `ses_f644ddaf7ffeeKNk1Vgm51u6an`, based on `1f640c0`;
+commit `933db6f`; merged as `5f5751f`. Adds `DrillMode.SPEAK_AND_REPEAT_FEEDBACK`, wires
+`:feature:speech` to the corpus, and gives the engine a coached feedback step: it reads the
+reference asset bytes (`ReferenceClipReader`), sends reference plus attempt clips to WF-1,
+and renders the coaching or the offline fallback. The measured-evidence seam
+(`AttemptEvidenceSource`) returns null until reference features exist. Independent
+verification: diff confined to `:app`, `:feature:speech`, and the one `DrillMode` value; no
+hanzi; `:app:testDebugUnitTest` (SessionFeedbackTest 6, SessionViewModelTest 17) and
+`:feature:speech:testDebugUnitTest` (3) re-run green, `:app:assembleDebug` and
+`spotlessCheck` green, all with `--no-daemon`.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
