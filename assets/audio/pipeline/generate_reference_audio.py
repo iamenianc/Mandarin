@@ -657,7 +657,7 @@ def write_generated_manifest(entries: list[dict], out_dir: Path) -> Path:
     return target
 
 
-def ensure_top_index(registry_module_order=None) -> bool:
+def ensure_top_index() -> bool:
     """Keep manifest.yaml valid and deterministically ordered; rewrite only if needed."""
     document = load_yaml(TOP_MANIFEST_PATH)
     manifests = document.get("manifests") or []
