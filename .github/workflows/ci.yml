@@ -35,6 +35,9 @@ jobs:
       - name: Run lint
         run: ./gradlew lint --no-daemon
 
+      - name: Check formatting
+        run: ./gradlew spotlessCheck --no-daemon
+
   worker:
     name: Worker syntax check
     runs-on: ubuntu-latest
@@ -48,3 +51,7 @@ jobs:
 
       - name: Check Worker syntax
         run: node --check api/worker.js
+
+      - name: Run Worker tests
+        working-directory: api
+        run: npm test

@@ -4,7 +4,7 @@ Status: draft. Milestones are sequential; each should leave the repo in a
 coherent state. The throughline is audio-first: every milestone is judged on
 listening and speaking, not on reading or writing.
 
-## M0 - Planning (current)
+## M0 - Planning (complete)
 
 - [x] Repository and doc structure.
 - [x] Vision and requirements settled (audio-first, pinyin always visible, Hangul optional, private project).
@@ -20,16 +20,16 @@ listening and speaking, not on reading or writing.
 
 Exit criteria: requirements and architecture are stable enough to scaffold code.
 
-## M1 - Project scaffold and audio foundation
+## M1 - Project scaffold and audio foundation (current)
 
-- [ ] Create Android project (Kotlin, Compose, Gradle version catalog).
-- [ ] Set up multi-module layout: `:app`, `:core:*`, `:feature:*` (ADR 0007).
-- [ ] Define the `LearningModule` contract, `ContentItem`, and DI multibinding registry.
+- [x] Create Android project (Kotlin, Compose, Gradle version catalog).
+- [x] Set up multi-module layout: `:app`, `:core:*`, `:feature:*` (ADR 0007).
+- [x] Define the `LearningModule` contract, `ContentItem`, and DI multibinding registry.
 - [ ] Define the `:core:ai` workflow interfaces and one Worker endpoint per workflow
   (ADR 0009); the WF-1 request model includes the optional evidence field (ADR 0014).
 - [ ] Microphone permission flow and audio capture/playback plumbing.
-- [ ] CI and lint/format config.
-- [ ] Add `build` / `lint` / `test` commands to `AGENTS.md`.
+- [x] CI and lint/format config.
+- [x] Add `build` / `lint` / `test` commands to `AGENTS.md`.
 - [ ] Bundled reference clips and a Room schema.
 
 Exit criteria: app builds, lists registered modules, plays a model clip, records the mic,

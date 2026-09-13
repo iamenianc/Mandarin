@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import com.learnhuayu.app.registry.ModuleRegistry
 import com.learnhuayu.core.model.LearningModule
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import javax.inject.Inject
 
 data class HomeUiState(
     val modules: List<LearningModule> = emptyList(),

@@ -11,10 +11,12 @@ style is currently unenforced and the "lint/format config" M1 item is only half 
 
 ## Decision
 
-Use Spotless with its ktlint step for Kotlin sources, Gradle Kotlin scripts, and version
-catalog files. `spotlessCheck` runs in CI and is added to `AGENTS.md`; `spotlessApply`
-performs the fix. detekt is deferred: Android lint plus ktlint cover correctness and style
-at this size, and detekt is added only if a rule it alone provides becomes necessary.
+Use Spotless with its ktlint step for Kotlin sources and Gradle Kotlin scripts.
+`spotlessCheck` runs in CI and is added to `AGENTS.md`; `spotlessApply` performs the fix.
+ktlint's `function-naming` rule is configured to ignore functions annotated
+`@Composable`, whose PascalCase names are mandated by Compose. detekt is deferred: Android
+lint plus ktlint cover correctness and style at this size, and detekt is added only if a
+rule it alone provides becomes necessary.
 
 ## Consequences
 

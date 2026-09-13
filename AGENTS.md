@@ -61,13 +61,17 @@ Windows (`gradlew.bat`):
 - Build release APK: `gradlew.bat :app:assembleRelease`
 - Unit tests: `gradlew.bat test`
 - Android lint: `gradlew.bat lint`
+- Check formatting: `gradlew.bat spotlessCheck`
+- Auto-format: `gradlew.bat spotlessApply`
 
 CI (Linux, `.github/workflows/ci.yml`):
 
 - `./gradlew :app:assembleDebug --no-daemon`
 - `./gradlew test --no-daemon`
 - `./gradlew lint --no-daemon`
+- `./gradlew spotlessCheck --no-daemon`
 - `node --check api/worker.js`
+- `npm test` (in `api/`)
 
 ## Do not commit
 
