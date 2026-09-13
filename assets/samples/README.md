@@ -15,6 +15,8 @@ for authoring and review; the app never loads them at runtime.
 | `content/word.example.json` | A `word` content item. |
 | `content/dialogue.example.json` | A `dialogue` content item with ordered turns. |
 | `audio/audio-track.example.json` | Reference-audio track metadata (ADR 0006). |
+| `audio/tone-contours.example.wav` | A 24 kHz mono tone-contour placeholder clip (see Provenance). |
+| `visuals/tone-contours.example.svg` | A diagram of the five tone contours. |
 | `mission/field-mission.example.json` | A bundled daily field mission and its five locals. |
 | `mission/local-persona.example.json` | One simulated local persona. |
 | `mission/debrief-entry.example.json` | A debrief entry logged after a mission. |
@@ -33,17 +35,30 @@ for authoring and review; the app never loads them at runtime.
   lesson's items, a dialogue's turns, a mission's script and personas.
 - Sample audio-track metadata for a generated reference clip: pinyin with tone numbers,
   target tones, duration, sample rate, and voice provenance (ADR 0006).
-- A text stand-in for audio. Audio is referenced by path or shown as a placeholder
-  token; the sample never carries the audio itself.
+- Small sample media that demonstrates a format, such as a short audio clip or an
+  image. Shipped audio belongs in `assets/audio/`; a sample here only shows the
+  format, and its origin is recorded under "Provenance".
 
 ## What does not belong here
 
-- Audio files and other binaries. Audio belongs in `assets/audio/`; samples describe
-  it in text.
+- Large or production media, or copies of shipped assets. Those belong in the sibling
+  category folders (`assets/audio/`, `assets/lessons/`); samples stay small and
+  illustrative.
 - Real lesson content or complete teaching material. Those belong in
   `assets/lessons/` or in the feature module that owns them.
 - Generated or exported output, runtime data, or anything the app produces.
 - Secrets, API keys, or provider credentials.
+
+## Provenance
+
+The media samples are generated in-repo because their real equivalents cannot be
+produced here: shipped reference audio is generated with Kokoro-82M at build time
+(ADR 0006), and no production image pipeline exists.
+
+| File | Origin |
+| --- | --- |
+| `audio/tone-contours.example.wav` | Synthesized placeholder - sine tone glides for tones 1-4, 24 kHz mono 16-bit PCM, RIFF/WAVE. Generated in-repo for format demonstration; not Kokoro speech and not shipped content. |
+| `visuals/tone-contours.example.svg` | Hand-authored diagram of the five tone contours, labelled with tone numbers only. |
 
 ## Naming conventions
 
@@ -66,6 +81,8 @@ for authoring and review; the app never loads them at runtime.
   shippable content or collide with real content ids.
 - Field names follow the documented model. Where a format is not yet settled, the
   sample shows a proposed shape and is updated or removed when the schema is decided.
+- Media samples are small and valid, and carry the provenance note above; a
+  placeholder is labelled as a placeholder and never presented as shipped content.
 - Keep each sample as small as possible: the fewest fields and items that still show
   the format.
 
