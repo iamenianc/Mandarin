@@ -100,7 +100,6 @@ There are no accounts, no profiles, no analytics, and no monetization.
 
 ## Open questions
 
-- Hands-free conversation: wake word vs. push-to-talk.
 - How the five locals vary by default (role, pace, politeness) and how much they change
   between missions.
 - How to log a debrief word the learner cannot type: tap it in the mission transcript vs.

@@ -32,14 +32,6 @@
       "notes": "Hangul is an optional phonetic aid. It stays off until the learner enables it; pinyin is always shown."
     },
     {
-      "key": "eyesFreeMode",
-      "type": "boolean",
-      "default": false,
-      "setIn": "settings",
-      "source": "FR-13; docs/03-design.md",
-      "notes": "Eyes-free mode is an option, not the default."
-    },
-    {
       "key": "consent.recordingsToProvider",
       "type": "boolean",
       "default": false,

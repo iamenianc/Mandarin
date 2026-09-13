@@ -164,7 +164,6 @@ Hangul). There is deliberately **no hanzi browser and no character-based drill**
 
 ## Open design questions
 
-- Hands-free conversation: wake word vs. push-to-talk.
 - How to keep AI feedback varied and encouraging rather than repetitive.
 - How the five locals vary by default (role, pace, politeness) and whether personas are
   generated per mission or drawn from a bundled pool.
