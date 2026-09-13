@@ -35,6 +35,10 @@ object DrillChoices {
      */
     fun answerLabel(item: ContentItem, mode: DrillMode): String = when (mode) {
         DrillMode.HEAR_AND_NAME -> item.targetTones.joinToString("-")
-        DrillMode.LISTEN_AND_CHOOSE, DrillMode.LESSON, DrillMode.SPEAK_AND_REPEAT -> item.pinyin
+        DrillMode.LISTEN_AND_CHOOSE,
+        DrillMode.LESSON,
+        DrillMode.SPEAK_AND_REPEAT,
+        DrillMode.SPEAK_AND_REPEAT_FEEDBACK,
+        -> item.pinyin
     }
 }

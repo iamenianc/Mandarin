@@ -29,6 +29,16 @@
     <string name="session_correct">Correct! %1$s</string>
     <string name="session_incorrect">Not quite. It was %1$s.</string>
     <string name="session_reference_unavailable">The reference clip is unavailable. You can keep going.</string>
+    <string name="session_get_feedback">Get feedback</string>
+    <string name="session_feedback_loading">Getting feedback…</string>
+    <string name="session_feedback_weakest_unit">Focus: %1$s</string>
+    <string name="session_feedback_issue">Issue: %1$s</string>
+    <string name="session_feedback_tip">Tip: %1$s</string>
+    <string name="session_feedback_replay_hint">Listen again: %1$s</string>
+    <string name="session_feedback_offline_title">Coaching needs a connection</string>
+    <string name="session_feedback_offline_note">Replay the reference and your attempt side by side, then try again. Offline drills still work.</string>
+    <string name="session_feedback_offline_tip">Tip: keep each syllable short and listen for the tone direction.</string>
+    <string name="session_try_again">Try again</string>
     <string name="session_error">Audio error: %1$s</string>
     <string name="session_finished_title">Session complete</string>
     <string name="session_finished_body">Items practiced: %1$d</string>

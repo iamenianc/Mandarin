@@ -5,8 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.learnhuayu.app.audio.RecordingStore
 import com.learnhuayu.app.registry.ModuleRegistry
 import com.learnhuayu.app.ui.audio.MicrophonePermission
+import com.learnhuayu.core.ai.AudioClip
+import com.learnhuayu.core.ai.AudioFormat
+import com.learnhuayu.core.ai.PronunciationFeedback
+import com.learnhuayu.core.ai.PronunciationFeedbackRequest
+import com.learnhuayu.core.ai.PronunciationFeedbackWorkflow
+import com.learnhuayu.core.ai.WorkflowResult
 import com.learnhuayu.core.audio.capture.AudioRecorder
 import com.learnhuayu.core.audio.capture.RecorderState
+import com.learnhuayu.core.audio.pcm.PcmAudio
 import com.learnhuayu.core.audio.playback.AudioPlayer
 import com.learnhuayu.core.audio.playback.AudioSource
 import com.learnhuayu.core.audio.playback.PlaybackState
@@ -39,6 +46,21 @@ data class SessionPlayback(
     val hasPlayed: Boolean = false,
 )
 
+/**
+ * The WF-1 step of a speak-and-repeat drill. [None] before an attempt, then [Loading] while
+ * the Worker answers, [Available] with the coaching, or [OfflineFallback] when the reference
+ * clip is missing or the Worker is unreachable (ADR 0005, ADR 0014).
+ */
+sealed interface FeedbackUiState {
+    data object None : FeedbackUiState
+
+    data object Loading : FeedbackUiState
+
+    data class Available(val feedback: PronunciationFeedback) : FeedbackUiState
+
+    data object OfflineFallback : FeedbackUiState
+}
+
 data class SessionUiState(
     val loading: Boolean = true,
     val notFound: Boolean = false,
@@ -62,6 +84,7 @@ data class SessionUiState(
     val processing: Boolean = false,
     val attemptAudioRef: String? = null,
     val attemptPlayback: SessionPlayback = SessionPlayback(),
+    val feedback: FeedbackUiState = FeedbackUiState.None,
     val errorMessage: String? = null,
     val recorderError: String? = null,
 ) {
@@ -77,6 +100,9 @@ data class SessionUiState(
     val isChoiceMode: Boolean
         get() = mode == DrillMode.HEAR_AND_NAME || mode == DrillMode.LISTEN_AND_CHOOSE
 
+    val isFeedbackMode: Boolean
+        get() = mode == DrillMode.SPEAK_AND_REPEAT_FEEDBACK
+
     val hasProgress: Boolean
         get() = index > 0 || answerRevealed || attemptAudioRef != null
 
@@ -84,7 +110,11 @@ data class SessionUiState(
         get() {
             if (isRecording || processing || items.isEmpty()) return false
             return when (mode) {
-                DrillMode.LESSON, DrillMode.SPEAK_AND_REPEAT -> true
+                DrillMode.LESSON,
+                DrillMode.SPEAK_AND_REPEAT,
+                DrillMode.SPEAK_AND_REPEAT_FEEDBACK,
+                -> true
+
                 DrillMode.HEAR_AND_NAME, DrillMode.LISTEN_AND_CHOOSE -> answerRevealed
                 null -> false
             }
@@ -108,6 +138,9 @@ class SessionViewModel @Inject constructor(
     private val progressRepository: ProgressRepository,
     private val attemptRepository: AttemptRepository,
     private val preferencesRepository: PreferencesRepository,
+    private val feedbackWorkflow: PronunciationFeedbackWorkflow,
+    private val referenceClipReader: ReferenceClipReader,
+    private val evidenceSource: AttemptEvidenceSource,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -115,6 +148,7 @@ class SessionViewModel @Inject constructor(
     val uiState: StateFlow<SessionUiState> = _uiState.asStateFlow()
 
     private var stopJob: Job? = null
+    private var attemptPcm: PcmAudio? = null
 
     init {
         viewModelScope.launch {
@@ -230,6 +264,65 @@ class SessionViewModel @Inject constructor(
         audioPlayer.play(AudioSource.LocalFile(audioRef))
     }
 
+    /**
+     * Requests compared reference-vs-attempt feedback for the recorded attempt (WF-1). The
+     * bundled reference clip is read first; when it is missing the workflow is skipped and
+     * the offline fallback is shown. Workflow failures also fall back rather than erroring.
+     */
+    fun onGetFeedbackClick() {
+        val state = _uiState.value
+        if (!state.isFeedbackMode || state.feedback is FeedbackUiState.Loading) return
+        if (state.processing || state.isRecording) return
+        val item = state.currentItem ?: return
+        val attempt = attemptPcm ?: return
+        _uiState.update { it.copy(feedback = FeedbackUiState.Loading) }
+        viewModelScope.launch {
+            val result = try {
+                val referenceClip = referenceClipReader.read(contentRepository.audioAssetPath(item.audioAssetRef))
+                if (referenceClip == null) {
+                    null
+                } else {
+                    feedbackWorkflow.evaluate(
+                        PronunciationFeedbackRequest(
+                            pinyin = item.pinyin,
+                            targetTones = item.targetTones,
+                            referenceAudio = referenceClip,
+                            attemptAudio = AudioClip(wavCodec.encode(attempt), AudioFormat.WAV),
+                            acousticEvidence = evidenceSource.evidenceFor(item, attempt),
+                        ),
+                    )
+                }
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (error: Exception) {
+                null
+            }
+            _uiState.update {
+                it.copy(
+                    feedback = when (result) {
+                        is WorkflowResult.Success -> FeedbackUiState.Available(result.value)
+                        else -> FeedbackUiState.OfflineFallback
+                    },
+                )
+            }
+        }
+    }
+
+    /** Clears the attempt and coaching so the learner can record the item again. */
+    fun onTryAgainClick() {
+        val state = _uiState.value
+        if (state.isRecording || state.processing) return
+        attemptPcm = null
+        _uiState.update {
+            it.copy(
+                attemptAudioRef = null,
+                attemptPlayback = SessionPlayback(),
+                feedback = FeedbackUiState.None,
+                recorderError = null,
+            )
+        }
+    }
+
     fun onChoiceSelected(choice: String) {
         val state = _uiState.value
         if (!state.isChoiceMode || state.answerRevealed) return
@@ -255,6 +348,7 @@ class SessionViewModel @Inject constructor(
     fun onPrevious() {
         val state = _uiState.value
         if (state.index <= 0 || state.isRecording || state.processing) return
+        attemptPcm = null
         _uiState.update {
             it.copy(
                 index = it.index - 1,
@@ -267,6 +361,7 @@ class SessionViewModel @Inject constructor(
                 referencePlayback = SessionPlayback(),
                 attemptAudioRef = null,
                 attemptPlayback = SessionPlayback(),
+                feedback = FeedbackUiState.None,
                 recorderState = RecorderState.Idle,
                 level = 0f,
                 errorMessage = null,
@@ -297,6 +392,7 @@ class SessionViewModel @Inject constructor(
             _uiState.update { it.copy(finished = true, completedCount = state.items.size) }
             return
         }
+        attemptPcm = null
         _uiState.update {
             it.copy(
                 index = nextIndex,
@@ -312,6 +408,7 @@ class SessionViewModel @Inject constructor(
                 processing = false,
                 attemptAudioRef = null,
                 attemptPlayback = SessionPlayback(),
+                feedback = FeedbackUiState.None,
                 errorMessage = null,
                 recorderError = null,
             )
@@ -349,13 +446,18 @@ class SessionViewModel @Inject constructor(
             ),
         )
         val audioRef = _uiState.value.attemptAudioRef
-        if (_uiState.value.mode == DrillMode.SPEAK_AND_REPEAT && audioRef != null) {
+        val speaks = _uiState.value.mode == DrillMode.SPEAK_AND_REPEAT ||
+            _uiState.value.mode == DrillMode.SPEAK_AND_REPEAT_FEEDBACK
+        if (speaks && audioRef != null) {
             attemptRepository.upsert(
                 Attempt(
                     id = attemptId(item.id, now),
                     contentItemId = item.id,
                     recordedAt = now,
                     userAudioRef = audioRef,
+                    feedbackText = (_uiState.value.feedback as? FeedbackUiState.Available)?.let { available ->
+                        "${available.feedback.weakestUnit}: ${available.feedback.tip}"
+                    },
                 ),
             )
         }
@@ -375,7 +477,8 @@ class SessionViewModel @Inject constructor(
                 val audio = audioRecorder.stop()
                 val file = recordingStore.newRecordingFile(SESSION_ATTEMPT_LABEL)
                 wavCodec.write(file, audio)
-                _uiState.update { it.copy(attemptAudioRef = file.path) }
+                attemptPcm = audio
+                _uiState.update { it.copy(attemptAudioRef = file.path, feedback = FeedbackUiState.None) }
                 audioPlayer.play(AudioSource.LocalFile(file.path))
             } catch (cancellation: CancellationException) {
                 throw cancellation
