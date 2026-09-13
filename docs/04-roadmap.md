@@ -35,27 +35,27 @@ Exit criteria: requirements and architecture are stable enough to scaffold code.
 Exit criteria met: the app builds, lists registered modules, plays a model clip, records
 the mic, and plays it back.
 
-## M2 - Tones, listening, vocabulary, and fundamentals modules (current)
+## M2 - Tones, listening, vocabulary, and fundamentals modules (complete)
 
 - [x] Shared lesson/practice drill engine driven by `ContentItem` (ADR 0018).
 - [x] **Tones module:** the four tones and the neutral tone, contours, tone pairs, and the
   tone-number notation; hear-and-name and production drills (beginner-first). The bundled
   tones lessons and practices run through the engine; measured feedback is M3.
-- [ ] **Listening module:** hear-and-respond drill loop with large, low-attention controls
-  (spoken answers via WF-4; tap-only works offline).
-- [ ] **Vocabulary module:** audio-first word/phrase lessons and practice over
+- [x] **Listening module:** hear-and-respond drill loop with large, low-attention controls;
+  tap-only drills work offline. WF-4 spoken answers land with the AI-supported drill slice.
+- [x] **Vocabulary module:** audio-first word/phrase lessons and practice over
   beginner/tourist/survival themes (pinyin always shown with tone numbers and taught as
   the pronunciation key, Hangul optional, no hanzi).
-- [ ] **Fundamentals module:** syllable anatomy, the pinyin sound system (initials, finals,
+- [x] **Fundamentals module:** syllable anatomy, the pinyin sound system (initials, finals,
   spelling conventions, tone numbers), tone sandhi, and read-aloud pinyin practice.
 - [x] Offline playback of bundled lessons: the engine plays `audio/reference/**` from APK
   assets; the generated clips are build-time inputs (ADR 0006).
 - [x] Ship the curated preloaded exercise set (`source = bundled`), fully usable offline.
 - [x] Session progress persisted locally (Progress and Attempt repositories).
 
-Exit criteria: a learner can complete an offline session in any of the four modules.
+Exit criteria met: a learner can complete an offline session in any of the four modules.
 
-## M3 - Speech and pronunciation feedback
+## M3 - Speech and pronunciation feedback (current)
 
 - [ ] Speech capture with voice-activity detection (end-of-speech).
 - [ ] Generate reference audio with Kokoro-82M from pinyin and bundle it per phrase (ADR 0006).

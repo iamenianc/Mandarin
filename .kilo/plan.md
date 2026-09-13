@@ -133,14 +133,21 @@ every module at 0 failures (SessionViewModelTest 17, TonesLearningModuleTest 3,
 LearningModuleContractTest 5) and again on the merged tree. The decision is recorded as
 ADR 0018; wave 3b is unblocked.
 
-3b (in flight 2026-09-13): vocabulary, listening (tap-only offline), and fundamentals
-module slices, one worktree each, all synced to `6d96c48` and confined to their own
-`:feature:*` directory. Worktrees `vocabulary module` (`wt-1789306136387-22`, session
-`ses_f650b10daffeCXC627wB6MGkT5`), `listening module` (`wt-1789306139359-23`, session
-`ses_f650b043effeUvQfLl5aecpznN`), `fundamentals module` (`wt-1789306142632-24`, session
-`ses_f650af723ffemGyVMo398yPS0e`). Each verifies with its module tasks plus
-`:app:assembleDebug`; the conductor runs the integrated check after merging, one branch at
-a time.
+3b (merged 2026-09-13): listening, vocabulary, and fundamentals module slices, one worktree
+each, all synced to `6d96c48` and confined to their own `:feature:*` directory. Merge
+commits: `3ba3ec9` (listening, branch commit `4792d2a`), `9507582` (vocabulary, `36d9d9a`),
+`a11a758` (fundamentals, `26447bd`). Each was verified independently before merge: diff
+confined to its module, no hanzi, the module's unit tests re-run (3/3 each), and
+`:app:assembleDebug` plus `spotlessCheck` green; the integrated
+`:app:assembleDebug test lint spotlessCheck` on merged master is green. M2 is complete and
+the roadmap marks it so; M3 is current.
+
+Fundamentals recovery: that worker wedged mid-verification (its Kotlin compiler sat with a
+flat CPU profile for ~17 minutes while the session waited). The session was stopped, the
+hung Java processes were killed, and the conductor finished the slice: `spotlessApply`, the
+scoped test (`:feature:fundamentals:testDebugUnitTest` 3/3), `:app:assembleDebug`, and
+`spotlessCheck`, all with `--no-daemon`, then committed and merged. The slice's files were
+complete on disk; only verification and commit were lost.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
@@ -192,7 +199,10 @@ state, live process and log signals); a busy session with no writes, commits, or
 is wedged and is stopped rather than nudged; every new brief requires a completion report
 as an Agent Manager peer reply (branch, commit SHAs, exact commands and results, open
 questions), verified independently before merge; merged slices are stopped and their
-worktrees removed.
+worktrees removed. Recovery on this machine (2026-09-13): sample a build process's CPU
+twice - a flat profile means blocked, not compiling; Gradle daemons can also keep the
+console open after `BUILD SUCCESSFUL`, so conductor-run verification uses `--no-daemon`
+and reads the JUnit XML for results.
 
 ## Merge protocol
 
