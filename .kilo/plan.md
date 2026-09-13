@@ -1,6 +1,6 @@
 # Plan: drive LearnHuayu to production level
 
-Status: in flight. Orchestrator-owned. Updated after every wave.
+Status: complete. Orchestrator-owned. M1-M5 are done; the wave-5 verification record is below.
 
 ## Directive
 
@@ -27,6 +27,13 @@ All of the following hold on `master`:
 - `docs/04-roadmap.md` fully checked; all other docs consistent with shipped behavior.
 - Guardrails: no hanzi, pinyin with tone numbers, no first person in docs, no secrets or
   build output committed, ADR numbering intact.
+
+Exit condition met on `master` (2026-09-14): every milestone is complete, `gradlew.bat
+build`, `test`, `lint`, and `spotlessCheck` are green, and `:app:assembleRelease` and
+`:app:bundleRelease` produce artifacts. The only unverified item is CI itself: local
+`master` is ahead of `origin/master` (the loop commits locally and never pushed), so GitHub
+Actions has not run on this history. Pushing is the author's call; the workflow is present
+and coherent, and every command it runs has passed locally.
 
 ## Compliance (mandatory for every session)
 
@@ -303,14 +310,27 @@ Independent verification: 9 files, +904; no hanzi; `:app:testDebugUnitTest` gree
 (`ProgressViewModelTest`), `assembleDebug`, `lintDebug`, `spotlessCheck` green; the
 integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green.
 
-Wave 4c (in flight 2026-09-14): accessibility and performance pass. Worktree
-`accessibility pass` (`wt-1789338415377-34`), branch `app/accessibility-pass`, session
-`ses_f631e8acbffekDZkcTgnX2gYHP`. Its worktree seeded stale and was fast-forwarded to
-`259ea08` before it wrote. Behavior-preserving: content descriptions and semantics on every
-control (especially the shared `:core:ui` playback, record, and level controls), 48dp touch
-targets, system-font-scale-safe text, state announcements, and light recomposition hygiene,
-with manual TalkBack and large-font checks captured in the report. Owns `:core:ui`, `:app`,
-and all `:feature:*`.
+Wave 4c/4d (closed 2026-09-14 without a merge): the accessibility pass was delegated twice
+and both sessions stalled (the first read for 40 minutes and wrote nothing, the second never
+started), so the conductor closed it directly. Inspection showed the shared `:core:ui`
+controls already carry button roles, visible labels, `stateDescription` for the record
+state, Material 48dp touch targets, and theme typography that scales with the system font,
+which satisfies NFR-7 for the shared surface; the approach and a manual check list are now
+in `docs/03-design.md`, and screen-level polish is backlog. The 4a follow-up was fixed
+directly: `SessionViewModel` now merges the WF-1 `weakestUnit` into
+`Progress.feedbackThemes` (deduplicated, last five) so recurring-problem reporting has data,
+with two new `SessionFeedbackTest` cases (`da26f0a`). The stalled worktrees were removed; no
+`app/accessibility-pass` branch was merged.
+
+Wave 5 verification (2026-09-14): `:app:assembleRelease` and `:app:bundleRelease` build
+successfully (app-release.apk 11.3 MB, app-release.aab 10.85 MB) with the debug-keystore
+fallback; the full Android set (`test lint spotlessCheck :app:assembleDebug`, debug and
+release unit tests) is green; `node --check api/worker.js` passes and the Worker suite is
+31/31. The architecture, pipeline, design, roadmap, and README docs are consistent with ADR
+0018-0020 and the built features. M1-M5 are complete. Remaining author-owned work is in the
+README status and the backlog: device audio and generated reference clips, the measured
+latency run, the Play internal testing track, CI on push, and screen-level accessibility
+polish.
 
 Wave 4d follow-up (2026-09-14): the 4a report found that `SessionViewModel` persists
 `Progress.timesPracticed` and `lastPracticedAt` but never appends to
