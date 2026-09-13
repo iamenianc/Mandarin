@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" width="760" height="340" role="img" aria-labelledby="syllable-title syllable-desc">
+  <title id="syllable-title">Parts of a Mandarin syllable</title>
+  <desc id="syllable-desc">The syllable xiang1 split into initial x, medial i, nucleus a, and coda ng, with tone 1 carried on the nucleus.</desc>
+  <rect x="0" y="0" width="760" height="340" fill="#ffffff"/>
+  <text x="32" y="42" font-family="sans-serif" font-size="24" font-weight="bold" fill="#111111">Syllable anatomy</text>
+  <text x="32" y="70" font-family="sans-serif" font-size="14" fill="#555555">syllable = initial + final + tone, where the final is (medial) + nucleus + (coda)</text>
+
+  <text x="380" y="112" font-family="sans-serif" font-size="20" font-weight="bold" fill="#111111" text-anchor="middle">xiang1</text>
+  <line x1="380" y1="120" x2="380" y2="140" stroke="#888888" stroke-width="2"/>
+
+  <rect x="40" y="150" width="170" height="86" rx="8" fill="#eef4fb" stroke="#1f77b4" stroke-width="2"/>
+  <text x="125" y="188" font-family="sans-serif" font-size="26" font-weight="bold" fill="#1f77b4" text-anchor="middle">x</text>
+  <text x="125" y="216" font-family="sans-serif" font-size="14" fill="#333333" text-anchor="middle">initial</text>
+
+  <rect x="210" y="150" width="170" height="86" rx="8" fill="#eef7ee" stroke="#2ca02c" stroke-width="2"/>
+  <text x="295" y="188" font-family="sans-serif" font-size="26" font-weight="bold" fill="#2ca02c" text-anchor="middle">i</text>
+  <text x="295" y="216" font-family="sans-serif" font-size="14" fill="#333333" text-anchor="middle">medial</text>
+
+  <rect x="380" y="150" width="170" height="86" rx="8" fill="#fff2e6" stroke="#ff7f0e" stroke-width="2"/>
+  <text x="465" y="188" font-family="sans-serif" font-size="26" font-weight="bold" fill="#ff7f0e" text-anchor="middle">a</text>
+  <text x="465" y="216" font-family="sans-serif" font-size="14" fill="#333333" text-anchor="middle">nucleus</text>
+
+  <rect x="550" y="150" width="170" height="86" rx="8" fill="#f6eef6" stroke="#9467bd" stroke-width="2"/>
+  <text x="635" y="188" font-family="sans-serif" font-size="26" font-weight="bold" fill="#9467bd" text-anchor="middle">ng</text>
+  <text x="635" y="216" font-family="sans-serif" font-size="14" fill="#333333" text-anchor="middle">coda</text>
+
+  <line x1="40" y1="262" x2="720" y2="262" stroke="#d62728" stroke-width="3"/>
+  <line x1="40" y1="262" x2="40" y2="274" stroke="#d62728" stroke-width="3"/>
+  <line x1="720" y1="262" x2="720" y2="274" stroke="#d62728" stroke-width="3"/>
+  <text x="380" y="296" font-family="sans-serif" font-size="15" fill="#d62728" text-anchor="middle">tone 1 - carried on the nucleus and written as a number</text>
+
+  <text x="32" y="328" font-family="sans-serif" font-size="13" fill="#555555">The final is everything after the initial. A zero-initial syllable is spelled with y or w.</text>
+</svg>

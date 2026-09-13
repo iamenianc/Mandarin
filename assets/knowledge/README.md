@@ -30,6 +30,16 @@ Each folder has its own `README.md` index.
   the note says so rather than rewriting the pinyin (see `pronunciation/tone-sandhi.md`).
 - Filenames are stable references: rename only when the topic itself changes.
 
+## Non-text resources
+
+Diagrams live beside the notes they support and use the same kebab-case naming with an
+`.svg` extension (`pronunciation/tone-contours.svg`). They are authored in this repository
+with plain SVG text, carry no embedded raster images, and label pinyin with tone numbers.
+
+No audio is authored here. Reference audio is generated from pinyin with Kokoro-82M at
+build time and belongs to the content pipeline and `assets/audio/` (ADR 0006); knowledge
+files cite the phrases that audio should cover rather than shipping clips.
+
 ## Sources
 
 Content follows the curriculum themes in ADR 0008 and the pinyin and tone decisions in

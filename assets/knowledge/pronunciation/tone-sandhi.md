@@ -24,7 +24,7 @@ Rules of thumb:
 - A third tone before any other tone becomes a half third: low and falling, with the
   final rise dropped. It is still written `3`.
 
-## 不 sandhi (`bu4`)
+## `bu4` sandhi
 
 `bu4` is spoken as second tone before a fourth tone, and stays fourth tone elsewhere.
 
@@ -35,7 +35,7 @@ Rules of thumb:
 | `bu4 hao3` | bu4 hao3 | not good |
 | `bu4 mang2` | bu4 mang2 | not busy |
 
-## 一 sandhi (`yi1`)
+## `yi1` sandhi
 
 `yi1` changes with the tone that follows when it means "one" in a counting phrase.
 

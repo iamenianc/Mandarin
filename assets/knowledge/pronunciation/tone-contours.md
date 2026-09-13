@@ -4,6 +4,8 @@ Mandarin has four full tones plus a neutral tone. Tones are carried on the vowel
 syllable and are the main source of meaning difference between otherwise identical
 syllables.
 
+![Pitch contours for the four tones and the neutral tone](tone-contours.svg)
+
 | Tone | Number | Contour | Chao value | Description |
 | --- | --- | --- | --- | --- |
 | First | `1` | high level | 55 | steady high pitch, no movement |

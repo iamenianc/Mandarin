@@ -3,6 +3,8 @@
 A Mandarin syllable has three parts: an initial, a final, and a tone. The tone is not
 optional; every lexical syllable has one.
 
+![The syllable xiang1 split into initial, medial, nucleus, coda, and tone](syllable-anatomy.svg)
+
 ```
 syllable = initial + final + tone
 final    = (medial) + nucleus + (coda)

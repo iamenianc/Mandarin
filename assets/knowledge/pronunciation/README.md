@@ -16,5 +16,12 @@ fundamentals modules and for writing accurate `targetTones`.
 | `rhythm-and-stress.md` | Syllable timing, the neutral tone, and phrase rhythm |
 | `minimal-pairs.md` | Tone and segmental contrasts for discrimination drills |
 
+## Diagrams
+
+| File | Topic |
+| --- | --- |
+| `tone-contours.svg` | Pitch shape of the four tones and the neutral tone |
+| `syllable-anatomy.svg` | Initial, medial, nucleus, coda, and tone in one syllable |
+
 Pinyin always carries tone numbers (ADR 0012): `ni3 hao3`, with the neutral tone written
 as `5` (`ma5`). No hanzi appears in this folder (ADR 0002).
