@@ -1,6 +1,6 @@
 # LearnHuayu
 
-Planning repository for **LearnHuayu**, a private Android app that teaches beginners to
+**LearnHuayu** is a private Android app that teaches beginners to
 **listen to and speak** Mandarin Chinese. It is audio-first but audiovisual: visuals
 support what is heard, and every on-screen word is English or pinyin. AI-assisted speech
 and conversation coaching. Reading and writing hanzi are out of scope; **Hanyu Pinyin is
@@ -20,14 +20,15 @@ always-available chat helper that answers any question about Mandarin (ADR 0009,
 (Language Acquisition Made Practical, ADR 0013): rehearse a bite-sized exchange, use it in
 a field mission with five simulated AI locals, then debrief what tripped you up.
 
-This repository is intentionally **docs-first**. No application code lives here yet;
-the goal is to converge on a clear product definition, architecture, and roadmap
-before scaffolding the Android project.
+The repository began as a docs-first planning effort, and the material under `docs/`
+remains the source of truth for product definition, architecture, and roadmap. Application
+code now develops here alongside the docs.
 
 ## Contents
 
 | Path | Purpose |
 | --- | --- |
+| `conductor.md` | Orchestrator playbook: how the coding agent plans, slices, delegates, and verifies work |
 | `docs/00-vision.md` | Why this app exists, target users, success criteria |
 | `docs/01-requirements.md` | Functional and non-functional requirements |
 | `docs/02-architecture.md` | Proposed technical architecture, stack, data model |
@@ -43,9 +44,10 @@ before scaffolding the Android project.
 
 1. Start with `docs/00-vision.md` and `docs/01-requirements.md`.
 2. Record significant technical choices as ADRs in `docs/05-decisions/`.
-3. When planning is stable, scaffold the Android project in this repo alongside
-   the docs (see `docs/04-roadmap.md` for the intended layout).
+3. Application code develops in this repo alongside the docs (see `docs/04-roadmap.md`
+   for the intended layout).
 
 ## Status
 
-Early planning. See `docs/04-roadmap.md` for the current milestone.
+Moving from planning into implementation. See `docs/04-roadmap.md` for the current
+milestone.
