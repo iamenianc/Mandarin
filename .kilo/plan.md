@@ -117,9 +117,10 @@ therefore sequenced as:
   each map their bundled corpus to specs and modes, in parallel worktrees (distinct
   module directories, no shared files).
 - 3c AI-supported drills: 3c-1 speech speak-and-repeat with WF-1 feedback and an
-  evidence seam; 3c-1b reference-feature precompute for measured tone evidence; 3c-2
-  listening WF-4 spoken answers with the local matcher. WF-8 endless practice moved to
-  3d, where it shares the runtime-generation path with Raymond and the field mission.
+  evidence seam; 3c-1b measured tone evidence from the bundled clip, computed on device and
+  cached; 3c-2 listening WF-4 spoken answers with the local matcher. WF-8 endless practice
+  moved to 3d, where it shares the runtime-generation path with Raymond and the field
+  mission.
 - 3d M4: field loop (WF-9, WF-10, WF-3), Raymond (WF-7), and endless practice (WF-8).
 
 Each sub-wave is fanned out only after the previous one merges, because 3a touches
@@ -184,6 +185,18 @@ tappable choices on any failure. Independent verification: diff confined to `:ap
 `:app:testDebugUnitTest` (49 tests, 0 failures) and `:feature:listening:testDebugUnitTest`
 (3, 0) re-run green, `:app:assembleDebug` and `spotlessCheck` green on the branch; the
 integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green.
+
+3c-1b (in flight 2026-09-13): measured tone evidence behind the `AttemptEvidenceSource`
+seam. Decision: reference features are computed from the bundled reference clip on device
+and cached per item, instead of a content-build-time task, because the pure-Kotlin
+extractor lives in an Android-library module that a Gradle build task cannot host without
+a module split; the ADR 0014 default extractor is unchanged and its validation gate stays
+open. Adds `SyllableAutoSegmenter` in `:core:assessment` to derive syllable spans from the
+reference clip, a `ReferencePcmDecoder` seam in `:app` (MediaExtractor/MediaCodec for OGG,
+the WAV helper otherwise), and an `AssessmentAttemptEvidenceSource` that decodes,
+precomputes, aligns, classifies, maps `ToneEvidence` to `:core:ai.AcousticEvidence`, and
+returns null on any failure so the audio-only fallback is preserved. Owns
+`:core:assessment` and `:app`; based on `292e396`.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
