@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LearnHuayu</string>
+    <string name="lessons_title">Lessons</string>
+    <string name="practice_title">Practice</string>
+    <string name="empty_lessons">No lessons yet.</string>
+    <string name="empty_practice">No practice yet.</string>
+    <string name="module_not_found">Module not found.</string>
+    <string name="navigate_back">Back</string>
+</resources>
