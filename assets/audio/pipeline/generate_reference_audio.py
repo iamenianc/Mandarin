@@ -561,8 +561,13 @@ def synthesize(pipeline, pinyin: str, voice: str) -> list[float]:
     generator = pipeline(pinyin, voice=voice, speed=1.0)
     samples: list[float] = []
     for chunk in generator:
-        # Kokoro yields (graphemes, phonemes, audio).
-        audio = chunk[-1] if isinstance(chunk, (tuple, list)) else chunk
+        # Kokoro 0.9.x yields a Result with `.audio`; older builds yield a tuple.
+        if getattr(chunk, "audio", None) is not None:
+            audio = chunk.audio
+        elif isinstance(chunk, (tuple, list)):
+            audio = chunk[-1]
+        else:
+            audio = chunk
         samples.extend(_flatten_audio(audio))
     if not samples:
         raise PipelineUnavailable(f"Kokoro returned no audio for {pinyin!r}")
