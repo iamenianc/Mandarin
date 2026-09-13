@@ -312,6 +312,12 @@ targets, system-font-scale-safe text, state announcements, and light recompositi
 with manual TalkBack and large-font checks captured in the report. Owns `:core:ui`, `:app`,
 and all `:feature:*`.
 
+Wave 4d follow-up (2026-09-14): the 4a report found that `SessionViewModel` persists
+`Progress.timesPracticed` and `lastPracticedAt` but never appends to
+`Progress.feedbackThemes`, while WF-1 feedback lands in `Attempt.feedbackText`. Recurring
+feedback themes therefore stay empty until the session path merges a short theme (for
+example the weakest unit) into the progress row. A small `:app` slice after 4c closes it.
+
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
 merge.
