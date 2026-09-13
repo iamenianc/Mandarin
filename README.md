@@ -29,6 +29,7 @@ code now develops here alongside the docs.
 | Path | Purpose |
 | --- | --- |
 | `conductor.md` | Orchestrator playbook: how the coding agent plans, slices, delegates, and verifies work |
+| `api/` | Cloudflare Worker AI proxy: routes, config, and secrets (see `docs/02-architecture.md`) |
 | `docs/00-vision.md` | Why this app exists, target users, success criteria |
 | `docs/01-requirements.md` | Functional and non-functional requirements |
 | `docs/02-architecture.md` | Proposed technical architecture, stack, data model |

@@ -2,8 +2,9 @@
 
 Status: proposed. This mirrors the structure used by the Prayer app: an Android
 client pipeline, a Cloudflare Worker API pipeline, and a post-deployment commit
-step. It describes the intended release flow once the Android project and API
-exist; nothing here is implemented yet.
+step. The Worker source and its `dev`/`deploy` scripts already exist in `api/`
+(see `docs/02-architecture.md`); the Android project does not, and no automation
+is implemented yet - the steps below are currently run manually.
 
 ## Overview
 
@@ -80,3 +81,6 @@ out of git.
 
 - Whether to automate this with GitHub Actions or keep it a local script.
 - Where release APKs should live long-term (Drive vs. GitHub Releases).
+- The Worker is deployed under the name in `api/wrangler.jsonc` (currently `mandarin`),
+  while this document targets `learnhuayu-api.<account>.workers.dev`. Decide the final
+  Worker name and align the config and these URLs.

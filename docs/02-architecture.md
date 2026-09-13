@@ -137,6 +137,42 @@ WF-2, WF-4, WF-10, and spoken questions to WF-7; WF-5, WF-8, and WF-9 get aggreg
 metadata and content context only); each workflow fails and falls back independently, so
 an unavailable model degrades one feature rather than the app.
 
+## Worker API (`api/`)
+
+The backend is a single Cloudflare Worker in `api/`. It is the trust boundary described
+above: it holds provider credentials, validates and sizes requests, and calls the provider
+(ADR 0003). Its tracked files:
+
+| File | Purpose |
+| --- | --- |
+| `api/worker.js` | Worker entry point: routing, request validation, the OpenRouter call, and CORS. |
+| `api/wrangler.jsonc` | Worker name, entry point, compatibility date, and non-secret vars. |
+| `api/package.json` | `npm run dev` (local `wrangler dev`) and `npm run deploy` (`wrangler deploy`). |
+| `api/.dev.vars.example` | Template for local secrets; copy to `.dev.vars` (git-ignored) and fill in. |
+
+Configuration:
+
+- `OPENROUTER_API_KEY` - secret, set with `npx wrangler secret put OPENROUTER_API_KEY`;
+  never committed and never shipped in the APK.
+- `OPENROUTER_MODEL` - non-secret var in `wrangler.jsonc`, overridable per request.
+
+Routes:
+
+| Method | Path | Behavior |
+| --- | --- | --- |
+| `GET` | `/` | Health check: `{ "service": "learnhuayu-api", "status": "ok" }`. |
+| `POST` | `/v1/chat` | Bounded OpenRouter chat proxy. |
+| `OPTIONS` | any | CORS preflight; all origins currently allowed. |
+
+`/v1/chat` accepts `{ messages, model?, temperature?, max_tokens? }`, requires a non-empty
+`messages` array, rejects bodies over 64 KiB (413), and returns `content` from the first
+choice. Upstream failures surface as `{ "error": "upstream error", "status": <code> }`.
+
+`/v1/chat` is an initial template, not the final surface. The Worker is to expose one
+versioned endpoint per workflow (the `/v1/wf/<workflow>` form shown in the pipeline
+diagrams; registry in `docs/08-ai-workflows.md`); a new task adds a route rather than
+widening this one. Deployment is covered in `docs/06-pipeline.md`.
+
 ## Audio and AI pipeline
 
 ### Listening drill (WF-4 for spoken answers)
