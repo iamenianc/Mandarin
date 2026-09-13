@@ -80,7 +80,6 @@ There are no accounts, no profiles, no analytics, and no monetization.
   name tones by number.
 - Pinyin works as a portable pronunciation key: the learner can read a new pinyin word
   aloud with the right sounds and tones before hearing it.
-- A learner can complete a session in eyes-free mode (audio-only) when desired.
 - Feedback arrives fast enough to feel like a conversation, not a test.
 - The user sticks with it.
 - Adding a new learning module requires content and a thin feature module, not shell

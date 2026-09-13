@@ -16,7 +16,7 @@ listening and speaking, not on reading or writing.
 - [x] Tone notation and module recorded: tone numbers, dedicated tones module (ADR 0012).
 - [x] Daily practice loop recorded: the LAMP field loop with simulated locals and a debrief (ADR 0013).
 - [x] Grounded pronunciation feedback recorded: measured tone evidence for WF-1 (ADR 0014).
-- [ ] Fold remaining design questions (hands-free) into the design doc.
+- [x] Hands-free and eyes-free modes dropped from scope (ADR 0015).
 
 Exit criteria: requirements and architecture are stable enough to scaffold code.
 
@@ -91,7 +91,6 @@ completes a full daily loop (rehearse, five locals, debrief).
 
 - [ ] Progress and recurring-problem reporting (audio-first) via WF-5, including debrief
   themes.
-- [ ] Eyes-free / hands-free session modes.
 - [ ] Consent management and one-tap data deletion.
 - [ ] Accessibility pass, performance, Play Store internal testing track.
 

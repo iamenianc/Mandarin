@@ -23,8 +23,8 @@ or write characters.
 | FR-10 | The app shall run listening drills that require no speaking (hear and respond). | Must |
 | FR-11 | The app shall provide AI-assisted conversation practice that adapts to the learner. | Must |
 | FR-12 | The app shall track practice history and surface recurring feedback themes. | Should |
-| FR-13 | The app shall offer an eyes-free / audio-only mode for a full session. | Should |
-| FR-14 | The app shall support hands-free, turn-based conversation with the AI coach. | Should |
+| FR-13 | The app shall offer an eyes-free / audio-only mode for a full session. | Won't (v1, ADR 0015) |
+| FR-14 | The app shall support hands-free, turn-based conversation with the AI coach. | Won't (v1, ADR 0015) |
 | FR-15 | The app shall bundle a starter set of lessons usable offline (no AI, no network). | Should |
 | FR-16 | The app shall sync progress across devices via an account. | Won't (v1) |
 | FR-17 | Every on-screen word shall be in English or pinyin; no hanzi is ever displayed. | Must |
@@ -78,3 +78,6 @@ or write characters.
 - On-device speech/AI inference - cloud-only, since local compute is insufficient.
 - Accounts, cross-device sync, multi-user profiles, analytics, social features, and monetization.
 - Chinese-language UI localization (English UI only).
+- Hands-free and eyes-free / audio-only session modes: sessions are guided on screen, and
+  audio-first describes the learning focus rather than an interface without visuals
+  (ADR 0015).

@@ -21,8 +21,8 @@ All of the following hold on `master`:
 - M3: speak-and-repeat with measured tone evidence and Worker-proxied WF-1 feedback.
 - M4: WF-2/WF-3 conversation, Raymond (WF-7), runtime generation (WF-8), and the daily
   LAMP field loop (WF-9, WF-10, WF-3) with offline fallback.
-- M5: progress reporting (WF-5), hands-free modes, consent + one-tap deletion,
-  accessibility pass, release configuration (signed AAB path documented).
+- M5: progress reporting (WF-5), consent + one-tap deletion, accessibility pass,
+  release configuration (signed AAB path documented).
 - `gradlew.bat build` and tests green locally; CI workflow present and coherent.
 - `docs/04-roadmap.md` fully checked; all other docs consistent with shipped behavior.
 - Guardrails: no hanzi, pinyin with tone numbers, no first person in docs, no secrets or
@@ -49,10 +49,10 @@ orchestrator after merges.
 
 | Wave | Sessions (worktrees) | Depends on |
 | --- | --- | --- |
-| 1 | Android scaffold; Worker WF endpoints; hands-free design | none |
+| 1 | Android scaffold; Worker WF endpoints | none |
 | 2 | `:core:data`, `:core:audio`, `:core:ai`, `:core:assessment`, `:core:ui`; content pipeline | wave 1 merged |
 | 3 | Features: home, tones, vocabulary, listening, speech, fundamentals, field, raymond | wave 2 merged |
-| 4 | Progress/reporting, consent + deletion, hands-free modes, accessibility, release config | wave 3 merged |
+| 4 | Progress/reporting, consent + deletion, accessibility, release config | wave 3 merged |
 | 5 | Full verification: build, lint, tests, release AAB; docs consistency pass | wave 4 merged |
 
 Wave 1 in flight:
@@ -65,8 +65,11 @@ Wave 1 in flight:
    orchestrator-owned files, for this session only).
 2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
    and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
-3. `design/hands-free` - fold the remaining hands-free design questions into
-   `docs/03-design.md` (M0 checkbox); FR-13, FR-14, NFR-7; that file only.
+
+Scope change (2026-09-13): the author dropped hands-free and eyes-free session modes.
+Recorded as ADR 0015; FR-13/FR-14 marked Won't (v1); the vision criterion, both roadmap
+items, and the design-doc mention are removed; the design worktree session was stopped
+before producing changes.
 
 ## Merge protocol
 

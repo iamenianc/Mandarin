@@ -3,6 +3,7 @@
 - Status: accepted
 - Date: 2026-09-13
 - Amends: 0002-phonetic-aids.md
+- Amended by: 0015-drop-hands-free-modes.md
 
 ## Context
 
@@ -25,8 +26,8 @@ never gains a portable key to how words sound.
   Hangul (optional, ADR 0004) appears alongside it. Audio is never gated on text.
 - **Feedback speaks pinyin.** AI coaching names the weakest pinyin syllable and tone
   ("second tone", "final -ng"), never characters.
-- **Still not a reading curriculum.** No pinyin paragraph/text reading for its own sake,
-  no hanzi anywhere (ADR 0002), and eyes-free mode remains possible.
+- **Still not a reading curriculum.** No pinyin paragraph/text reading for its own sake
+  and no hanzi anywhere (ADR 0002); pinyin supports pronunciation, not reading fluency.
 
 ## Consequences
 

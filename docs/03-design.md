@@ -2,8 +2,7 @@
 
 Status: draft. This document covers UX flows and screen inventory, not visual
 polish. The product is **audio and visual**: audio drives the lesson, visuals support
-it, and every on-screen word is in English or pinyin. The eyes-free mode is an option,
-not the default.
+it, and every on-screen word is in English or pinyin.
 
 Implementation follows the official Jetpack Compose documentation
 (<https://developer.android.com/develop/ui/compose/documentation>) for all UI and UX
