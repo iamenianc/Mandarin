@@ -1,7 +1,7 @@
 # Architecture
 
-Status: proposed. Decisions that affect this document should be captured as ADRs
-in `docs/05-decisions/` and linked here.
+Status: current. Decisions that affect this document are captured as ADRs in
+`docs/05-decisions/` and linked here.
 
 ## Guiding principles
 
@@ -34,7 +34,7 @@ in `docs/05-decisions/` and linked here.
 | Audio capture | `AudioRecord` + raw PCM | Clipped per attempt; VAD for end-of-speech |
 | Reference audio TTS | Kokoro-82M (Apache-2.0) | Build-time generation from pinyin; 24 kHz mono (ADR 0006) |
 | Speech feedback (WF-1) | Worker-proxied `meta/muse-spark-1.3-contributor` | Reference + attempt audio + measured tone evidence in, coaching out (ADR 0005, ADR 0014) |
-| Tone evidence (WF-1 input) | On-device DSP: F0/voicing/loudness + DTW alignment + tone comparison | Deterministic per-syllable observations; extractor chosen in the M3 spike (ADR 0014) |
+| Tone evidence (WF-1 input) | On-device DSP: F0/voicing/loudness + DTW alignment + tone comparison | Deterministic per-syllable observations; reference features are computed on device from the bundled clip and cached (ADR 0019) |
 | AI conversation (WF-2, WF-10) + speech synthesis (WF-3) | Worker-proxied Muse Spark + Kokoro TTS | Speech in -> understanding + reply text -> spoken reply; WF-10 keeps locals in character |
 | Listening response (WF-4) | Worker-proxied STT endpoint | Transcript only; local matcher decides the answer |
 | AI workflows | `:core:ai` typed workflows behind one Worker endpoint each | Separate prompt/schema/budget per task (ADR 0009) |
@@ -90,8 +90,8 @@ and is discovered at runtime through a small contract in `:core:model`.
 interface LearningModule {
     val id: String
     val title: String
-    fun lessons(): List<LessonSpec>      // guided teaching
-    fun practices(): List<PracticeSpec>  // reps
+    suspend fun lessons(): List<LessonSpec>      // guided teaching
+    suspend fun practices(): List<PracticeSpec>  // reps, each carrying a DrillMode
 }
 ```
 
@@ -103,6 +103,9 @@ interface LearningModule {
 - **Two content sources** (ADR 0010): a curated set is **bundled** and works offline; WF-8
   can **generate** extra items at runtime. `ContentItem.source` (`bundled` / `generated`)
   lets the UI label and the drill engine treat them uniformly.
+- **Standalone surfaces are feature destinations** (ADR 0020). `FeatureDestination` in
+  `:core:ui` is bound with Hilt multibinding; the shell lists each on Home and renders it at
+  `feature/{id}`. Raymond, the field loop, progress, and settings use it.
 - Feature modules consume `:core:audio` and the `:core:ai` workflows; they never call
   providers directly. Content is authored as data with bundled Kokoro reference audio
   (ADR 0006).
@@ -227,7 +230,8 @@ WF-1 is grounded by measured evidence (ADR 0014): a deterministic on-device step
 F0, voicing, and loudness, aligns the attempt to the reference by DTW, normalizes to a
 speaker-relative scale, and compares each syllable against its expected tone. Only named
 per-syllable observations are sent to the model - never raw contours - and reference
-features are precomputed at content-build time. This is DSP, not on-device AI inference
+features are computed on device from the bundled reference clip and cached per item
+(ADR 0019). This is DSP, not on-device AI inference
 (ADR 0003). If extraction fails, the request degrades to the audio-only form, so the
 soft-feedback behavior above still holds. See `docs/09-opensmile-acoustic-features.md`.
 
