@@ -52,9 +52,22 @@ application code now develops alongside it.
 
 ## Commands
 
-- Initialize: `git init`
-- No build, lint, or test commands exist yet. Add them here once the Android
-  project is created.
+Run Android commands from `android/`. JDK 17 and Android SDK 35 are required; the SDK
+path is recorded in the git-ignored `android/local.properties` as `sdk.dir`.
+
+Windows (`gradlew.bat`):
+
+- Build debug APK: `gradlew.bat :app:assembleDebug`
+- Build release APK: `gradlew.bat :app:assembleRelease`
+- Unit tests: `gradlew.bat test`
+- Android lint: `gradlew.bat lint`
+
+CI (Linux, `.github/workflows/ci.yml`):
+
+- `./gradlew :app:assembleDebug --no-daemon`
+- `./gradlew test --no-daemon`
+- `./gradlew lint --no-daemon`
+- `node --check api/worker.js`
 
 ## Do not commit
 
