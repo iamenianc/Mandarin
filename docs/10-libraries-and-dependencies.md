@@ -62,7 +62,7 @@ UI dependency is microphone-permission UX:
 
 | Dependency | Purpose | Notes |
 | --- | --- | --- |
-| `io.ktor:ktor-client-core`, `ktor-client-okhttp`, `ktor-client-content-negotiation`, `ktor-serialization-kotlinx-json`, `ktor-client-websockets` | Worker HTTP + streaming conversation | Preferred; one library covers request/stream/JSON |
+| `io.ktor:ktor-client-core`, `ktor-client-okhttp`, `ktor-client-content-negotiation`, `ktor-serialization-kotlinx-json`, `ktor-client-websockets` | Worker HTTP + streaming conversation | Chosen (ADR 0016); one library covers request/stream/JSON; `ktor-client-mock` for tests |
 | `com.squareup.okhttp3:okhttp`, `okhttp-sse` | Alternative HTTP/WebSocket stack | Option; the engine under Ktor |
 | `com.squareup.retrofit2:retrofit` | Alternative typed REST client | Option; only if Ktor is rejected |
 | `com.networknt:json-schema-validator` (or Kotlin equivalent) | Validate WF output schemas before use | Option; guards WF-8/WF-9 generation |
@@ -85,7 +85,7 @@ UI dependency is microphone-permission UX:
 | `org.jetbrains.kotlinx:kotlinx-coroutines-test` | Deterministic coroutine tests | |
 | `app.cash.turbine:turbine` | Flow assertions | |
 | `io.mockk:mockk`, `com.google.truth:truth` | Mocking and assertions | |
-| detekt, ktlint (or Spotless) | Lint and formatting | Required by M1; commands added to AGENTS.md |
+| detekt, ktlint (or Spotless) | Lint and formatting | Required by M1; Spotless with ktlint chosen (ADR 0017), detekt deferred |
 | Gradle version catalog | Central dependency and version declarations | Built into Gradle |
 
 ## Jetpack Compose inventory
@@ -253,9 +253,11 @@ Small, deterministic pieces kept as first-party code instead of dependencies:
 
 ## Open decisions
 
-- HTTP/streaming client: Ktor vs OkHttp/Retrofit.
 - VAD: WebRTC (DSP) vs Silero (neural; would need an ADR exception to ADR 0003).
 - Tone extractor: openSMILE vs TarsosDSP vs minimal Kotlin F0/loudness (M3 spike, ADR 0014).
 - WF output schema validation: library vs hand-written parsers.
 - Whether WorkManager, image loading, or debug-only tooling is needed at all.
-- Exact Android artifact for the WebRTC VAD wrapper (to confirm during M1).
+- Exact Android artifact for the WebRTC VAD wrapper (to confirm during M3).
+
+The HTTP/JSON stack is settled (ADR 0016) and formatting/static analysis is settled
+(ADR 0017).

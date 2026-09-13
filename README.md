@@ -30,6 +30,9 @@ code now develops here alongside the docs.
 | --- | --- |
 | `conductor.md` | Orchestrator playbook: how the coding agent plans, slices, delegates, and verifies work |
 | `api/` | Cloudflare Worker AI proxy: routes, config, and secrets (see `docs/02-architecture.md`) |
+| `android/` | Android app: Gradle multi-module project (`:app`, `:core:*`, `:feature:*`; see `docs/02-architecture.md`) |
+| `assets/` | Bundled content (`assets/content/`) and reference audio plus the build-time pipeline (`assets/audio/`) |
+| `.github/workflows/` | CI: Android build, tests, lint, formatting, and Worker checks |
 | `docs/00-vision.md` | Why this app exists, target users, success criteria |
 | `docs/01-requirements.md` | Functional and non-functional requirements |
 | `docs/02-architecture.md` | Proposed technical architecture, stack, data model |
