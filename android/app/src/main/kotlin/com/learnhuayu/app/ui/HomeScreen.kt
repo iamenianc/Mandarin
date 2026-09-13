@@ -28,6 +28,7 @@ import com.learnhuayu.app.R
 fun HomeScreen(
     onModuleClick: (String) -> Unit,
     onAudioCheckClick: () -> Unit,
+    onFeatureClick: (String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -57,6 +58,18 @@ fun HomeScreen(
                             style = MaterialTheme.typography.bodyMedium,
                         )
                     }
+                }
+            }
+            items(uiState.features, key = { "feature-${it.id}" }) { feature ->
+                Card(
+                    onClick = { onFeatureClick(feature.id) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text(
+                        text = feature.title,
+                        style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.padding(16.dp),
+                    )
                 }
             }
             items(uiState.modules, key = { it.id }) { module ->
