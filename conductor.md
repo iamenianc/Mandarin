@@ -58,6 +58,57 @@ elsewhere, including this file.
 - Do not fan out work that edits the same file in parallel. Serialize it or keep it local.
 - Give each delegated session the grounding it needs (relevant doc paths and ADR numbers)
   and a definition of done it can check without re-reading the whole repo.
+- Every brief ends with a completion report back to the orchestrator as an Agent Manager
+  peer reply: branch and commit SHAs, exact commands with exact results, and open questions.
+  Verify independently before merging; a report is a claim, not proof.
+
+## Conducting Agent Manager sessions
+
+Agent Manager worktree sessions do the delegated work; the orchestrator starts them, watches
+them, and merges their branches. The rules below exist because the first orchestrated wave
+learned them the hard way.
+
+### Keep the loop responsive
+
+- Never block the loop on a long sleep. A wait of minutes makes the session look dead, holds
+  every queued message (including a worker's completion report) behind it, and kills the
+  loop if the sleep is interrupted. Cap any blocking wait at 60 seconds; prefer ending the
+  turn and letting the next peer reply or prompt wake the session.
+- Do not start a wave and then sleep through it. Workers report back; the orchestrator
+  reacts.
+- A wave that cannot be observed and verified is not progress. Fix the observation path
+  before fanning out more work.
+
+### Watch sessions with evidence
+
+For each worktree session, check in order:
+
+1. Agent Manager activity (`busy`/`idle`) and any pending question or permission request.
+2. Git state in the worktree: `status --short`, recent commits, and the diff versus `master`.
+3. For build or test work, the live process: CPU time, network connections, and the log
+   file the tool writes.
+
+A session that is `busy` with no file writes, no commits, and no live process behind it is
+wedged, not working. Do not queue nudges at it; a wedged turn never reads them.
+
+### Recovering a wedged session
+
+1. Stop the session. Uncommitted files in the worktree are preserved.
+2. Kill orphaned processes it left behind, then clear stale lock files if a retry still
+   fails. A hung Gradle daemon, for example, shows a 0-byte daemon log, no CPU use, and no
+   client connection; `gradlew.bat --stop` first, then kill the process directly.
+3. Start a fresh session in the same worktree with the original brief plus the current
+   state: what was already written, what failed, and the exact command that hung.
+4. Require a checkpoint commit before risky fixes so completed work cannot be lost.
+
+### Worktree hygiene
+
+- One worktree per independent slice, single writer per file. Do not fan out parallel edits
+  to the same file.
+- Stop sessions whose slices are merged, and remove their worktrees, so the Agent Manager
+  overview shows only live work.
+- Record wave state in `.kilo/plan.md` after every merge; the overview and the plan should
+  tell the same story.
 
 ## Guardrails
 
