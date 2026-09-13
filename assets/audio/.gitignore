@@ -1,0 +1,7 @@
+# Generated reference audio is build output: never commit it in bulk.
+# Run pipeline/generate_reference_audio.py --generate to populate this directory.
+generated/
+
+# Python bytecode from the pipeline scripts.
+__pycache__/
+*.pyc

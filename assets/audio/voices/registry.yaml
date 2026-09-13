@@ -3,4 +3,9 @@
 version: 1
 engine: kokoro-82m
 langCode: z
-voices: []
+# Pinned checkpoint: <repo>@<revision> (ADR 0006 requires a pinned checkpoint).
+checkpoint: hexgrad/Kokoro-82M@v1.0
+# Voice used when no per-item voice is declared; must be listed under voices.
+defaultVoice: zf_xiaobei
+voices:
+  - zf_xiaobei

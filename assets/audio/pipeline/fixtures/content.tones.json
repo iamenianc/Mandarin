@@ -1,0 +1,42 @@
+{
+  "note": "Tone-contour fixture for the build-time Kokoro pipeline. Each item is one syllable carrying a single tone (the neutral tone is 5, ADR 0012). It is a validation fixture, not app content.",
+  "version": 1,
+  "module": "tones",
+  "items": [
+    {
+      "id": "tone-ma1",
+      "type": "word",
+      "pinyin": "ma1",
+      "meaning": "tone 1, high level",
+      "targetTones": [1]
+    },
+    {
+      "id": "tone-ma2",
+      "type": "word",
+      "pinyin": "ma2",
+      "meaning": "tone 2, rising",
+      "targetTones": [2]
+    },
+    {
+      "id": "tone-ma3",
+      "type": "word",
+      "pinyin": "ma3",
+      "meaning": "tone 3, dipping",
+      "targetTones": [3]
+    },
+    {
+      "id": "tone-ma4",
+      "type": "word",
+      "pinyin": "ma4",
+      "meaning": "tone 4, falling",
+      "targetTones": [4]
+    },
+    {
+      "id": "tone-ma5",
+      "type": "word",
+      "pinyin": "ma5",
+      "meaning": "neutral tone, short and mid level",
+      "targetTones": [5]
+    }
+  ]
+}
