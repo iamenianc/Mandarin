@@ -6,6 +6,8 @@ import com.learnhuayu.app.ui.audio.FakeAudioRecorder
 import com.learnhuayu.app.ui.audio.FakeRecordingStore
 import com.learnhuayu.app.ui.audio.FakeWavCodec
 import com.learnhuayu.app.ui.audio.MainDispatcherRule
+import com.learnhuayu.core.ai.PronunciationFeedback
+import com.learnhuayu.core.ai.WorkflowResult
 import com.learnhuayu.core.audio.capture.RecorderState
 import com.learnhuayu.core.audio.playback.AudioSource
 import com.learnhuayu.core.audio.playback.PlaybackState
@@ -41,6 +43,19 @@ class SessionViewModelTest {
     private val progressRepository = FakeProgressRepository()
     private val attemptRepository = FakeAttemptRepository()
     private val preferencesRepository = FakePreferencesRepository()
+    private val feedbackWorkflow = FakePronunciationFeedbackWorkflow(
+        WorkflowResult.Success(
+            PronunciationFeedback(
+                weakestUnit = "ma1",
+                issue = "the tone is flat",
+                tip = "start higher",
+                encouragement = "good effort",
+                replayHint = "listen to ma1 again",
+            ),
+        ),
+    )
+    private val referenceClipReader = FakeReferenceClipReader()
+    private val evidenceSource = FakeAttemptEvidenceSource()
     private val contentRepository = FakeBundledContentRepository(items = itemsById)
     private val registry = ModuleRegistry(
         setOf(
@@ -65,6 +80,9 @@ class SessionViewModelTest {
         progressRepository = progressRepository,
         attemptRepository = attemptRepository,
         preferencesRepository = preferences,
+        feedbackWorkflow = feedbackWorkflow,
+        referenceClipReader = referenceClipReader,
+        evidenceSource = evidenceSource,
         clock = fixedClock,
     )
 

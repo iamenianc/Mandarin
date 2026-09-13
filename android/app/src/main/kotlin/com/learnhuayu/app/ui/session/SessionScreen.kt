@@ -265,6 +265,13 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
             )
 
             DrillMode.SPEAK_AND_REPEAT -> SpeakContent(uiState = uiState, item = item, viewModel = viewModel)
+
+            DrillMode.SPEAK_AND_REPEAT_FEEDBACK -> SpeakAndRepeatFeedbackContent(
+                uiState = uiState,
+                item = item,
+                viewModel = viewModel,
+            )
+
             null -> Unit
         }
 
@@ -349,6 +356,99 @@ private fun SpeakContent(uiState: SessionUiState, item: ContentItem, viewModel: 
         onClick = viewModel::onPlayAttemptClick,
         modifier = Modifier.fillMaxWidth(),
         enabled = uiState.attemptAudioRef != null && !uiState.processing && !uiState.isRecording,
+    )
+}
+
+@Composable
+private fun SpeakAndRepeatFeedbackContent(
+    uiState: SessionUiState,
+    item: ContentItem,
+    viewModel: SessionViewModel,
+) {
+    SpeakContent(uiState = uiState, item = item, viewModel = viewModel)
+    if (uiState.attemptAudioRef != null) {
+        FeedbackPanel(uiState = uiState, viewModel = viewModel)
+    }
+}
+
+@Composable
+private fun FeedbackPanel(uiState: SessionUiState, viewModel: SessionViewModel) {
+    val busy = uiState.processing || uiState.isRecording
+
+    when (val feedback = uiState.feedback) {
+        FeedbackUiState.None -> Button(
+            onClick = viewModel::onGetFeedbackClick,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !busy,
+        ) {
+            Text(text = stringResource(R.string.session_get_feedback))
+        }
+
+        FeedbackUiState.Loading -> Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            CircularProgressIndicator()
+            Text(
+                text = stringResource(R.string.session_feedback_loading),
+                modifier = Modifier.padding(top = 8.dp),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        is FeedbackUiState.Available -> CoachingFeedback(feedback = feedback)
+        FeedbackUiState.OfflineFallback -> OfflineFeedback()
+    }
+
+    if (uiState.feedback is FeedbackUiState.Available || uiState.feedback is FeedbackUiState.OfflineFallback) {
+        Button(
+            onClick = viewModel::onTryAgainClick,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !busy,
+        ) {
+            Text(text = stringResource(R.string.session_try_again))
+        }
+    }
+}
+
+@Composable
+private fun CoachingFeedback(feedback: FeedbackUiState.Available) {
+    Text(
+        text = stringResource(R.string.session_feedback_weakest_unit, feedback.feedback.weakestUnit),
+        style = MaterialTheme.typography.titleMedium,
+    )
+    Text(
+        text = stringResource(R.string.session_feedback_issue, feedback.feedback.issue),
+        style = MaterialTheme.typography.bodyLarge,
+    )
+    Text(
+        text = stringResource(R.string.session_feedback_tip, feedback.feedback.tip),
+        style = MaterialTheme.typography.bodyLarge,
+    )
+    Text(
+        text = feedback.feedback.encouragement,
+        style = MaterialTheme.typography.bodyLarge,
+        color = MaterialTheme.colorScheme.tertiary,
+    )
+    Text(
+        text = stringResource(R.string.session_feedback_replay_hint, feedback.feedback.replayHint),
+        style = MaterialTheme.typography.bodyMedium,
+    )
+}
+
+@Composable
+private fun OfflineFeedback() {
+    Text(
+        text = stringResource(R.string.session_feedback_offline_title),
+        style = MaterialTheme.typography.titleMedium,
+    )
+    Text(
+        text = stringResource(R.string.session_feedback_offline_note),
+        style = MaterialTheme.typography.bodyLarge,
+    )
+    Text(
+        text = stringResource(R.string.session_feedback_offline_tip),
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 
