@@ -113,7 +113,7 @@
       "required": ["origin"],
       "properties": {
         "origin": {
-          "enum": ["generated", "recorded"]
+          "enum": ["generated", "recorded", "placeholder"]
         },
         "license": {
           "type": "string"
@@ -136,6 +136,10 @@
     },
     "notes": {
       "type": "string"
+    },
+    "placeholder": {
+      "type": "boolean",
+      "description": "Marks a stand-in clip that must be replaced by real reference audio."
     }
   }
 }

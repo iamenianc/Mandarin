@@ -26,3 +26,6 @@ Each module folder holds its own `tracks.yaml`; `../manifest.yaml` indexes them 
   `dialogue` (`docs/02-architecture.md`).
 - Clips are 24 kHz mono (ADR 0006) and bundled as OGG Opus for playback.
 - Slow variants use the `-slow` suffix; alternate voices use the `-<voice>` suffix.
+- Before a real clip exists, a module may ship a documented placeholder carrying
+  `placeholder: true` and `provenance.origin: placeholder`
+  (`../naming-and-formats.md`).

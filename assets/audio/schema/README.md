@@ -11,7 +11,7 @@ the Android build reads manifests at runtime, not the schema.
 | `id` | Yes | Lowercase hyphenated slug; matches the file stem and the served item or drill id |
 | `category` | Yes | `reference`, `drill`, or `sample` |
 | `module` | Per category | Owning module, or `app` for a fixed sample clip |
-| `contentType` | Reference | `phrase`, `word`, `minimalPair`, or `dialogue` |
+| `contentType` | Reference (lexical) | `phrase`, `word`, `minimalPair`, or `dialogue`; omitted for tone contours |
 | `source` | Reference | `bundled` or `generated` |
 | `file` | Yes | Path relative to `assets/audio/` |
 | `format` | Yes | `ogg-opus`, `m4a-aac`, or `wav-pcm` |
@@ -26,7 +26,8 @@ the Android build reads manifests at runtime, not the schema.
 | `tts` | Generated | Engine, language code, pinned voice, and checkpoint |
 | `sourceHash` | Generated | Hash over pinyin, voice, and checkpoint |
 | `sha256` | Bundled | Content hash of the committed clip |
-| `provenance` | Recorded | Origin and license for a human recording |
+| `provenance` | Recorded or placeholder | `origin` is `generated`, `recorded`, or `placeholder`; license and note as applicable |
+| `placeholder` | Placeholder | `true` marks a stand-in that must be replaced by real reference audio |
 | `evidenceRef` | No | Precomputed acoustic evidence for the clip (ADR 0014) |
 | `syllableBoundariesMs` | No | Syllable offsets used in DTW alignment |
 | `notes` | No | Free-form author note |

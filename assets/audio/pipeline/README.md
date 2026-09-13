@@ -20,6 +20,15 @@ Windows host and is not shipped in the APK
 6. **Validate.** Check every entry against the schema and the naming rules before
    bundling.
 
+## Placeholder generation
+
+No Mandarin TTS voice is available in the current environment, so
+`generate-placeholder-tones.py` writes five synthetic tone-contour WAVs under
+`../reference/tones/`. The script is deterministic, stdlib-only, and each generated file
+is recorded with `placeholder: true` in `../reference/tones/tracks.yaml`. Replace the
+files with Kokoro reference clips (ADR 0006) and delete the script once real synthesis is
+possible.
+
 ## Not in this pipeline
 
 - Runtime AI replies, which WF-3 synthesizes on demand and caches locally; they are
