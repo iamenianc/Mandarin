@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "moduleId": "tones",
+  "module": "module.json",
+  "lessons": "lessons.json",
+  "items": "items.json",
+  "lessonCount": 10,
+  "itemCount": 30
+}

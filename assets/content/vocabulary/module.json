@@ -1,0 +1,21 @@
+{
+  "id": "vocabulary",
+  "title": "Vocabulary",
+  "theme": "Audio-first beginner, tourist, and survival vocabulary: greetings, courtesy, numbers, time, food, directions, transport, hotel, shopping, emergencies, and repair (ADR 0008, ADR 0011).",
+  "lessonIds": [
+    "vocabulary-01-greetings",
+    "vocabulary-02-courtesy",
+    "vocabulary-03-numbers",
+    "vocabulary-04-time",
+    "vocabulary-05-ordering-food",
+    "vocabulary-06-directions",
+    "vocabulary-07-transport",
+    "vocabulary-08-hotel",
+    "vocabulary-09-shopping",
+    "vocabulary-10-emergencies",
+    "vocabulary-11-repair",
+    "vocabulary-practice-beginner",
+    "vocabulary-practice-tourist",
+    "vocabulary-practice-survival"
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "id": "tones",
+  "title": "Tones",
+  "theme": "The four tones and the neutral tone, their contours, tone pairs, and the tone-number notation, beginner-first (ADR 0012).",
+  "lessonIds": [
+    "tones-01-first-tone",
+    "tones-02-second-tone",
+    "tones-03-third-tone",
+    "tones-04-fourth-tone",
+    "tones-05-neutral-tone",
+    "tones-06-tone-pairs",
+    "tones-practice-hear-and-name",
+    "tones-practice-tone-pairs",
+    "tones-practice-say-and-repeat",
+    "tones-practice-tone-numbers"
+  ]
+}

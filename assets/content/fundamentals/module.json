@@ -1,0 +1,18 @@
+{
+  "id": "fundamentals",
+  "title": "Fundamentals",
+  "theme": "Syllable anatomy, the pinyin sound system (initials, finals, spelling conventions, tone numbers), tone sandhi, and rhythm, taught by ear (ADR 0011, ADR 0012).",
+  "lessonIds": [
+    "fundamentals-01-syllable-anatomy",
+    "fundamentals-02-initials",
+    "fundamentals-03-finals",
+    "fundamentals-04-tone-numbers",
+    "fundamentals-05-tone-sandhi",
+    "fundamentals-practice-syllable-parts",
+    "fundamentals-practice-initials",
+    "fundamentals-practice-finals",
+    "fundamentals-practice-tone-numbers",
+    "fundamentals-practice-tone-sandhi",
+    "fundamentals-practice-spelling-conventions"
+  ]
+}

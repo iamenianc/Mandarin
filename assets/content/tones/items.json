@@ -1,0 +1,275 @@
+{
+  "moduleId": "tones",
+  "items": [
+    {
+      "id": "tones-ma1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "mother (first tone)",
+      "pinyin": "ma1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/tones/tones-ma1.ogg"
+    },
+    {
+      "id": "tones-ba1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "eight",
+      "pinyin": "ba1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/tones/tones-ba1.ogg"
+    },
+    {
+      "id": "tones-ta1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "he / she",
+      "pinyin": "ta1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/tones/tones-ta1.ogg"
+    },
+    {
+      "id": "tones-ma2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "hemp",
+      "pinyin": "ma2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/tones/tones-ma2.ogg"
+    },
+    {
+      "id": "tones-shi2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "ten",
+      "pinyin": "shi2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/tones/tones-shi2.ogg"
+    },
+    {
+      "id": "tones-lai2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to come",
+      "pinyin": "lai2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/tones/tones-lai2.ogg"
+    },
+    {
+      "id": "tones-ma3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "horse",
+      "pinyin": "ma3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/tones/tones-ma3.ogg"
+    },
+    {
+      "id": "tones-ni3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "you",
+      "pinyin": "ni3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/tones/tones-ni3.ogg"
+    },
+    {
+      "id": "tones-hao3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "good",
+      "pinyin": "hao3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/tones/tones-hao3.ogg"
+    },
+    {
+      "id": "tones-ma4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to scold",
+      "pinyin": "ma4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/tones/tones-ma4.ogg"
+    },
+    {
+      "id": "tones-shi4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "is / matter",
+      "pinyin": "shi4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/tones/tones-shi4.ogg"
+    },
+    {
+      "id": "tones-kan4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to look",
+      "pinyin": "kan4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/tones/tones-kan4.ogg"
+    },
+    {
+      "id": "tones-ma5",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "question particle",
+      "pinyin": "ma5",
+      "targetTones": [5],
+      "audioAssetRef": "reference/tones/tones-ma5.ogg"
+    },
+    {
+      "id": "tones-le5",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "completed-action particle",
+      "pinyin": "le5",
+      "targetTones": [5],
+      "audioAssetRef": "reference/tones/tones-le5.ogg"
+    },
+    {
+      "id": "tones-ne5",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "follow-up particle",
+      "pinyin": "ne5",
+      "targetTones": [5],
+      "audioAssetRef": "reference/tones/tones-ne5.ogg"
+    },
+    {
+      "id": "tones-shi1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "poem",
+      "pinyin": "shi1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/tones/tones-shi1.ogg"
+    },
+    {
+      "id": "tones-shi3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "history",
+      "pinyin": "shi3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/tones/tones-shi3.ogg"
+    },
+    {
+      "id": "tones-ji1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "chicken",
+      "pinyin": "ji1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/tones/tones-ji1.ogg"
+    },
+    {
+      "id": "tones-ji2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "extreme",
+      "pinyin": "ji2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/tones/tones-ji2.ogg"
+    },
+    {
+      "id": "tones-ji3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "how many",
+      "pinyin": "ji3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/tones/tones-ji3.ogg"
+    },
+    {
+      "id": "tones-ji4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to remember",
+      "pinyin": "ji4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/tones/tones-ji4.ogg"
+    },
+    {
+      "id": "tones-ma1-ma5",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "mother, with a neutral second syllable",
+      "pinyin": "ma1 ma5",
+      "targetTones": [1, 5],
+      "audioAssetRef": "reference/tones/tones-ma1-ma5.ogg"
+    },
+    {
+      "id": "tones-ni3-hao3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "hello",
+      "pinyin": "ni3 hao3",
+      "targetTones": [3, 3],
+      "audioAssetRef": "reference/tones/tones-ni3-hao3.ogg"
+    },
+    {
+      "id": "tones-xie4-xie5",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "thank you",
+      "pinyin": "xie4 xie5",
+      "targetTones": [4, 5],
+      "audioAssetRef": "reference/tones/tones-xie4-xie5.ogg"
+    },
+    {
+      "id": "tones-ming2-tian1",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "tomorrow",
+      "pinyin": "ming2 tian1",
+      "targetTones": [2, 1],
+      "audioAssetRef": "reference/tones/tones-ming2-tian1.ogg"
+    },
+    {
+      "id": "tones-pair-ma1-ma3",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: high level vs low dipping (mother vs horse)",
+      "pinyin": "ma1 ma3",
+      "targetTones": [1, 3],
+      "audioAssetRef": "reference/tones/tones-pair-ma1-ma3.ogg"
+    },
+    {
+      "id": "tones-pair-ma2-ma3",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: rising vs low dipping (hemp vs horse)",
+      "pinyin": "ma2 ma3",
+      "targetTones": [2, 3],
+      "audioAssetRef": "reference/tones/tones-pair-ma2-ma3.ogg"
+    },
+    {
+      "id": "tones-pair-shi1-shi2",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: high level vs rising (poem vs ten)",
+      "pinyin": "shi1 shi2",
+      "targetTones": [1, 2],
+      "audioAssetRef": "reference/tones/tones-pair-shi1-shi2.ogg"
+    },
+    {
+      "id": "tones-pair-shi3-shi4",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: low dipping vs falling (history vs is)",
+      "pinyin": "shi3 shi4",
+      "targetTones": [3, 4],
+      "audioAssetRef": "reference/tones/tones-pair-shi3-shi4.ogg"
+    },
+    {
+      "id": "tones-pair-ji1-ji4",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: high level vs falling (chicken vs to remember)",
+      "pinyin": "ji1 ji4",
+      "targetTones": [1, 4],
+      "audioAssetRef": "reference/tones/tones-pair-ji1-ji4.ogg"
+    }
+  ]
+}

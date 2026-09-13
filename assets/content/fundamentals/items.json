@@ -1,0 +1,482 @@
+{
+  "moduleId": "fundamentals",
+  "items": [
+    {
+      "id": "fundamentals-ba1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "eight",
+      "pinyin": "ba1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ba1.ogg"
+    },
+    {
+      "id": "fundamentals-pa4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to be afraid",
+      "pinyin": "pa4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pa4.ogg"
+    },
+    {
+      "id": "fundamentals-ma1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "mother",
+      "pinyin": "ma1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ma1.ogg"
+    },
+    {
+      "id": "fundamentals-fan4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "rice / meal",
+      "pinyin": "fan4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-fan4.ogg"
+    },
+    {
+      "id": "fundamentals-da4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "big",
+      "pinyin": "da4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-da4.ogg"
+    },
+    {
+      "id": "fundamentals-ta1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "he / she",
+      "pinyin": "ta1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ta1.ogg"
+    },
+    {
+      "id": "fundamentals-ni3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "you",
+      "pinyin": "ni3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ni3.ogg"
+    },
+    {
+      "id": "fundamentals-lai2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to come",
+      "pinyin": "lai2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/fundamentals/fundamentals-lai2.ogg"
+    },
+    {
+      "id": "fundamentals-gou3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "dog",
+      "pinyin": "gou3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-gou3.ogg"
+    },
+    {
+      "id": "fundamentals-kan4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to look",
+      "pinyin": "kan4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-kan4.ogg"
+    },
+    {
+      "id": "fundamentals-hao3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "good",
+      "pinyin": "hao3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-hao3.ogg"
+    },
+    {
+      "id": "fundamentals-jia1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "home / family",
+      "pinyin": "jia1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-jia1.ogg"
+    },
+    {
+      "id": "fundamentals-qi1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "seven",
+      "pinyin": "qi1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-qi1.ogg"
+    },
+    {
+      "id": "fundamentals-xi3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to wash",
+      "pinyin": "xi3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-xi3.ogg"
+    },
+    {
+      "id": "fundamentals-zhong1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "clock / middle",
+      "pinyin": "zhong1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-zhong1.ogg"
+    },
+    {
+      "id": "fundamentals-chi1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to eat",
+      "pinyin": "chi1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-chi1.ogg"
+    },
+    {
+      "id": "fundamentals-shui3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "water",
+      "pinyin": "shui3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-shui3.ogg"
+    },
+    {
+      "id": "fundamentals-ren2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "person",
+      "pinyin": "ren2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ren2.ogg"
+    },
+    {
+      "id": "fundamentals-zai4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "at / again",
+      "pinyin": "zai4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-zai4.ogg"
+    },
+    {
+      "id": "fundamentals-cai4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "vegetable / dish",
+      "pinyin": "cai4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-cai4.ogg"
+    },
+    {
+      "id": "fundamentals-san1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "three",
+      "pinyin": "san1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-san1.ogg"
+    },
+    {
+      "id": "fundamentals-ma2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "hemp",
+      "pinyin": "ma2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ma2.ogg"
+    },
+    {
+      "id": "fundamentals-ma3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "horse",
+      "pinyin": "ma3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ma3.ogg"
+    },
+    {
+      "id": "fundamentals-ma4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to scold",
+      "pinyin": "ma4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ma4.ogg"
+    },
+    {
+      "id": "fundamentals-ma5",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "question particle",
+      "pinyin": "ma5",
+      "targetTones": [5],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ma5.ogg"
+    },
+    {
+      "id": "fundamentals-wo3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "I",
+      "pinyin": "wo3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-wo3.ogg"
+    },
+    {
+      "id": "fundamentals-he1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to drink",
+      "pinyin": "he1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-he1.ogg"
+    },
+    {
+      "id": "fundamentals-bu4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "not",
+      "pinyin": "bu4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-bu4.ogg"
+    },
+    {
+      "id": "fundamentals-yu2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "fish",
+      "pinyin": "yu2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/fundamentals/fundamentals-yu2.ogg"
+    },
+    {
+      "id": "fundamentals-mai3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to buy",
+      "pinyin": "mai3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-mai3.ogg"
+    },
+    {
+      "id": "fundamentals-mei2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "no / not have",
+      "pinyin": "mei2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/fundamentals/fundamentals-mei2.ogg"
+    },
+    {
+      "id": "fundamentals-chang2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "long",
+      "pinyin": "chang2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/fundamentals/fundamentals-chang2.ogg"
+    },
+    {
+      "id": "fundamentals-leng3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "cold",
+      "pinyin": "leng3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-leng3.ogg"
+    },
+    {
+      "id": "fundamentals-er4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "two",
+      "pinyin": "er4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-er4.ogg"
+    },
+    {
+      "id": "fundamentals-ni3-hao3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "hello",
+      "pinyin": "ni3 hao3",
+      "targetTones": [3, 3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ni3-hao3.ogg"
+    },
+    {
+      "id": "fundamentals-bu4-shi4",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "is not",
+      "pinyin": "bu4 shi4",
+      "targetTones": [4, 4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-bu4-shi4.ogg"
+    },
+    {
+      "id": "fundamentals-yi1-ban4",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "one half",
+      "pinyin": "yi1 ban4",
+      "targetTones": [1, 4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-yi1-ban4.ogg"
+    },
+    {
+      "id": "fundamentals-yi1-tian1",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "one day",
+      "pinyin": "yi1 tian1",
+      "targetTones": [1, 1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-yi1-tian1.ogg"
+    },
+    {
+      "id": "fundamentals-ting1-bu5-dong3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "do not understand by hearing",
+      "pinyin": "ting1 bu5 dong3",
+      "targetTones": [1, 5, 3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ting1-bu5-dong3.ogg"
+    },
+    {
+      "id": "fundamentals-pair-zhi1-zi1",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "initial contrast: retroflex zh vs dental z (to know vs resources)",
+      "pinyin": "zhi1 zi1",
+      "targetTones": [1, 1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pair-zhi1-zi1.ogg"
+    },
+    {
+      "id": "fundamentals-pair-chi1-qi1",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "initial contrast: retroflex ch vs palatal q (to eat vs seven)",
+      "pinyin": "chi1 qi1",
+      "targetTones": [1, 1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pair-chi1-qi1.ogg"
+    },
+    {
+      "id": "fundamentals-pair-jin1-jing1",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "final contrast: front -n vs back -ng (gold vs capital)",
+      "pinyin": "jin1 jing1",
+      "targetTones": [1, 1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pair-jin1-jing1.ogg"
+    },
+    {
+      "id": "fundamentals-pair-fen1-feng1",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "final contrast: front -n vs back -ng (to divide vs wind)",
+      "pinyin": "fen1 feng1",
+      "targetTones": [1, 1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pair-fen1-feng1.ogg"
+    },
+    {
+      "id": "fundamentals-pair-ni3-li3",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "initial contrast: nasal n vs lateral l (you vs inside)",
+      "pinyin": "ni3 li3",
+      "targetTones": [3, 3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pair-ni3-li3.ogg"
+    },
+    {
+      "id": "fundamentals-pair-ma1-ma4",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: high level vs falling (mother vs to scold)",
+      "pinyin": "ma1 ma4",
+      "targetTones": [1, 4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-pair-ma1-ma4.ogg"
+    },
+    {
+      "id": "fundamentals-liu4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "six",
+      "pinyin": "liu4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-liu4.ogg"
+    },
+    {
+      "id": "fundamentals-ju4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "sentence",
+      "pinyin": "ju4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-ju4.ogg"
+    },
+    {
+      "id": "fundamentals-xu1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to need",
+      "pinyin": "xu1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-xu1.ogg"
+    },
+    {
+      "id": "fundamentals-you3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to have",
+      "pinyin": "you3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/fundamentals/fundamentals-you3.ogg"
+    },
+    {
+      "id": "fundamentals-wei4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "for",
+      "pinyin": "wei4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-wei4.ogg"
+    },
+    {
+      "id": "fundamentals-yi1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "one",
+      "pinyin": "yi1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-yi1.ogg"
+    },
+    {
+      "id": "fundamentals-wen4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to ask",
+      "pinyin": "wen4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/fundamentals/fundamentals-wen4.ogg"
+    },
+    {
+      "id": "fundamentals-cun1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "village",
+      "pinyin": "cun1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/fundamentals/fundamentals-cun1.ogg"
+    }
+  ]
+}

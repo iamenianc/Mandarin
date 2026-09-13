@@ -1,0 +1,122 @@
+{
+  "moduleId": "listening",
+  "items": [
+    {
+      "id": "listening-ma1",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "mother (first tone)",
+      "pinyin": "ma1",
+      "targetTones": [1],
+      "audioAssetRef": "reference/listening/listening-ma1.ogg"
+    },
+    {
+      "id": "listening-ma2",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "hemp",
+      "pinyin": "ma2",
+      "targetTones": [2],
+      "audioAssetRef": "reference/listening/listening-ma2.ogg"
+    },
+    {
+      "id": "listening-ma3",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "horse",
+      "pinyin": "ma3",
+      "targetTones": [3],
+      "audioAssetRef": "reference/listening/listening-ma3.ogg"
+    },
+    {
+      "id": "listening-ma4",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "to scold",
+      "pinyin": "ma4",
+      "targetTones": [4],
+      "audioAssetRef": "reference/listening/listening-ma4.ogg"
+    },
+    {
+      "id": "listening-ma5",
+      "type": "word",
+      "source": "bundled",
+      "meaning": "question particle",
+      "pinyin": "ma5",
+      "targetTones": [5],
+      "audioAssetRef": "reference/listening/listening-ma5.ogg"
+    },
+    {
+      "id": "listening-ni3-hao3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "hello",
+      "pinyin": "ni3 hao3",
+      "targetTones": [3, 3],
+      "audioAssetRef": "reference/listening/listening-ni3-hao3.ogg"
+    },
+    {
+      "id": "listening-xie4-xie5",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "thank you",
+      "pinyin": "xie4 xie5",
+      "targetTones": [4, 5],
+      "audioAssetRef": "reference/listening/listening-xie4-xie5.ogg"
+    },
+    {
+      "id": "listening-zai4-jian4",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "goodbye",
+      "pinyin": "zai4 jian4",
+      "targetTones": [4, 4],
+      "audioAssetRef": "reference/listening/listening-zai4-jian4.ogg"
+    },
+    {
+      "id": "listening-dui4-bu5-qi3",
+      "type": "phrase",
+      "source": "bundled",
+      "meaning": "sorry",
+      "pinyin": "dui4 bu5 qi3",
+      "targetTones": [4, 5, 3],
+      "audioAssetRef": "reference/listening/listening-dui4-bu5-qi3.ogg"
+    },
+    {
+      "id": "listening-pair-ma1-ma3",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: high level vs low dipping (mother vs horse)",
+      "pinyin": "ma1 ma3",
+      "targetTones": [1, 3],
+      "audioAssetRef": "reference/listening/listening-pair-ma1-ma3.ogg"
+    },
+    {
+      "id": "listening-pair-ma2-ma4",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: rising vs falling (hemp vs to scold)",
+      "pinyin": "ma2 ma4",
+      "targetTones": [2, 4],
+      "audioAssetRef": "reference/listening/listening-pair-ma2-ma4.ogg"
+    },
+    {
+      "id": "listening-pair-shi1-shi2",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: high level vs rising (poem vs ten)",
+      "pinyin": "shi1 shi2",
+      "targetTones": [1, 2],
+      "audioAssetRef": "reference/listening/listening-pair-shi1-shi2.ogg"
+    },
+    {
+      "id": "listening-pair-shi3-shi4",
+      "type": "minimalPair",
+      "source": "bundled",
+      "meaning": "tone contrast: low dipping vs falling (history vs is)",
+      "pinyin": "shi3 shi4",
+      "targetTones": [3, 4],
+      "audioAssetRef": "reference/listening/listening-pair-shi3-shi4.ogg"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "listening",
+  "title": "Listening",
+  "theme": "Audio-first hear-and-identify drills: name the tone, then choose the matching pinyin or meaning, with no speaking required (FR-10).",
+  "lessonIds": [
+    "listening-01-hear-the-tone",
+    "listening-02-hear-the-word",
+    "listening-practice-hear-the-tone",
+    "listening-practice-hear-the-word"
+  ]
+}

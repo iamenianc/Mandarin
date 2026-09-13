@@ -1,0 +1,9 @@
+{
+  "version": 1,
+  "moduleId": "fundamentals",
+  "module": "module.json",
+  "lessons": "lessons.json",
+  "items": "items.json",
+  "lessonCount": 11,
+  "itemCount": 53
+}

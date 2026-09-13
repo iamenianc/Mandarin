@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "schema": {
+    "module": "schema/module.schema.json",
+    "lesson": "schema/lesson.schema.json",
+    "contentItem": "schema/content-item.schema.json"
+  },
+  "modules": [
+    {
+      "id": "tones",
+      "title": "Tones",
+      "path": "tones/module.json",
+      "index": "tones/index.json",
+      "lessonCount": 10,
+      "itemCount": 30
+    },
+    {
+      "id": "fundamentals",
+      "title": "Fundamentals",
+      "path": "fundamentals/module.json",
+      "index": "fundamentals/index.json",
+      "lessonCount": 11,
+      "itemCount": 53
+    },
+    {
+      "id": "vocabulary",
+      "title": "Vocabulary",
+      "path": "vocabulary/module.json",
+      "index": "vocabulary/index.json",
+      "lessonCount": 14,
+      "itemCount": 103
+    },
+    {
+      "id": "listening",
+      "title": "Listening",
+      "path": "listening/module.json",
+      "index": "listening/index.json",
+      "lessonCount": 4,
+      "itemCount": 13
+    },
+    {
+      "id": "speech",
+      "title": "Speech",
+      "path": "speech/module.json",
+      "index": "speech/index.json",
+      "lessonCount": 4,
+      "itemCount": 9
+    }
+  ]
+}

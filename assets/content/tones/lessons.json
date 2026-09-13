@@ -1,0 +1,135 @@
+{
+  "moduleId": "tones",
+  "lessons": [
+    {
+      "id": "tones-01-first-tone",
+      "moduleId": "tones",
+      "title": "First tone",
+      "level": "beginner",
+      "topic": "tone contours",
+      "kind": "lesson",
+      "contentItemIds": ["tones-ma1", "tones-ba1", "tones-ta1"]
+    },
+    {
+      "id": "tones-02-second-tone",
+      "moduleId": "tones",
+      "title": "Second tone",
+      "level": "beginner",
+      "topic": "tone contours",
+      "kind": "lesson",
+      "contentItemIds": ["tones-ma2", "tones-shi2", "tones-lai2"]
+    },
+    {
+      "id": "tones-03-third-tone",
+      "moduleId": "tones",
+      "title": "Third tone",
+      "level": "beginner",
+      "topic": "tone contours",
+      "kind": "lesson",
+      "contentItemIds": ["tones-ma3", "tones-ni3", "tones-hao3"]
+    },
+    {
+      "id": "tones-04-fourth-tone",
+      "moduleId": "tones",
+      "title": "Fourth tone",
+      "level": "beginner",
+      "topic": "tone contours",
+      "kind": "lesson",
+      "contentItemIds": ["tones-ma4", "tones-shi4", "tones-kan4"]
+    },
+    {
+      "id": "tones-05-neutral-tone",
+      "moduleId": "tones",
+      "title": "Neutral tone",
+      "level": "beginner",
+      "topic": "tone contours",
+      "kind": "lesson",
+      "contentItemIds": ["tones-ma5", "tones-le5", "tones-ne5"]
+    },
+    {
+      "id": "tones-06-tone-pairs",
+      "moduleId": "tones",
+      "title": "Tone pairs",
+      "level": "beginner",
+      "topic": "tone combinations",
+      "kind": "lesson",
+      "contentItemIds": ["tones-ma1-ma5", "tones-ni3-hao3", "tones-xie4-xie5", "tones-ming2-tian1"]
+    },
+    {
+      "id": "tones-practice-hear-and-name",
+      "moduleId": "tones",
+      "title": "Hear and name the tone",
+      "level": "beginner",
+      "topic": "tone discrimination",
+      "kind": "practice",
+      "contentItemIds": [
+        "tones-ma1",
+        "tones-ma2",
+        "tones-ma3",
+        "tones-ma4",
+        "tones-ma5",
+        "tones-shi1",
+        "tones-shi2",
+        "tones-shi3",
+        "tones-shi4",
+        "tones-ji1",
+        "tones-ji2",
+        "tones-ji3",
+        "tones-ji4"
+      ]
+    },
+    {
+      "id": "tones-practice-tone-pairs",
+      "moduleId": "tones",
+      "title": "Hear the tone pair",
+      "level": "beginner",
+      "topic": "tone combinations",
+      "kind": "practice",
+      "contentItemIds": [
+        "tones-pair-ma1-ma3",
+        "tones-pair-ma2-ma3",
+        "tones-pair-shi1-shi2",
+        "tones-pair-shi3-shi4",
+        "tones-pair-ji1-ji4",
+        "tones-ni3-hao3",
+        "tones-xie4-xie5"
+      ]
+    },
+    {
+      "id": "tones-practice-say-and-repeat",
+      "moduleId": "tones",
+      "title": "Say and repeat the tone",
+      "level": "beginner",
+      "topic": "tone production",
+      "kind": "practice",
+      "contentItemIds": [
+        "tones-ma1",
+        "tones-ma2",
+        "tones-ma3",
+        "tones-ma4",
+        "tones-ma5",
+        "tones-ni3-hao3",
+        "tones-xie4-xie5",
+        "tones-ming2-tian1"
+      ]
+    },
+    {
+      "id": "tones-practice-tone-numbers",
+      "moduleId": "tones",
+      "title": "Name the tone number",
+      "level": "beginner",
+      "topic": "tone notation",
+      "kind": "practice",
+      "contentItemIds": [
+        "tones-ma1",
+        "tones-ma2",
+        "tones-ma3",
+        "tones-ma4",
+        "tones-ma5",
+        "tones-ni3-hao3",
+        "tones-xie4-xie5",
+        "tones-ming2-tian1"
+      ]
+    }
+  ]
+}

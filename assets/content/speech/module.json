@@ -1,0 +1,11 @@
+{
+  "id": "speech",
+  "title": "Speech",
+  "theme": "Audio-first say-and-repeat production drills: repeat a tone or word and receive soft feedback that names the weakest pinyin syllable and tone (WF-1, ADR 0005).",
+  "lessonIds": [
+    "speech-01-say-the-tone",
+    "speech-02-say-the-word",
+    "speech-practice-say-the-tone",
+    "speech-practice-say-the-word"
+  ]
+}
