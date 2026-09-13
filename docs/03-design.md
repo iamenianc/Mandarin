@@ -162,6 +162,28 @@ Hangul). There is deliberately **no hanzi browser and no character-based drill**
   or speak it - the learner never has to type pinyin.
 - Back navigation during a session confirms before discarding progress.
 
+## Accessibility
+
+NFR-7 asks for TalkBack labels and dynamic volume and font scaling for the minimal UI text.
+The shared `:core:ui` controls carry the load:
+
+- `PlaybackButton` and `RecordButton` are labelled buttons with visible text; the record
+  button announces its `Idle`, `Recording`, or `Processing` state through
+  `stateDescription`.
+- `LargeTapTarget` uses a button role and merges its descendants, so TalkBack reads the
+  label and supporting line as one control.
+- Controls use Material 3 buttons and `minimumInteractiveComponentSize`, so touch targets
+  stay at least 48dp, and all text uses `MaterialTheme.typography`, which scales with the
+  system font size.
+- Screens keep the pinyin, meaning, and status text as real text nodes, so TalkBack reads
+  them; decorative icons pass `contentDescription = null`.
+
+A manual check when a screen changes: enable TalkBack and walk the screen; set the system
+font to its largest size and confirm nothing clips or overlaps; confirm the record button
+announces its state and the replay control is reachable. Screen-level polish beyond the
+shared controls (for example announcing a level meter as a progress range on every screen)
+is tracked as follow-up.
+
 ## Open design questions
 
 - How to keep AI feedback varied and encouraging rather than repetitive.

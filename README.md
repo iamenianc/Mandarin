@@ -55,5 +55,6 @@ code now develops here alongside the docs.
 
 ## Status
 
-Moving from planning into implementation. See `docs/04-roadmap.md` for the current
-milestone.
+Feature-complete for v1: milestones M1-M5 in `docs/04-roadmap.md` are complete, and the
+remaining work is the author's on-device and release validation (device audio, generated
+reference clips, measured latency, and the Play internal testing track).

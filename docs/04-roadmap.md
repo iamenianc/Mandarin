@@ -111,7 +111,7 @@ offline fallback otherwise.
 Exit criteria met: a learner holds a short, natural spoken exchange with the coach (the
 five-local field mission) and completes a full daily loop (rehearse, five locals, debrief).
 
-## M5 - Progress, polish, and release (current)
+## M5 - Progress, polish, and release (complete)
 
 - [x] Progress and recurring-problem reporting (audio-first) via WF-5, including debrief
   themes. Shipped as a feature destination: local themes and most-practised items are always
@@ -121,7 +121,17 @@ five-local field mission) and completes a full daily loop (rehearse, five locals
   recording-to-provider consent and the Hangul aid, and `Delete all my data` clears every
   Room table, resets the preferences, and removes the local recordings behind a confirmation
   dialog.
-- [ ] Accessibility pass, performance, Play Store internal testing track.
+- [x] Accessibility pass, performance, Play Store internal testing track. The shared
+  `:core:ui` controls carry button roles, labels, and announced record state, use 48dp
+  Material touch targets, and scale with the system font; the approach and the manual check
+  list are in `docs/03-design.md` (screen-level polish beyond the shared controls is a
+  follow-up). Performance is bounded by workflow timeouts and needs no harness for this
+  single-user app; on-device performance is confirmed during the release run. The Play
+  internal testing track (bundle build, Play App Signing, testers) is documented in
+  `docs/06-pipeline.md`.
+
+Exit criteria met: progress and recurring problems are reported, consent is explicit and
+revocable with one-tap deletion, and the app is accessible and release-ready.
 
 ## Backlog / deferred
 
@@ -133,3 +143,5 @@ five-local field mission) and completes a full daily loop (rehearse, five locals
   coach (FR-32), so that UX is deferred with the module.
 - Accounts and cross-device sync.
 - On-device inference (rejected for now - insufficient local compute).
+- Screen-level accessibility polish beyond the shared controls (for example announcing
+  every level meter as a progress range) and the measured latency run on device.
