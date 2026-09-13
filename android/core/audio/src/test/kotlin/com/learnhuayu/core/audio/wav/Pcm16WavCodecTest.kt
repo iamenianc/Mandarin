@@ -178,18 +178,13 @@ class Pcm16WavCodecTest {
         return out.toByteArray()
     }
 
-    private fun fourCc(bytes: ByteArray, offset: Int): String =
-        String(bytes, offset, 4, Charsets.US_ASCII)
+    private fun fourCc(bytes: ByteArray, offset: Int): String = String(bytes, offset, 4, Charsets.US_ASCII)
 
-    private fun littleEndianInt(bytes: ByteArray, offset: Int): Int =
-        ByteBuffer.wrap(bytes, offset, 4).order(ByteOrder.LITTLE_ENDIAN).int
+    private fun littleEndianInt(bytes: ByteArray, offset: Int): Int = ByteBuffer.wrap(bytes, offset, 4).order(ByteOrder.LITTLE_ENDIAN).int
 
-    private fun littleEndianShort(bytes: ByteArray, offset: Int): Int =
-        ByteBuffer.wrap(bytes, offset, 2).order(ByteOrder.LITTLE_ENDIAN).short.toInt()
+    private fun littleEndianShort(bytes: ByteArray, offset: Int): Int = ByteBuffer.wrap(bytes, offset, 2).order(ByteOrder.LITTLE_ENDIAN).short.toInt()
 
-    private fun littleEndianShort(value: Int): ByteArray =
-        ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value.toShort()).array()
+    private fun littleEndianShort(value: Int): ByteArray = ByteBuffer.allocate(2).order(ByteOrder.LITTLE_ENDIAN).putShort(value.toShort()).array()
 
-    private fun littleEndianInt(value: Int): ByteArray =
-        ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(value).array()
+    private fun littleEndianInt(value: Int): ByteArray = ByteBuffer.allocate(4).order(ByteOrder.LITTLE_ENDIAN).putInt(value).array()
 }

@@ -34,13 +34,11 @@ abstract class CoreAudioModule {
 
         @Provides
         @Singleton
-        fun providePcmCaptureDevice(): PcmCaptureDevice =
-            AudioRecordCaptureDevice(sampleRateHz = AudioSpec.SAMPLE_RATE_HZ)
+        fun providePcmCaptureDevice(): PcmCaptureDevice = AudioRecordCaptureDevice(sampleRateHz = AudioSpec.SAMPLE_RATE_HZ)
 
         @Provides
         @Singleton
-        fun provideEndOfSpeechDetector(): EndOfSpeechDetector =
-            EnergyZeroCrossingEndOfSpeechDetector(sampleRateHz = AudioSpec.SAMPLE_RATE_HZ)
+        fun provideEndOfSpeechDetector(): EndOfSpeechDetector = EnergyZeroCrossingEndOfSpeechDetector(sampleRateHz = AudioSpec.SAMPLE_RATE_HZ)
 
         @Provides
         @Singleton

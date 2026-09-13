@@ -141,8 +141,7 @@ internal class PlaybackStateMachine(initialState: PlaybackState = PlaybackState(
         return current.copy(status = PlaybackStatus.Paused)
     }
 
-    private fun ended(current: PlaybackState): PlaybackState =
-        current.copy(status = PlaybackStatus.Ended, positionMs = current.durationMs ?: current.positionMs)
+    private fun ended(current: PlaybackState): PlaybackState = current.copy(status = PlaybackStatus.Ended, positionMs = current.durationMs ?: current.positionMs)
 
     private fun positionChanged(event: PlaybackEvent.PositionChanged, current: PlaybackState): PlaybackState {
         if (current.status != PlaybackStatus.Playing) return current

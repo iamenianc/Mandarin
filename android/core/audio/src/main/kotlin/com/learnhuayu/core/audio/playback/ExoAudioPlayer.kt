@@ -24,7 +24,8 @@ import javax.inject.Singleton
 @Singleton
 class ExoAudioPlayer @Inject constructor(
     @ApplicationContext context: Context,
-) : AudioPlayer, Player.Listener {
+) : AudioPlayer,
+    Player.Listener {
 
     private val machine = PlaybackStateMachine()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)

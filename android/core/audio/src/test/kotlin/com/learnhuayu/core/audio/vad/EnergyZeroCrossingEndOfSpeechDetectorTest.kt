@@ -14,18 +14,15 @@ class EnergyZeroCrossingEndOfSpeechDetectorTest {
             minSpeechFrames = 2,
             silenceHangoverFrames = 2,
         ),
-    ): EnergyZeroCrossingEndOfSpeechDetector =
-        EnergyZeroCrossingEndOfSpeechDetector(sampleRateHz = sampleRateHz, config = config)
+    ): EnergyZeroCrossingEndOfSpeechDetector = EnergyZeroCrossingEndOfSpeechDetector(sampleRateHz = sampleRateHz, config = config)
 
     private fun silence(): ShortArray = ShortArray(frameSize)
 
-    private fun tone(amplitude: Int = 20_000): ShortArray =
-        ShortArray(frameSize) { index ->
-            (sin(2.0 * Math.PI * 100.0 * index / sampleRateHz) * amplitude).toInt().toShort()
-        }
+    private fun tone(amplitude: Int = 20_000): ShortArray = ShortArray(frameSize) { index ->
+        (sin(2.0 * Math.PI * 100.0 * index / sampleRateHz) * amplitude).toInt().toShort()
+    }
 
-    private fun alternating(amplitude: Int): ShortArray =
-        ShortArray(frameSize) { index -> if (index % 2 == 0) amplitude.toShort() else (-amplitude).toShort() }
+    private fun alternating(amplitude: Int): ShortArray = ShortArray(frameSize) { index -> if (index % 2 == 0) amplitude.toShort() else (-amplitude).toShort() }
 
     private fun noise(amplitude: Int): ShortArray {
         var state = 12_345

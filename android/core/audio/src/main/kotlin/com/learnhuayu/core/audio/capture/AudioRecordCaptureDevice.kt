@@ -23,8 +23,8 @@ class AudioRecordCaptureDevice(
         record.startRecording()
     }
 
-    override fun read(buffer: ShortArray, offset: Int, size: Int): Int =
-        audioRecord?.read(buffer, offset, size) ?: READ_ERROR
+    @RequiresPermission(Manifest.permission.RECORD_AUDIO)
+    override fun read(buffer: ShortArray, offset: Int, size: Int): Int = audioRecord?.read(buffer, offset, size) ?: READ_ERROR
 
     override fun stop() {
         val record = audioRecord ?: return
@@ -39,18 +39,17 @@ class AudioRecordCaptureDevice(
     }
 
     @RequiresPermission(Manifest.permission.RECORD_AUDIO)
-    private fun createAudioRecord(): AudioRecord =
-        AudioRecord.Builder()
-            .setAudioSource(audioSource)
-            .setAudioFormat(
-                AudioFormat.Builder()
-                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                    .setSampleRate(sampleRateHz)
-                    .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
-                    .build(),
-            )
-            .setBufferSizeInBytes(bufferSizeInShorts * AudioSpec.BYTES_PER_SAMPLE)
-            .build()
+    private fun createAudioRecord(): AudioRecord = AudioRecord.Builder()
+        .setAudioSource(audioSource)
+        .setAudioFormat(
+            AudioFormat.Builder()
+                .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
+                .setSampleRate(sampleRateHz)
+                .setChannelMask(AudioFormat.CHANNEL_IN_MONO)
+                .build(),
+        )
+        .setBufferSizeInBytes(bufferSizeInShorts * AudioSpec.BYTES_PER_SAMPLE)
+        .build()
 
     private companion object {
         const val READ_ERROR = -1
