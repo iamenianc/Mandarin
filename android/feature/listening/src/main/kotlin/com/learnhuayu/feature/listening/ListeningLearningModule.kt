@@ -13,9 +13,9 @@ class ListeningLearningModule : LearningModule {
     override val id: String = "listening"
     override val title: String = "Listening"
 
-    override fun lessons(): List<LessonSpec> = emptyList()
+    override suspend fun lessons(): List<LessonSpec> = emptyList()
 
-    override fun practices(): List<PracticeSpec> = emptyList()
+    override suspend fun practices(): List<PracticeSpec> = emptyList()
 }
 
 @Module

@@ -5,4 +5,5 @@ data class PracticeSpec(
     val moduleId: String,
     val title: String,
     val contentItemIds: List<String>,
+    val mode: DrillMode = DrillMode.LISTEN_AND_CHOOSE,
 )

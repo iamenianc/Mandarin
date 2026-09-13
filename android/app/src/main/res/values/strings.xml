@@ -6,6 +6,7 @@
     <string name="empty_lessons">No lessons yet.</string>
     <string name="empty_practice">No practice yet.</string>
     <string name="module_not_found">Module not found.</string>
+    <string name="module_loading">Loading module…</string>
     <string name="navigate_back">Back</string>
     <string name="audio_check_title">Audio check</string>
     <string name="audio_check_intro">Play the reference tone, record the microphone, then listen back.</string>
@@ -15,4 +16,25 @@
     <string name="audio_check_permission_retry">Try again</string>
     <string name="audio_check_error">Audio error: %1$s</string>
     <string name="audio_check_input_level">Input level: %1$d%%</string>
+    <string name="session_loading">Loading session…</string>
+    <string name="session_not_found">Session not found.</string>
+    <string name="session_progress">Item %1$d of %2$d</string>
+    <string name="session_next">Next</string>
+    <string name="session_finish">Finish</string>
+    <string name="session_previous">Previous</string>
+    <string name="session_hear_and_name_prompt">Which tone did you hear? Tap a tone number.</string>
+    <string name="session_listen_and_choose_prompt">Which pinyin did you hear?</string>
+    <string name="session_speak_and_repeat_prompt">Listen, then record yourself.</string>
+    <string name="session_lesson_prompt">Listen and follow along.</string>
+    <string name="session_correct">Correct! %1$s</string>
+    <string name="session_incorrect">Not quite. It was %1$s.</string>
+    <string name="session_reference_unavailable">The reference clip is unavailable. You can keep going.</string>
+    <string name="session_error">Audio error: %1$s</string>
+    <string name="session_finished_title">Session complete</string>
+    <string name="session_finished_body">Items practiced: %1$d</string>
+    <string name="session_done">Done</string>
+    <string name="session_leave_title">Leave session?</string>
+    <string name="session_leave_message">Your progress so far is saved. Leave this session?</string>
+    <string name="session_leave_confirm">Leave</string>
+    <string name="session_leave_cancel">Keep practicing</string>
 </resources>

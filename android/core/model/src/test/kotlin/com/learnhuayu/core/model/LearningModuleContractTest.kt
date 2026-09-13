@@ -1,5 +1,6 @@
 package com.learnhuayu.core.model
 
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -12,7 +13,7 @@ class LearningModuleContractTest {
         override val id: String = "fake"
         override val title: String = "Fake"
 
-        override fun lessons(): List<LessonSpec> = listOf(
+        override suspend fun lessons(): List<LessonSpec> = listOf(
             LessonSpec(
                 id = "fake-lesson",
                 moduleId = id,
@@ -23,23 +24,40 @@ class LearningModuleContractTest {
             ),
         )
 
-        override fun practices(): List<PracticeSpec> = listOf(
+        override suspend fun practices(): List<PracticeSpec> = listOf(
             PracticeSpec(
                 id = "fake-practice",
                 moduleId = id,
                 title = "First practice",
                 contentItemIds = listOf("phrase-ni3-hao3"),
+                mode = DrillMode.HEAR_AND_NAME,
             ),
         )
     }
 
     @Test
-    fun `module exposes its lessons and practices`() {
+    fun `module exposes its lessons and practices`() = runTest {
         val module = FakeModule()
 
         assertEquals("fake", module.lessons().single().moduleId)
         assertEquals("fake", module.practices().single().moduleId)
         assertEquals(listOf("phrase-ni3-hao3"), module.lessons().single().contentItemIds)
+    }
+
+    @Test
+    fun `practice spec defaults to listen and choose and carries an explicit mode`() = runTest {
+        val module = FakeModule()
+
+        assertEquals(DrillMode.HEAR_AND_NAME, module.practices().single().mode)
+        assertEquals(
+            DrillMode.LISTEN_AND_CHOOSE,
+            PracticeSpec(
+                id = "fake-default",
+                moduleId = "fake",
+                title = "Default mode",
+                contentItemIds = listOf("phrase-ni3-hao3"),
+            ).mode,
+        )
     }
 
     @Test

@@ -8,8 +8,11 @@ class FakeRecordingStore(private val file: File) : RecordingStore {
     var createdCount = 0
         private set
 
-    override fun newRecordingFile(): File {
+    val requestedLabels = mutableListOf<String>()
+
+    override fun newRecordingFile(label: String): File {
         createdCount++
+        requestedLabels += label
         return file
     }
 }

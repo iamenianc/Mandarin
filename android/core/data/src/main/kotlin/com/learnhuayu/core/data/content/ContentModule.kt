@@ -11,7 +11,7 @@ data class ContentModule(
     val lessonSpecs: List<LessonSpec>,
     val practiceSpecs: List<PracticeSpec>,
 ) : LearningModule {
-    override fun lessons(): List<LessonSpec> = lessonSpecs
+    override suspend fun lessons(): List<LessonSpec> = lessonSpecs
 
-    override fun practices(): List<PracticeSpec> = practiceSpecs
+    override suspend fun practices(): List<PracticeSpec> = practiceSpecs
 }
