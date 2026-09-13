@@ -78,6 +78,10 @@ tasks.withType<MergeSourceSetFolders>().configureEach {
     dependsOn(syncContentAssets)
 }
 
+tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
+    dependsOn(syncContentAssets)
+}
+
 dependencies {
     implementation(project(":core:model"))
     implementation(project(":core:audio"))
