@@ -1,0 +1,33 @@
+{
+  "id": "dialogue-greetings-01",
+  "type": "dialogue",
+  "source": "bundled",
+  "meaning": "A short greeting exchange",
+  "audioAssetRef": "audio/reference/dialogue-greetings-01.wav",
+  "turns": [
+    {
+      "speaker": "learner",
+      "pinyin": "ni3 hao3",
+      "meaning": "hello",
+      "targetTones": [3, 3]
+    },
+    {
+      "speaker": "partner",
+      "pinyin": "ni3 hao3",
+      "meaning": "hello",
+      "targetTones": [3, 3]
+    },
+    {
+      "speaker": "learner",
+      "pinyin": "xie4 xie5",
+      "meaning": "thank you",
+      "targetTones": [4, 5]
+    },
+    {
+      "speaker": "partner",
+      "pinyin": "bu2 ke4 qi5",
+      "meaning": "you are welcome",
+      "targetTones": [2, 4, 5]
+    }
+  ]
+}

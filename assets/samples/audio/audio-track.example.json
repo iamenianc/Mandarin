@@ -1,0 +1,20 @@
+{
+  "assetRef": "audio/reference/ni3-hao3.wav",
+  "kind": "reference",
+  "sourceText": "ni3 hao3",
+  "format": "wav",
+  "sampleRateHz": 24000,
+  "channels": 1,
+  "durationMs": 1180,
+  "generator": {
+    "engine": "Kokoro-82M",
+    "engineVersion": "1.0",
+    "languageCode": "z",
+    "voice": "voice-z-01",
+    "license": "Apache-2.0"
+  },
+  "checksum": {
+    "algorithm": "sha256",
+    "value": "<placeholder hash>"
+  }
+}

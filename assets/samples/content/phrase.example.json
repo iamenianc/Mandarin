@@ -1,0 +1,10 @@
+{
+  "id": "phrase-ni3-hao3",
+  "type": "phrase",
+  "source": "bundled",
+  "meaning": "hello",
+  "audioAssetRef": "audio/reference/ni3-hao3.wav",
+  "pinyin": "ni3 hao3",
+  "hangul": "니하오",
+  "targetTones": [3, 3]
+}
