@@ -38,9 +38,10 @@
   .page {
     position: absolute;
     inset: 0;
-    padding: 48px 56px;
+    padding: 44px 56px 64px;
     display: none;
     flex-direction: column;
+    overflow: auto;
   }
   .page.active { display: flex; }
   .kicker {
@@ -116,6 +117,24 @@
   button.ctl:hover { background: #f3f5f9; }
   button.ctl:disabled { opacity: .4; cursor: default; }
   .pageno { font-size: 13px; color: var(--muted); }
+  .tbl { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 2px; }
+  .tbl th, .tbl td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #e4e7ee; }
+  .tbl th { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .tbl code { font-size: 12px; color: var(--accent); font-weight: 700; }
+  .flow {
+    font-family: ui-monospace, Consolas, "Cascadia Mono", monospace;
+    font-size: 12px; line-height: 1.5; white-space: pre-wrap;
+    background: #0f1218; color: #d7e0ee; padding: 12px 14px;
+    border-radius: 10px; margin: 4px 0 10px;
+  }
+  pre.code {
+    font-family: ui-monospace, Consolas, "Cascadia Mono", monospace;
+    font-size: 12px; line-height: 1.5; background: #f4f6fa;
+    border: 1px solid #e4e7ee; border-radius: 10px;
+    padding: 10px 12px; margin: 4px 0 0; overflow: auto; color: #2b3242;
+  }
+  .note { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .split { display: grid; grid-template-columns: 1.05fr .95fr; gap: 18px; align-items: start; }
   .cta { border-left: 4px solid var(--accent); padding-left: 14px; margin-top: 6px; }
   .cta p:last-child { margin: 0; }
   @media (max-width: 640px) {
@@ -124,6 +143,8 @@
     h1, .cover h1 { font-size: 34px; }
     h2 { font-size: 24px; }
     .grid { grid-template-columns: 1fr; }
+    .split { grid-template-columns: 1fr; }
+    .flow, pre.code { font-size: 11px; }
   }
   @media print {
     body { background: #fff; padding: 0; display: block; }
@@ -234,6 +255,143 @@
     <div class="spacer"></div>
     <p class="pageno">Product: LearnHuayu &nbsp;|&nbsp; Platform: Android &nbsp;|&nbsp;
       Audience: one absolute beginner &nbsp;|&nbsp; Private, non-commercial</p>
+  </section>
+
+  <section class="page">
+    <div class="kicker">Under the hood</div>
+    <h2>Intelligence by architecture, not by accident.</h2>
+    <p class="lead">The app does not bolt a chatbot onto a lesson list. Every smart
+      behavior is a named, budgeted, testable part of the design.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Audio-first, visually supported</h3>
+        <p>Audio drives every lesson; visuals reinforce it. No hanzi rendering, no
+          character navigation - all on-screen text is English or pinyin.</p>
+      </div>
+      <div class="card">
+        <h3>Cloud-only AI</h3>
+        <p>No on-device inference. Listening drills and repeat-after-audio run offline
+          from bundled content; the network only adds coaching.</p>
+      </div>
+      <div class="card">
+        <h3>Fast beats exhaustive</h3>
+        <p>Specific, encouraging coaching in ~1-2s is the target - a perfect score in
+          10s is not.</p>
+      </div>
+      <div class="card">
+        <h3>Pinyin-only by contract</h3>
+        <p>Workflows emit pinyin with tone numbers and meaning. Hanzi is not a possible
+          model output by schema.</p>
+      </div>
+    </div>
+    <p class="note">On-device DSP for tone evidence is measurement, not inference - a
+      deliberate, bounded exception to the cloud-only rule.</p>
+  </section>
+
+  <section class="page">
+    <div class="kicker">Technical - workflows</div>
+    <h2>Ten workflows. One job each.</h2>
+    <p class="lead" style="margin-bottom:10px">No shared prompts, no overloaded
+      endpoints - each task has its own schema, latency budget, and fallback.</p>
+    <table class="tbl">
+      <tr><th>ID</th><th>Workflow</th><th>Model</th></tr>
+      <tr><td><code>WF-1</code></td><td>Pronunciation feedback</td><td>Muse Spark (audio in)</td></tr>
+      <tr><td><code>WF-2</code></td><td>Conversation turn</td><td>Muse Spark (audio in)</td></tr>
+      <tr><td><code>WF-3</code></td><td>Speech synthesis</td><td>Kokoro-82M</td></tr>
+      <tr><td><code>WF-4</code></td><td>Response transcription</td><td>STT endpoint</td></tr>
+      <tr><td><code>WF-5</code></td><td>Progress summary</td><td>Muse Spark (text only)</td></tr>
+      <tr><td><code>WF-6</code></td><td>Content authoring (build-time)</td><td>Text LLM</td></tr>
+      <tr><td><code>WF-7</code></td><td>Raymond - Mandarin Q&amp;A</td><td>Muse Spark</td></tr>
+      <tr><td><code>WF-8</code></td><td>Exercise generation (runtime)</td><td>Muse Spark</td></tr>
+      <tr><td><code>WF-9</code></td><td>Field mission generation</td><td>Muse Spark</td></tr>
+      <tr><td><code>WF-10</code></td><td>Local conversation turn</td><td>Muse Spark (audio in)</td></tr>
+    </table>
+    <p class="note">Typed interfaces in <code>:core:ai</code>; one versioned Worker
+      endpoint per workflow; prompts stay server-side; features depend on a workflow,
+      never on a provider.</p>
+  </section>
+
+  <section class="page">
+    <div class="kicker">Technical - assessment</div>
+    <h2>Feedback that is grounded, not guessed.</h2>
+    <div class="flow">mic -> VAD + PCM buffer
+    \-> on-device evidence: F0 / voicing / loudness
+        -> DTW align to reference
+        -> normalize to speaker-relative scale
+        -> compare each syllable to its expected tone
+    \-> Worker /v1/wf/pronunciation-feedback
+        -> Muse Spark (reference + attempt + named evidence)
+            -> coaching text: weakest pinyin unit + issue + tip</div>
+    <ul>
+      <li><strong>No separate ASR stage.</strong> The multimodal model reads the audio
+        and reasons in one call; two <code>input_audio</code> parts plus a structured
+        prompt.</li>
+      <li><strong>Deterministic where it matters.</strong> Tones are measured by DSP,
+        then handed to the model as named per-syllable observations - never raw
+        contours.</li>
+      <li><strong>Typed coaching out:</strong>
+        <code>{ weakestUnit, issue, tip, encouragement, replayHint }</code>.</li>
+      <li><strong>Degrades, never breaks.</strong> If extraction fails the request falls
+        back to audio-only; feedback stays advisory, not a score.</li>
+    </ul>
+  </section>
+
+  <section class="page">
+    <div class="kicker">Technical - architecture</div>
+    <h2>Modular by construction.</h2>
+    <div class="split">
+      <div>
+        <ul>
+          <li><strong>One contract, many modules.</strong> A module exposes
+            <code>lessons()</code> and <code>practices()</code>; Hilt multibinding
+            contributes it, so adding a learning area needs no shell or navigation
+            change.</li>
+          <li><strong>One drill engine.</strong> A <code>ContentItem</code> type
+            discriminator (<code>phrase</code>, <code>word</code>,
+            <code>minimalPair</code>, <code>dialogue</code>) extends content without new
+            engines.</li>
+          <li><strong>Two content sources, one shape.</strong> A curated set is bundled
+            for offline use; WF-8 generates more at runtime and is labeled as extra.</li>
+          <li><strong>Clean layering.</strong> UI -> ViewModel -> use case ->
+            repository -> Room / assets / Worker.</li>
+        </ul>
+      </div>
+      <div>
+        <pre class="code">interface LearningModule {
+    val id: String
+    val title: String
+    fun lessons(): List&lt;LessonSpec&gt;
+    fun practices(): List&lt;PracticeSpec&gt;
+}</pre>
+        <p class="note">Feature modules consume <code>:core:audio</code> and
+          <code>:core:ai</code> only - they never call a provider directly.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="page">
+    <div class="kicker">Technical - trust and resilience</div>
+    <h2>Safe by default, degraded by design.</h2>
+    <ul>
+      <li><strong>The Worker is the trust boundary.</strong> Provider keys never ship
+        in the APK; rate limits and payload caps are enforced per workflow; prompts live
+        server-side.</li>
+      <li><strong>Minimum necessary input.</strong> Raw learner audio reaches only the
+        workflows that must analyze it; summaries and generation get aggregated metadata
+        and content context.</li>
+      <li><strong>Local-first data.</strong> Recordings, transcripts, and debriefs stay
+        on device; consent is explicit and revocable; one-tap delete for audio and
+        caches.</li>
+      <li><strong>Independent failure.</strong> Each workflow falls back on its own, so
+        an unavailable model degrades one feature - bundled content keeps practice
+        running offline.</li>
+      <li><strong>No hanzi field.</strong> The data model carries pinyin with tone
+        numbers and optional Hangul as first-class display fields - never characters.</li>
+    </ul>
+    <div class="cta">
+      <p><strong>Intelligent design is the product:</strong> measured evidence, typed
+        workflows, and graceful fallbacks - so the app teaches by ear and never dead-ends.</p>
+    </div>
   </section>
 
   <div class="foot" style="position:absolute;left:0;right:0;bottom:0;padding:14px 22px;background:linear-gradient(#ffffff00,#ffffff 45%)">
