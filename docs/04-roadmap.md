@@ -42,7 +42,8 @@ the mic, and plays it back.
   tone-number notation; hear-and-name and production drills (beginner-first). The bundled
   tones lessons and practices run through the engine; measured feedback is M3.
 - [x] **Listening module:** hear-and-respond drill loop with large, low-attention controls;
-  tap-only drills work offline. WF-4 spoken answers land with the AI-supported drill slice.
+  tap-only drills work offline. WF-4 spoken answers are wired through the engine (wave
+  3c-2), with the tappable choices kept as the always-available fallback.
 - [x] **Vocabulary module:** audio-first word/phrase lessons and practice over
   beginner/tourist/survival themes (pinyin always shown with tone numbers and taught as
   the pronunciation key, Hangul optional, no hanzi).

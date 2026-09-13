@@ -118,8 +118,9 @@ therefore sequenced as:
   module directories, no shared files).
 - 3c AI-supported drills: 3c-1 speech speak-and-repeat with WF-1 feedback and an
   evidence seam; 3c-1b reference-feature precompute for measured tone evidence; 3c-2
-  listening WF-4 spoken answers with the local matcher and WF-8 endless practice.
-- 3d M4: field loop (WF-9, WF-10, WF-3) and Raymond (WF-7).
+  listening WF-4 spoken answers with the local matcher. WF-8 endless practice moved to
+  3d, where it shares the runtime-generation path with Raymond and the field mission.
+- 3d M4: field loop (WF-9, WF-10, WF-3), Raymond (WF-7), and endless practice (WF-8).
 
 Each sub-wave is fanned out only after the previous one merges, because 3a touches
 `:app` and `:core:model` and every later slice touches at least one feature module.
@@ -172,11 +173,17 @@ hanzi; `:app:testDebugUnitTest` (SessionFeedbackTest 6, SessionViewModelTest 17)
 `:feature:speech:testDebugUnitTest` (3) re-run green, `:app:assembleDebug` and
 `spotlessCheck` green, all with `--no-daemon`.
 
-3c-2 (in flight 2026-09-13): spoken answers via WF-4 in the listening drill, tap-only kept
-as the always-available fallback. Adds `DrillMode.LISTEN_AND_ANSWER_SPOKEN`, maps the
-listening word practice to it, and gives the engine a spoken-answer step that calls
-`ResponseTranscriptionWorkflow` and falls back to tappable choices on any failure. Owns
-`:app`, `:feature:listening`, and the one `DrillMode` value; based on `71b829c`.
+3c-2 (merged 2026-09-13): spoken answers via WF-4 in the listening drill, tap-only kept as
+the always-available fallback. Worktree `listening wf4` (`wt-1789319842347-26`), branch
+`app/listening-wf4`, session `ses_f6439f1feffeb52S1Skzod9bYf`, based on `1713742`; commits
+`3bac8d9`, `cc7e3f9`, `f8dfc4b`; merged as `79b03f1`. Adds
+`DrillMode.LISTEN_AND_ANSWER_SPOKEN`, maps the listening word practice to it, and gives the
+engine a spoken-answer step that calls `ResponseTranscriptionWorkflow` and falls back to
+tappable choices on any failure. Independent verification: diff confined to `:app`,
+`:feature:listening`, and the one `DrillMode` value (11 files, +513/-14); no hanzi;
+`:app:testDebugUnitTest` (49 tests, 0 failures) and `:feature:listening:testDebugUnitTest`
+(3, 0) re-run green, `:app:assembleDebug` and `spotlessCheck` green on the branch; the
+integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
