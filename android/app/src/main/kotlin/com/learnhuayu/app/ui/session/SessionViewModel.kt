@@ -7,6 +7,9 @@ import com.learnhuayu.app.registry.ModuleRegistry
 import com.learnhuayu.app.ui.audio.MicrophonePermission
 import com.learnhuayu.core.ai.AudioClip
 import com.learnhuayu.core.ai.AudioFormat
+import com.learnhuayu.core.ai.ExerciseGenerationRequest
+import com.learnhuayu.core.ai.ExerciseGenerationWorkflow
+import com.learnhuayu.core.ai.GeneratedExercises
 import com.learnhuayu.core.ai.PronunciationFeedback
 import com.learnhuayu.core.ai.PronunciationFeedbackRequest
 import com.learnhuayu.core.ai.PronunciationFeedbackWorkflow
@@ -29,7 +32,9 @@ import com.learnhuayu.core.data.repository.AttemptRepository
 import com.learnhuayu.core.data.repository.ProgressRepository
 import com.learnhuayu.core.model.Attempt
 import com.learnhuayu.core.model.ContentItem
+import com.learnhuayu.core.model.ContentSource
 import com.learnhuayu.core.model.DrillMode
+import com.learnhuayu.core.model.PracticeSpec
 import com.learnhuayu.core.model.Progress
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
@@ -40,12 +45,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 import java.time.Clock
 import java.time.Instant
 import java.util.Locale
 import javax.inject.Inject
 
 const val SESSION_ATTEMPT_LABEL = "attempt"
+
+/** Shown when WF-8 yields nothing usable; the bundled path stays finishable (ADR 0010). */
+const val EXTRA_UNAVAILABLE_MESSAGE = "No extra practice available right now."
 
 data class SessionPlayback(
     val state: PlaybackState = PlaybackState(),
@@ -95,6 +104,10 @@ data class SessionUiState(
     val feedback: FeedbackUiState = FeedbackUiState.None,
     val errorMessage: String? = null,
     val recorderError: String? = null,
+    val extraLoading: Boolean = false,
+    val extraAvailable: Boolean = false,
+    val extraMessage: String? = null,
+    val isPractice: Boolean = false,
 ) {
     val currentItem: ContentItem?
         get() = items.getOrNull(index)
@@ -119,6 +132,19 @@ data class SessionUiState(
 
     val hasProgress: Boolean
         get() = index > 0 || answerRevealed || attemptAudioRef != null
+
+    /**
+     * Practice sessions offer generated extra items (WF-8, ADR 0010): visible once, on the
+     * last bundled item, while no extra request is in flight, none were admitted yet, and
+     * no unavailable message is showing. Lessons never offer this action ([isPractice]).
+     */
+    val showKeepPractising: Boolean
+        get() = isPractice &&
+            !loading &&
+            isLastItem &&
+            !extraLoading &&
+            !extraAvailable &&
+            extraMessage == null
 
     val canAdvance: Boolean
         get() {
@@ -158,6 +184,7 @@ class SessionViewModel @Inject constructor(
     private val preferencesRepository: PreferencesRepository,
     private val feedbackWorkflow: PronunciationFeedbackWorkflow,
     private val responseWorkflow: ResponseTranscriptionWorkflow,
+    private val exerciseWorkflow: ExerciseGenerationWorkflow,
     private val referenceClipReader: ReferenceClipReader,
     private val evidenceSource: AttemptEvidenceSource,
     private val clock: Clock,
@@ -168,6 +195,7 @@ class SessionViewModel @Inject constructor(
 
     private var stopJob: Job? = null
     private var attemptPcm: PcmAudio? = null
+    private var activePractice: PracticeSpec? = null
 
     init {
         viewModelScope.launch {
@@ -215,6 +243,12 @@ class SessionViewModel @Inject constructor(
                     }
                 }
                 val items = contentRepository.contentItems(resolved.contentItemIds)
+                activePractice = when (kind) {
+                    SessionKind.PRACTICE ->
+                        module.practices().firstOrNull { it.id == specId }
+
+                    SessionKind.LESSON -> null
+                }
                 _uiState.update {
                     it.copy(
                         loading = false,
@@ -226,6 +260,10 @@ class SessionViewModel @Inject constructor(
                         index = 0,
                         completedCount = 0,
                         finished = false,
+                        isPractice = kind == SessionKind.PRACTICE,
+                        extraLoading = false,
+                        extraAvailable = false,
+                        extraMessage = null,
                     )
                 }
                 prepareCurrentItem()
@@ -467,11 +505,78 @@ class SessionViewModel @Inject constructor(
         viewModelScope.launch { advance() }
     }
 
+    /**
+     * Extends a practice with fresh WF-8 examples once the bundled items are done (ADR 0010).
+     * The admitted items are labeled extra and appended to the running session; a workflow
+     * failure, a timeout, or a result with nothing admissible keeps the session finishable
+     * with a friendly message instead. Lessons never offer this action.
+     */
+    fun onKeepPractisingClick() {
+        val state = _uiState.value
+        val practice = activePractice ?: return
+        if (state.extraLoading) return
+        if (!state.showKeepPractising) return
+        _uiState.update { it.copy(extraLoading = true, extraMessage = null) }
+        viewModelScope.launch {
+            val result = try {
+                withTimeout(EXTRA_GENERATION_TIMEOUT_MS) {
+                    exerciseWorkflow.generate(
+                        ExerciseGenerationRequest(
+                            moduleId = practice.moduleId,
+                            itemType = ExtraPracticeAdmission.itemTypeFor(state.items),
+                            theme = state.moduleTitle,
+                            targetUnits = ExtraPracticeAdmission.targetUnitsFor(state.items),
+                            count = EXTRA_GENERATION_COUNT,
+                        ),
+                    )
+                }
+            } catch (cancellation: CancellationException) {
+                throw cancellation
+            } catch (error: Exception) {
+                null
+            }
+            applyGeneratedExercises(practice.id, result)
+        }
+    }
+
     fun onLeaveScreen() {
         if (!_uiState.value.isRecording) return
         viewModelScope.launch {
             runCatching { audioRecorder.stop() }
         }
+    }
+
+    private fun applyGeneratedExercises(
+        specId: String,
+        result: WorkflowResult<GeneratedExercises>?,
+    ) {
+        val state = _uiState.value
+        val admitted = when (result) {
+            is WorkflowResult.Success -> ExtraPracticeAdmission.admit(
+                exercises = result.value.items,
+                existing = state.items,
+                specId = specId,
+                startSequence = state.items.count { it.source == ContentSource.GENERATED },
+            )
+
+            else -> emptyList()
+        }
+        if (admitted.isEmpty()) {
+            _uiState.update {
+                it.copy(extraLoading = false, extraMessage = EXTRA_UNAVAILABLE_MESSAGE)
+            }
+            return
+        }
+        val combined = state.items + admitted
+        _uiState.update {
+            it.copy(
+                extraLoading = false,
+                extraMessage = null,
+                extraAvailable = true,
+                items = combined,
+            )
+        }
+        prepareCurrentItem()
     }
 
     private suspend fun advance() {

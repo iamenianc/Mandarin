@@ -48,6 +48,10 @@
     <string name="session_finished_title">Session complete</string>
     <string name="session_finished_body">Items practiced: %1$d</string>
     <string name="session_done">Done</string>
+    <string name="session_keep_practising">Keep practising (extra)</string>
+    <string name="session_keep_practising_loading">Finding extra practice…</string>
+    <string name="session_keep_practising_unavailable">No extra practice available right now.</string>
+    <string name="session_extra_badge">Extra</string>
     <string name="session_leave_title">Leave session?</string>
     <string name="session_leave_message">Your progress so far is saved. Leave this session?</string>
     <string name="session_leave_confirm">Leave</string>
