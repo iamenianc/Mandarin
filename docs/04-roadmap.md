@@ -87,8 +87,10 @@ offline fallback otherwise.
 - [ ] Muse Spark understanding + Kokoro TTS conversation turn via the Worker (WF-2, WF-3).
 - [ ] Scenario-based conversation lessons.
 - [ ] Adaptive difficulty and gentle correction.
-- [ ] **Raymond:** ask-anything Mandarin Q&A chat (WF-7), pinyin-only examples, bounded to
-  Mandarin questions.
+- [x] **Raymond:** ask-anything Mandarin Q&A chat (WF-7), pinyin-only examples, bounded to
+  Mandarin questions. Shipped as the first feature destination (ADR 0020): typed or voice
+  question, accumulated history, pinyin examples with meanings, follow-up suggestions, and
+  a friendly offline message.
 - [ ] **Endless practice:** runtime exercise generation (WF-8) with schema validation,
   deduplication, "extra" labeling, and offline fallback to bundled items.
 - [ ] **Daily LAMP field loop:** script rehearsal (WF-9), a field mission with five
