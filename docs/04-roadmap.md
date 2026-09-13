@@ -56,9 +56,11 @@ the mic, and plays it back.
 
 Exit criteria met: a learner can complete an offline session in any of the four modules.
 
-## M3 - Speech and pronunciation feedback (current)
+## M3 - Speech and pronunciation feedback (complete)
 
-- [ ] Speech capture with voice-activity detection (end-of-speech).
+- [x] Speech capture with voice-activity detection (end-of-speech). The recorder publishes
+  VAD transitions and the drill auto-stops the speaking modes once on `SpeechEnded`, with
+  the manual stop unchanged.
 - [x] Generate reference audio with Kokoro-82M from pinyin and bundle it per phrase (ADR 0006).
   The generator, manifest, and bundling path exist; clips are build-time inputs.
 - [x] **Extractor decision:** adopt the pure-Kotlin F0/voicing/loudness extractor
@@ -76,9 +78,11 @@ Exit criteria met: a learner can complete an offline session in any of the four 
   playback, retry loop, and prompt tuning. Feedback renders as pinyin coaching with a
   retry step; prompt tuning continues.
 
-Exit criteria: a learner speaks a phrase and gets specific, encouraging feedback in ~2s.
+Exit criteria met: the speech module records a phrase and returns specific, encouraging
+WF-1 coaching, with measured tone evidence when the reference clip is bundled and a clean
+offline fallback otherwise.
 
-## M4 - AI conversation, the daily field loop, and Raymond
+## M4 - AI conversation, the daily field loop, and Raymond (current)
 
 - [ ] Muse Spark understanding + Kokoro TTS conversation turn via the Worker (WF-2, WF-3).
 - [ ] Scenario-based conversation lessons.

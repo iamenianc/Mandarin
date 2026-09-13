@@ -207,11 +207,18 @@ M3 remainder (2026-09-14): the end-of-speech VAD item is not yet wired into the 
 `AudioRecorder` does not expose frames or consume the detector, so the next slice adds an
 end-of-speech hook to `:core:audio` and auto-stop in `:app`; M3 is complete after that.
 
-VAD auto-stop (in flight 2026-09-14): worktree `vad autostop` (`wt-1789332881433-28`),
-branch `app/vad-autostop`, session `ses_f6372fcceffe70Iu5NFmMese4x`, based on `206c504`.
-`:core:audio` gains an optional end-of-speech detector on `AudioRecordRecorder` exposed as
-a flow, and `:app` auto-stops the production record modes exactly once on `SpeechEnded`;
-manual stop is unchanged. Owns `:core:audio` and `:app`.
+VAD auto-stop (merged 2026-09-14): worktree `vad autostop` (`wt-1789332881433-28`), branch
+`app/vad-autostop`, session `ses_f6372fcceffe70Iu5NFmMese4x`, based on `206c504`; commit
+`d4399e2`; merged as `b2bd3a3`. `AudioRecorder` now publishes `vadEvents`, the
+`AudioRecordRecorder` feeds an injected `EndOfSpeechDetector` and resets it per utterance,
+and `SessionViewModel` auto-stops `SPEAK_AND_REPEAT`, `SPEAK_AND_REPEAT_FEEDBACK`, and
+`LISTEN_AND_ANSWER_SPOKEN` exactly once on `SpeechEnded` through the same stop path as the
+manual button. Independent verification: diff confined to `:core:audio` and `:app` (7
+files, +440/-1); no hanzi; `:core:audio:testDebugUnitTest` and `:app:testDebugUnitTest`
+green, plus `:app:assembleDebug`, `:app:lintDebug`, and `spotlessCheck` on the branch; the
+integrated `:app:assembleDebug test lint spotlessCheck` on merged master is green (its
+first attempt failed transiently and passed on re-run). M3 is complete; the roadmap marks
+it so and M4 is current.
 
 Session IDs and worktree names are recorded in the Agent Manager overview; each brief
 requires a completion report as a peer reply, with verification run independently before
@@ -266,7 +273,9 @@ questions), verified independently before merge; merged slices are stopped and t
 worktrees removed. Recovery on this machine (2026-09-13): sample a build process's CPU
 twice - a flat profile means blocked, not compiling; Gradle daemons can also keep the
 console open after `BUILD SUCCESSFUL`, so conductor-run verification uses `--no-daemon`
-and reads the JUnit XML for results.
+and reads the JUnit XML for results. An integrated run can also fail transiently (seen on
+`lintAnalyzeDebugUnitTest` and after the VAD merge) and pass on re-run: re-run the failing
+task alone before treating it as real.
 
 ## Merge protocol
 
