@@ -49,7 +49,7 @@ orchestrator after merges.
 
 | Wave | Sessions (worktrees) | Depends on |
 | --- | --- | --- |
-| 1 | Android scaffold; Worker WF endpoints | none |
+| 1 | Android scaffold; Worker WF endpoints; content corpus; Kokoro pipeline | none |
 | 2 | `:core:data`, `:core:audio`, `:core:ai`, `:core:assessment`, `:core:ui`; content pipeline | wave 1 merged |
 | 3 | Features: home, tones, vocabulary, listening, speech, fundamentals, field, raymond | wave 2 merged |
 | 4 | Progress/reporting, consent + deletion, accessibility, release config | wave 3 merged |
@@ -65,11 +65,20 @@ Wave 1 in flight:
    orchestrator-owned files, for this session only).
 2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
    and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
+   Reviewed: compliant; 25/25 tests pass. Two fixes queued on the same branch before merge
+   (WF-7 audio-only spoken question; tone numbers 1-5 per ADR 0012). Merge after they land.
+3. `assets/content-corpus` - curated bundled `ContentItem` corpus for the five modules plus
+   schema and an offline validator, under `assets/content/**`.
+4. `assets/kokoro-pipeline` - build-time Kokoro reference-audio generation with offline
+   `--dry-run`/`--selftest`, under `assets/audio/**` (ADR 0006).
 
 Scope change (2026-09-13): the author dropped hands-free and eyes-free session modes.
 Recorded as ADR 0015; FR-13/FR-14 marked Won't (v1); the vision criterion, both roadmap
 items, and the design-doc mention are removed; the design worktree session was stopped
 before producing changes.
+
+Master notes: the sibling cleanup commit 909e063 (leftover eyes-free references) was
+reviewed and is valid. Worker branch awaits its queued fixes before merge.
 
 ## Merge protocol
 
