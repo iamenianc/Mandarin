@@ -7,4 +7,12 @@
     <string name="empty_practice">No practice yet.</string>
     <string name="module_not_found">Module not found.</string>
     <string name="navigate_back">Back</string>
+    <string name="audio_check_title">Audio check</string>
+    <string name="audio_check_intro">Play the reference tone, record the microphone, then listen back.</string>
+    <string name="audio_check_reference_title">Reference clip</string>
+    <string name="audio_check_recording_title">Recording</string>
+    <string name="audio_check_permission_denied">Microphone access is denied. Recording needs the microphone.</string>
+    <string name="audio_check_permission_retry">Try again</string>
+    <string name="audio_check_error">Audio error: %1$s</string>
+    <string name="audio_check_input_level">Input level: %1$d%%</string>
 </resources>
