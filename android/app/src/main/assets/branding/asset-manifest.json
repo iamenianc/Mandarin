@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "status": "proposed",
+  "description": "Index of brand assets: what is present in source/ and preview/, what is planned, and where each maps in res/. res/ derivatives are owned outside this tree.",
+  "assets": [
+    {
+      "id": "brand-mark",
+      "format": "svg",
+      "path": "branding/source/brand-mark.svg",
+      "status": "present",
+      "purpose": "Authoritative brand mark: rounded tile with a tone-contour stroke.",
+      "target": null,
+      "provenance": "Hand-authored vector source; no third-party content."
+    },
+    {
+      "id": "launcher-foreground",
+      "format": "svg",
+      "path": "branding/source/launcher-foreground.svg",
+      "status": "present",
+      "purpose": "Adaptive icon foreground layer source.",
+      "target": "res/drawable/ic_launcher_foreground.xml (VectorDrawable)",
+      "targetStatus": "out of scope for this tree",
+      "provenance": "Hand-authored vector source; no third-party content."
+    },
+    {
+      "id": "launcher-background",
+      "format": "svg",
+      "path": "branding/source/launcher-background.svg",
+      "status": "present",
+      "purpose": "Adaptive icon background layer source (flat ink).",
+      "target": "res/values/ic_launcher_background.xml (colour) and res/mipmap-anydpi-v26/ic_launcher.xml",
+      "targetStatus": "out of scope for this tree",
+      "provenance": "Hand-authored vector source; no third-party content."
+    },
+    {
+      "id": "launcher-monochrome",
+      "format": "svg",
+      "path": "branding/source/launcher-monochrome.svg",
+      "status": "present",
+      "purpose": "Themed-icon monochrome layer source.",
+      "target": "res/drawable/ic_launcher_monochrome.xml",
+      "targetStatus": "out of scope for this tree",
+      "provenance": "Hand-authored vector source; no third-party content."
+    },
+    {
+      "id": "brand-mark-512",
+      "format": "png",
+      "path": "branding/preview/brand-mark-512.png",
+      "status": "present",
+      "purpose": "Raster preview of the brand mark for review and documentation.",
+      "target": null,
+      "provenance": "Rendered offline from the source SVG geometry (supersampled, then downsampled); not a runtime resource."
+    },
+    {
+      "id": "launcher-square-192",
+      "format": "png",
+      "path": "branding/preview/launcher-square-192.png",
+      "status": "present",
+      "purpose": "Square launcher preview.",
+      "target": null,
+      "provenance": "Rendered offline from the source SVG geometry; not a runtime resource."
+    },
+    {
+      "id": "launcher-round-192",
+      "format": "png",
+      "path": "branding/preview/launcher-round-192.png",
+      "status": "present",
+      "purpose": "Round launcher preview (circular mask).",
+      "target": null,
+      "provenance": "Rendered offline from the source SVG geometry; not a runtime resource."
+    },
+    {
+      "id": "launcher-density-exports",
+      "format": "png",
+      "path": null,
+      "status": "planned",
+      "purpose": "Legacy launcher PNG fallbacks, square and round.",
+      "sizesPx": [108, 162, 216, 324, 432],
+      "target": "res/mipmap-*dpi/ic_launcher.png and ic_launcher_round.png",
+      "targetStatus": "out of scope for this tree",
+      "generatedFrom": [
+        "branding/source/launcher-foreground.svg",
+        "branding/source/launcher-background.svg"
+      ]
+    },
+    {
+      "id": "splash-icon",
+      "format": "svg",
+      "path": null,
+      "status": "planned",
+      "purpose": "Splash-screen mark.",
+      "target": "res/drawable (core-splashscreen; candidate in docs/10)",
+      "targetStatus": "out of scope for this tree",
+      "generatedFrom": ["branding/source/launcher-monochrome.svg"]
+    },
+    {
+      "id": "custom-font",
+      "format": "font",
+      "path": null,
+      "status": "not-planned",
+      "purpose": "A custom typeface is not required; the system font covers English, pinyin, and Hangul.",
+      "target": "res/font",
+      "targetStatus": "out of scope for this tree"
+    }
+  ]
+}
