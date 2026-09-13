@@ -127,6 +127,13 @@ Session IDs and worktree names are recorded in the Agent Manager overview; each 
 requires a completion report as a peer reply, with verification run independently before
 merge.
 
+Worktree gotcha (2026-09-13): Agent Manager seeds new worktrees from `origin/master`,
+which lags local `master` because the loop commits locally and does not push. Before a
+slice starts, its worktree branch is fast-forwarded to local `master`, and each brief
+tells the worker to confirm `git log --oneline -1` matches `master` and to
+`git merge --ff-only master` if `master` moves mid-slice. The wave-3a worktree was
+corrected this way after its first session started on the stale base.
+
 Wave 2 session IDs: `core/data` `ses_f655089b9ffeR7ZeraemxcxTRQ`; `core/audio`
 `ses_f65508453ffedHgaory3GwMfiK`; `core/ai` `ses_f65507b60fferrHEX5IF5TMeBQ`;
 `core/assessment` `ses_f655073d4ffeLsHBhFZK7aHctS`; `core/ui`
