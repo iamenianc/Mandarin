@@ -1,0 +1,35 @@
+{
+  "note": "Sample content manifest for the build-time Kokoro pipeline. Mirrors the ContentItem shape from assets/samples/content; it is a fixture, not app content.",
+  "version": 1,
+  "module": "vocabulary",
+  "items": [
+    {
+      "id": "phrase-ni3-hao3",
+      "type": "phrase",
+      "pinyin": "ni3 hao3",
+      "meaning": "hello",
+      "targetTones": [3, 3]
+    },
+    {
+      "id": "phrase-xie4-xie5",
+      "type": "phrase",
+      "pinyin": "xie4 xie5",
+      "meaning": "thank you",
+      "targetTones": [4, 5]
+    },
+    {
+      "id": "phrase-zai4-jian4",
+      "type": "phrase",
+      "pinyin": "zai4 jian4",
+      "meaning": "goodbye",
+      "targetTones": [4, 4]
+    },
+    {
+      "id": "word-cha2",
+      "type": "word",
+      "pinyin": "cha2",
+      "meaning": "tea",
+      "targetTones": [2]
+    }
+  ]
+}
