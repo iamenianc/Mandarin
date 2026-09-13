@@ -62,15 +62,24 @@ Wave 1 in flight:
    `:core:model` contracts per the architecture doc; runnable Compose shell listing
    registered modules (FR-22); CI workflow per `docs/06-pipeline.md`; verified
    `build`/`lint`/`test` commands added to `AGENTS.md` (the one exception to
-   orchestrator-owned files, for this session only).
+   orchestrator-owned files, for this session only). Status: fresh session
+   `ses_f656f83abbfey9QSupd273q2Gh` fixing the build after the first session wedged on a
+   hung daemon; sources checkpointed at `e841822`; last recorded failure was a
+   version-catalog alias (`libs.androidx.media3.*` unresolved). The session is not
+   managed by this workspace, so it is monitored but cannot be prompted; escalate in the
+   Agent Manager UI if it stalls again.
 2. `worker/wf-endpoints` - one versioned endpoint per workflow per `docs/08-ai-workflows.md`
    and ADR 0003/0009; validation, per-workflow limits, tests; `api/README.md`. `api/` only.
    Reviewed: compliant; 31/31 tests pass. Merged in 6b8d3ec after the WF-7 audio-only fix
    and tone-number (1-5, ADR 0012) validation landed.
 3. `assets/content-corpus` - curated bundled `ContentItem` corpus for the five modules plus
-   schema and an offline validator, under `assets/content/**`.
+   schema and an offline validator, under `assets/content/**`. Merged: `node
+   assets/content/validate.mjs` passes (tones 10 lessons/30 items, fundamentals 11/53,
+   vocabulary 14/103, listening 4/13, speech 4/9); no Han script; all 26 files under
+   `assets/content/`; author review of pinyin and tone choices remains open.
 4. `assets/kokoro-pipeline` - build-time Kokoro reference-audio generation with offline
-   `--dry-run`/`--selftest`, under `assets/audio/**` (ADR 0006).
+   `--dry-run`/`--selftest`, under `assets/audio/**` (ADR 0006). Status: generator commit
+   `2fcd630` landed on the branch; session is verifying; merge pending.
 
 Scope change (2026-09-13): the author dropped hands-free and eyes-free session modes.
 Recorded as ADR 0015; FR-13/FR-14 marked Won't (v1); the vision criterion, both roadmap
