@@ -194,6 +194,7 @@ class AssessmentAttemptEvidenceSourceTest {
             preferencesRepository = FakePreferencesRepository(),
             feedbackWorkflow = workflow,
             responseWorkflow = FakeResponseTranscriptionWorkflow(),
+            exerciseWorkflow = FakeExerciseGenerationWorkflow(),
             referenceClipReader = reader,
             evidenceSource = evidenceSource,
             clock = fixedClock,

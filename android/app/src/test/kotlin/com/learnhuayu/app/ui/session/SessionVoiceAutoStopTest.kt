@@ -67,6 +67,7 @@ class SessionVoiceAutoStopTest {
         preferencesRepository = FakePreferencesRepository(),
         feedbackWorkflow = FakePronunciationFeedbackWorkflow(WorkflowResult.Failure(WorkflowFailure.BaseUrlMissing())),
         responseWorkflow = responseWorkflow,
+        exerciseWorkflow = FakeExerciseGenerationWorkflow(),
         referenceClipReader = FakeReferenceClipReader(),
         evidenceSource = FakeAttemptEvidenceSource(),
         clock = fixedClock,
