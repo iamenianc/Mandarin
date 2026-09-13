@@ -44,6 +44,9 @@ in `docs/05-decisions/` and linked here.
 | DI | Hilt | Modules registered by multibinding |
 | Build | Gradle (Kotlin DSL) + version catalog | Multi-module; one feature module per learning module |
 
+The libraries behind these choices, and the small pieces kept as first-party code, are
+listed in `docs/10-libraries-and-dependencies.md`.
+
 ## Layering
 
 ```

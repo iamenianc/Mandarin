@@ -5,6 +5,10 @@ polish. The product is **audio and visual**: audio drives the lesson, visuals su
 it, and every on-screen word is in English or pinyin. The eyes-free mode is an option,
 not the default.
 
+Implementation follows the official Jetpack Compose documentation
+(<https://developer.android.com/develop/ui/compose/documentation>) for all UI and UX
+decisions; it is the authority when this document does not specify detail (see AGENTS.md).
+
 ## Experience principles
 
 - **Audio-first, visually supported.** Visuals reinforce what is heard; they never

@@ -27,6 +27,15 @@ application code now develops alongside it.
 - Before writing code, check whether the repository already contains code that can be reused.
 - Quality of life for human users is never optional.
 
+## References
+
+- **Android UI**: the official Jetpack Compose documentation,
+  <https://developer.android.com/develop/ui/compose/documentation>, is the authoritative
+  reference for Compose APIs, patterns, and best practices. Prefer it over memory, training
+  data, or third-party snippets when deciding how to build a screen. Only the URL is
+  recorded here; the environment may not be able to fetch the page, so the coding agent
+  should open it directly when it needs the guidance.
+
 ## Conventions
 
 - Markdown, sentence-case headings, one logical topic per file.

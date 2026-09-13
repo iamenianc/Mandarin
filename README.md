@@ -40,6 +40,7 @@ code now develops here alongside the docs.
 | `docs/07-speech-assessment-models.md` | Research note on Qwen models for speech assessment |
 | `docs/08-ai-workflows.md` | Registry of separate, clearly defined AI workflows (WF-1…WF-10) |
 | `docs/09-opensmile-acoustic-features.md` | Research note on openSMILE acoustic features for assessment (WF-1) |
+| `docs/10-libraries-and-dependencies.md` | Third-party libraries to import, and what is written in-repo |
 
 ## How to use
 
