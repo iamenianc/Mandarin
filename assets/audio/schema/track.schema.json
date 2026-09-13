@@ -1,0 +1,141 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://learnhuayu.local/assets/audio/schema/track.schema.json",
+  "title": "Audio track",
+  "description": "One bundled audio track indexed under assets/audio/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "category", "file", "format", "sampleRate", "channels"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$",
+      "description": "Lowercase hyphenated slug; matches the file stem and the ContentItem or drill id it serves."
+    },
+    "category": {
+      "enum": ["reference", "drill", "sample"]
+    },
+    "module": {
+      "enum": [
+        "tones",
+        "vocabulary",
+        "listening",
+        "speech",
+        "fundamentals",
+        "conversation",
+        "numbers",
+        "app"
+      ],
+      "description": "Owning module, or app for a fixed sample clip."
+    },
+    "contentType": {
+      "enum": ["phrase", "word", "minimalPair", "dialogue"],
+      "description": "Shared ContentItem discriminator (docs/02-architecture.md)."
+    },
+    "source": {
+      "enum": ["bundled", "generated"]
+    },
+    "file": {
+      "type": "string",
+      "pattern": "^[a-z0-9/_-]+\\.(ogg|m4a|wav)$",
+      "description": "Path relative to assets/audio/."
+    },
+    "format": {
+      "enum": ["ogg-opus", "m4a-aac", "wav-pcm"]
+    },
+    "sampleRate": {
+      "const": 24000
+    },
+    "channels": {
+      "const": 1
+    },
+    "durationMs": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "pinyin": {
+      "type": "string",
+      "pattern": "[0-9]",
+      "description": "Pinyin with tone numbers, e.g. ni3 hao3. Never diacritics; never hanzi."
+    },
+    "hangul": {
+      "type": "string",
+      "description": "Optional phonetic aid (ADR 0004)."
+    },
+    "meaning": {
+      "type": "string",
+      "description": "English gloss."
+    },
+    "targetTones": {
+      "type": "array",
+      "items": {
+        "enum": [1, 2, 3, 4, 5]
+      },
+      "description": "Expected tone number per syllable; 5 is the neutral tone."
+    },
+    "voice": {
+      "type": "string",
+      "description": "Convenience copy of tts.voice."
+    },
+    "tts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["engine", "langCode", "voice"],
+      "properties": {
+        "engine": {
+          "const": "kokoro-82m"
+        },
+        "langCode": {
+          "const": "z"
+        },
+        "voice": {
+          "type": "string",
+          "description": "Pinned voice id from the Kokoro Mandarin set."
+        },
+        "checkpoint": {
+          "type": "string",
+          "description": "Pinned checkpoint reference for reproducible builds."
+        }
+      }
+    },
+    "sourceHash": {
+      "type": "string",
+      "description": "Hash over pinyin, voice, and checkpoint."
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "Content hash of the bundled clip."
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["origin"],
+      "properties": {
+        "origin": {
+          "enum": ["generated", "recorded"]
+        },
+        "license": {
+          "type": "string"
+        },
+        "note": {
+          "type": "string"
+        }
+      }
+    },
+    "evidenceRef": {
+      "type": "string",
+      "description": "Precomputed acoustic evidence keyed to this clip (ADR 0014)."
+    },
+    "syllableBoundariesMs": {
+      "type": "array",
+      "items": {
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  }
+}

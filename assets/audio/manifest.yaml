@@ -1,0 +1,26 @@
+# Index of every track manifest under assets/audio/.
+# A single entry is described by schema/track.schema.json.
+version: 1
+sampleRate: 24000
+channels: 1
+bundledFormat: ogg-opus
+manifests:
+  - path: reference/tones/tracks.yaml
+    category: reference
+    module: tones
+  - path: reference/vocabulary/tracks.yaml
+    category: reference
+    module: vocabulary
+  - path: reference/listening/tracks.yaml
+    category: reference
+    module: listening
+  - path: reference/speech/tracks.yaml
+    category: reference
+    module: speech
+  - path: reference/fundamentals/tracks.yaml
+    category: reference
+    module: fundamentals
+  - path: drills/tracks.yaml
+    category: drill
+  - path: samples/tracks.yaml
+    category: sample

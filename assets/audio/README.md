@@ -1,42 +1,51 @@
 # Audio assets
 
-Status: scaffold. This directory is created ahead of the first bundled clips; the
-conventions below govern what is added.
+Status: scaffold. The organisation, conventions, and manifests below are in place ahead
+of the first generated clips.
 
-Audio tracks that ship with the app: every sound the learner hears from bundled content.
+Bundled audio for the app: every track that ships and plays offline, together with the
+metadata that indexes it. Reference clips are generated at build time from pinyin
+(ADR 0006) and bundled, so listening drills and repeat-after-audio work without a
+network.
 
-## What belongs here
+## Layout
 
-- **Reference audio** - clips for `ContentItem` phrases, words, minimal pairs, and
-  dialogues, generated from pinyin with Kokoro-82M at build time (ADR 0006) and bundled
-  so listening drills work offline.
-- **Listening exercise tracks** - prompts and distractors used by the hear-and-identify
-  and hear-and-respond drills.
-- **Sample clips** - fixed audio such as the welcome screen's sample of what a session
-  feels like (`docs/03-design.md`).
+| Path | Purpose |
+| --- | --- |
+| `naming-and-formats.md` | File naming rules and preferred audio formats |
+| `manifest.yaml` | Index of every category manifest under this folder |
+| `schema/` | JSON Schema and field reference for a track entry |
+| `reference/` | One canonical reference clip per `ContentItem`, by module |
+| `drills/` | Listening-exercise prompt and distractor tracks |
+| `samples/` | Fixed app clips, such as the welcome sample |
+| `voices/` | Voice configuration used to generate reference clips |
+| `pipeline/` | How a track is generated, converted, indexed, and verified |
 
-Learner recordings and runtime-cached AI audio do not belong here; they are local app
-data, not repository assets (`docs/02-architecture.md`).
+## Invariants
 
-## File naming
+- Pinyin is always present and always uses tone numbers (`ni3 hao3`), never diacritics
+  (ADR 0012).
+- Hangul is optional and never required for a track to be valid (ADR 0004).
+- No hanzi appears in a file name, a manifest, or track metadata (ADR 0002).
+- A track is keyed by the id it serves: a reference clip uses its `ContentItem` id
+  (`docs/02-architecture.md`).
+- Audio is never gated on text; every track is playable without reading.
 
-- Name each file after the `ContentItem` id it serves, so `audioAssetRef` resolves
-  directly: `<content-id>.ogg`.
-- Use lowercase ASCII with hyphen-separated words; no spaces, underscores, or hanzi.
-- Add a suffix for variants: `<content-id>-slow.ogg`, `<content-id>-<voice>.ogg`.
-- Keep names stable once referenced; a rename requires updating every `audioAssetRef`
-  and any precomputed evidence keyed to the clip.
+## What does not belong here
 
-## Preferred formats
+- Binary audio. This folder scaffolds the organisation; clips are produced by the
+  build-time pipeline and are not committed until the pipeline exists.
+- Learner recordings and runtime AI audio, which are local app data and never
+  repository assets.
+- Lesson, vocabulary, or knowledge content, which lives in the sibling asset folders.
 
-| Use | Format | Notes |
-| --- | --- | --- |
-| Pipeline source | WAV, PCM, 24 kHz mono | Matches Kokoro-82M output (ADR 0006); resample only when required |
-| Bundled playback | OGG Opus (`.ogg`), otherwise AAC in M4A | Compressed to keep the APK small; played with Media3/ExoPlayer (`docs/02-architecture.md`) |
+## Map to the docs
 
-- Keep one clip per phrase or prompt, with leading and trailing silence trimmed.
-- Convert with `ffmpeg` in the build-time pipeline
-  (`docs/10-libraries-and-dependencies.md`); only finished clips belong in this
-  directory.
-- Record the source and license of any human recording before adding it.
-- Do not commit learner recordings, runtime-cached AI audio, or secrets.
+| Topic | Source |
+| --- | --- |
+| Reference audio from pinyin, 24 kHz mono | ADR 0006 |
+| Content model (`ContentItem`, `audioAssetRef`, `pinyin`, `hangul`, `targetTones`) | `docs/02-architecture.md` |
+| Learning modules and curriculum | ADR 0007, ADR 0008 |
+| Tone numbers | ADR 0012 |
+| Speech synthesis (WF-3) and content authoring (WF-6) | `docs/08-ai-workflows.md` |
+| Build-time audio dependencies | `docs/10-libraries-and-dependencies.md` |
