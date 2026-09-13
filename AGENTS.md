@@ -59,10 +59,15 @@ Windows (`gradlew.bat`):
 
 - Build debug APK: `gradlew.bat :app:assembleDebug`
 - Build release APK: `gradlew.bat :app:assembleRelease`
+- Deploy release APK to Google Drive: `gradlew.bat :app:deployToDrive`
 - Unit tests: `gradlew.bat test`
 - Android lint: `gradlew.bat lint`
 - Check formatting: `gradlew.bat spotlessCheck`
 - Auto-format: `gradlew.bat spotlessApply`
+
+Local deploy pipeline (Cloudflare Worker deploy, then release APK to Google Drive):
+`.\deploy.ps1` from the repository root. See `docs/06-pipeline.md`; GitHub Actions
+remains CI only.
 
 CI (Linux, `.github/workflows/ci.yml`):
 

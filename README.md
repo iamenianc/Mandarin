@@ -29,6 +29,7 @@ code now develops here alongside the docs.
 | Path | Purpose |
 | --- | --- |
 | `conductor.md` | Orchestrator playbook: how the coding agent plans, slices, delegates, and verifies work |
+| `deploy.ps1` | Local deploy pipeline: Cloudflare Worker deploy, then release APK to Google Drive (see `docs/06-pipeline.md`) |
 | `api/` | Cloudflare Worker AI proxy: routes, config, and secrets (see `docs/02-architecture.md`) |
 | `android/` | Android app: Gradle multi-module project (`:app`, `:core:*`, `:feature:*`; see `docs/02-architecture.md`) |
 | `assets/` | Bundled content (`assets/content/`) and reference audio plus the build-time pipeline (`assets/audio/`) |
@@ -39,7 +40,7 @@ code now develops here alongside the docs.
 | `docs/03-design.md` | UX flows, screen inventory, visual direction |
 | `docs/04-roadmap.md` | Milestones and phased delivery plan |
 | `docs/05-decisions/` | Architecture Decision Records (ADRs) |
-| `docs/06-pipeline.md` | Proposed build and deployment pipeline |
+| `docs/06-pipeline.md` | Local build and deployment pipeline |
 | `docs/07-speech-assessment-models.md` | Research note on Qwen models for speech assessment |
 | `docs/08-ai-workflows.md` | Registry of separate, clearly defined AI workflows (WF-1…WF-10) |
 | `docs/09-opensmile-acoustic-features.md` | Research note on openSMILE acoustic features for assessment (WF-1) |

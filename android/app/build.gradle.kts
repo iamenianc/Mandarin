@@ -1,5 +1,7 @@
 import com.android.build.gradle.tasks.MergeSourceSetFolders
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.time.Instant
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -11,6 +13,12 @@ plugins {
 
 val repoRootDir = rootProject.projectDir.parentFile
 val generatedContentAssetsDir = layout.buildDirectory.dir("generated/contentAssets")
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties().apply {
+    if (keystorePropertiesFile.exists()) {
+        keystorePropertiesFile.inputStream().use { load(it) }
+    }
+}
 
 android {
     namespace = "com.learnhuayu.app"
@@ -24,9 +32,25 @@ android {
         versionName = "0.1.0"
     }
 
+    signingConfigs {
+        if (keystorePropertiesFile.exists()) {
+            create("release") {
+                storeFile = rootProject.file(keystoreProperties.getProperty("storeFile"))
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = if (keystorePropertiesFile.exists()) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 
@@ -80,6 +104,33 @@ tasks.withType<MergeSourceSetFolders>().configureEach {
 
 tasks.matching { it.name.contains("lint", ignoreCase = true) }.configureEach {
     dependsOn(syncContentAssets)
+}
+
+val deployToDrive by tasks.registering {
+    group = "distribution"
+    description = "Builds the release APK and copies it to the Google Drive apps folder."
+    dependsOn("assembleRelease")
+
+    val driveDirPath = (project.findProperty("driveDir") as String?) ?: "G:/My Drive/myApps"
+    val apkFileName = (project.findProperty("apkName") as String?) ?: "LearnHuayu.apk"
+    val releaseApk = layout.buildDirectory.file("outputs/apk/release/app-release.apk")
+
+    doLast {
+        val driveDir = file(driveDirPath)
+        if (!driveDir.isDirectory) {
+            throw GradleException(
+                "Google Drive folder not found: ${driveDir.absolutePath}. Start Google Drive for Desktop, or pass -PdriveDir=<path>.",
+            )
+        }
+        val apk = releaseApk.get().asFile
+        if (!apk.isFile) {
+            throw GradleException("Release APK not found: ${apk.absolutePath}")
+        }
+        val destination = driveDir.resolve(apkFileName)
+        apk.copyTo(destination, overwrite = true)
+        println("Deployed ${destination.name} (${destination.length()} bytes) to ${destination.absolutePath}")
+        println("Deployed at ${Instant.ofEpochMilli(destination.lastModified())}")
+    }
 }
 
 dependencies {
