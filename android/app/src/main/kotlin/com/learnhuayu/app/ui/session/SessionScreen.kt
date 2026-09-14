@@ -340,11 +340,17 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
             KeepPractisingRow(uiState = uiState, viewModel = viewModel)
         }
         uiState.extraMessage?.let { message ->
-            Text(
-                text = message,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = message,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = stringResource(R.string.qol_session_extra_unavailable),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
     }
 }
