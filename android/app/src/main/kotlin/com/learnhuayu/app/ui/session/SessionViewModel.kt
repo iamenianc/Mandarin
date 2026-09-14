@@ -16,6 +16,9 @@ import com.learnhuayu.core.ai.PronunciationFeedbackWorkflow
 import com.learnhuayu.core.ai.ResponseTranscription
 import com.learnhuayu.core.ai.ResponseTranscriptionRequest
 import com.learnhuayu.core.ai.ResponseTranscriptionWorkflow
+import com.learnhuayu.core.ai.SpeechSynthesisRequest
+import com.learnhuayu.core.ai.SpeechSynthesisWorkflow
+import com.learnhuayu.core.ai.SynthesizedSpeech
 import com.learnhuayu.core.ai.WorkflowResult
 import com.learnhuayu.core.audio.capture.AudioRecorder
 import com.learnhuayu.core.audio.capture.RecorderState
@@ -190,6 +193,7 @@ class SessionViewModel @Inject constructor(
     private val exerciseWorkflow: ExerciseGenerationWorkflow,
     private val referenceClipReader: ReferenceClipReader,
     private val evidenceSource: AttemptEvidenceSource,
+    private val speechWorkflow: SpeechSynthesisWorkflow = NoOpSpeechSynthesisWorkflow,
     private val clock: Clock,
 ) : ViewModel() {
 
@@ -199,6 +203,13 @@ class SessionViewModel @Inject constructor(
     private var stopJob: Job? = null
     private var attemptPcm: PcmAudio? = null
     private var activePractice: PracticeSpec? = null
+    private var generatedVoiceJob: Job? = null
+
+    /**
+     * Cached synthesized reference clips for generated items (WF-3, FR-26), keyed by content
+     * item id. Bundled items always play their asset; only generated items use this cache.
+     */
+    private val generatedReferenceCache = mutableMapOf<String, CachedGeneratedReference>()
 
     init {
         viewModelScope.launch {
@@ -318,6 +329,16 @@ class SessionViewModel @Inject constructor(
         val item = state.currentItem ?: return
         if (state.processing || state.isRecording) return
         _uiState.update { it.copy(errorMessage = null) }
+        val cached = generatedReferenceCache[item.id]
+        if (cached != null) {
+            audioPlayer.play(AudioSource.LocalFile(cached.path))
+            return
+        }
+        if (item.needsGeneratedVoice()) {
+            voiceGeneratedItem(item, playWhenReady = true)
+            audioPlayer.play(referenceSource(item))
+            return
+        }
         audioPlayer.play(referenceSource(item))
     }
 
@@ -331,8 +352,9 @@ class SessionViewModel @Inject constructor(
 
     /**
      * Requests compared reference-vs-attempt feedback for the recorded attempt (WF-1). The
-     * bundled reference clip is read first; when it is missing the workflow is skipped and
-     * the offline fallback is shown. Workflow failures also fall back rather than erroring.
+     * bundled reference clip is read first; for generated items the cached WF-3 clip feeds the
+     * reference path instead. When no reference audio exists the workflow is skipped and the
+     * offline fallback is shown. Workflow failures also fall back rather than erroring.
      */
     fun onGetFeedbackClick() {
         val state = _uiState.value
@@ -343,7 +365,8 @@ class SessionViewModel @Inject constructor(
         _uiState.update { it.copy(feedback = FeedbackUiState.Loading) }
         viewModelScope.launch {
             val result = try {
-                val referenceClip = referenceClipReader.read(contentRepository.audioAssetPath(item.audioAssetRef))
+                val referenceClip = generatedReferenceCache[item.id]?.clip
+                    ?: referenceClipReader.read(contentRepository.audioAssetPath(item.audioAssetRef))
                 if (referenceClip == null) {
                     null
                 } else {
@@ -636,7 +659,75 @@ class SessionViewModel @Inject constructor(
                 correctAnswer = mode?.let { resolvedMode -> DrillChoices.answerLabel(item, resolvedMode) },
             )
         }
+        playReferenceFor(item)
+    }
+
+    /**
+     * Plays the reference audio for [item]. Bundled items play their asset; generated items
+     * (admitted WF-8 items carry no asset) play their cached WF-3 clip, synthesizing it first
+     * when needed. A WF-3 failure keeps the missing-clip behavior silently: the broken asset
+     * source still plays (surfacing the existing error path) and advancing is never blocked.
+     */
+    private fun playReferenceFor(item: ContentItem) {
+        val cached = generatedReferenceCache[item.id]
+        if (cached != null) {
+            audioPlayer.play(AudioSource.LocalFile(cached.path))
+            return
+        }
+        if (item.needsGeneratedVoice()) {
+            voiceGeneratedItem(item, playWhenReady = true)
+        }
         audioPlayer.play(referenceSource(item))
+    }
+
+    /**
+     * Synthesizes the pinyin of a generated item via WF-3, caches the bytes locally in the
+     * same cache style as recordings, and replays the clip. Any failure (including 501
+     * ProviderNotConfigured and offline throws) is silent: the in-memory cache stays empty
+     * and the current missing-clip behavior is kept.
+     */
+    private fun voiceGeneratedItem(item: ContentItem, playWhenReady: Boolean) {
+        if (generatedReferenceCache.containsKey(item.id)) {
+            if (playWhenReady) {
+                generatedReferenceCache[item.id]?.let { audioPlayer.play(AudioSource.LocalFile(it.path)) }
+            }
+            return
+        }
+        if (generatedVoiceJob?.isActive == true) return
+        generatedVoiceJob = viewModelScope.launch {
+            val speech = synthesizeGeneratedReference(item.pinyin) ?: return@launch
+            val cached = cacheGeneratedSpeech(speech) ?: return@launch
+            generatedReferenceCache[item.id] = cached
+            if (playWhenReady && _uiState.value.currentItem?.id == item.id) {
+                audioPlayer.play(AudioSource.LocalFile(cached.path))
+            }
+        }
+    }
+
+    private suspend fun synthesizeGeneratedReference(pinyin: String): SynthesizedSpeech? = try {
+        when (val result = speechWorkflow.synthesize(SpeechSynthesisRequest.Pinyin(pinyin = pinyin))) {
+            is WorkflowResult.Success -> result.value.takeIf { it.bytes.isNotEmpty() }
+            else -> null
+        }
+    } catch (cancellation: CancellationException) {
+        throw cancellation
+    } catch (error: Exception) {
+        null
+    }
+
+    private suspend fun cacheGeneratedSpeech(speech: SynthesizedSpeech): CachedGeneratedReference? = try {
+        val reserved = recordingStore.newRecordingFile(GENERATED_AUDIO_LABEL)
+        val target = generatedCacheFile(reserved, speech.contentType)
+        target.parentFile?.mkdirs()
+        target.writeBytes(speech.bytes)
+        CachedGeneratedReference(
+            path = target.absolutePath,
+            clip = AudioClip(bytes = speech.bytes, format = audioFormatForContentType(speech.contentType)),
+        )
+    } catch (cancellation: CancellationException) {
+        throw cancellation
+    } catch (error: Exception) {
+        null
     }
 
     private suspend fun persistCurrent(item: ContentItem) {
@@ -746,8 +837,12 @@ class SessionViewModel @Inject constructor(
     private fun onPlaybackState(state: PlaybackState) {
         val item = _uiState.value.currentItem
         val reference = item?.let(::referenceSource)
+        val generated: AudioSource? = item?.let { generatedReferenceCache[it.id]?.path }?.let { AudioSource.LocalFile(it) }
         when {
             reference != null && state.source == reference ->
+                _uiState.update { it.copy(referencePlayback = it.referencePlayback.with(state)) }
+
+            generated != null && state.source == generated ->
                 _uiState.update { it.copy(referencePlayback = it.referencePlayback.with(state)) }
 
             isAttemptSource(state.source) ->

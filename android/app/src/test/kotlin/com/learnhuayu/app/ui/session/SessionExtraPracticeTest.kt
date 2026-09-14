@@ -10,8 +10,12 @@ import com.learnhuayu.core.ai.ExerciseItemType
 import com.learnhuayu.core.ai.GeneratedExercise
 import com.learnhuayu.core.ai.GeneratedExercises
 import com.learnhuayu.core.ai.PronunciationFeedback
+import com.learnhuayu.core.ai.SpeechSynthesisRequest
+import com.learnhuayu.core.ai.SpeechSynthesisWorkflow
+import com.learnhuayu.core.ai.SynthesizedSpeech
 import com.learnhuayu.core.ai.WorkflowFailure
 import com.learnhuayu.core.ai.WorkflowResult
+import com.learnhuayu.core.audio.playback.AudioSource
 import com.learnhuayu.core.model.ContentItem
 import com.learnhuayu.core.model.ContentItemType
 import com.learnhuayu.core.model.ContentSource
@@ -19,6 +23,7 @@ import com.learnhuayu.core.model.DrillMode
 import com.learnhuayu.core.model.LessonSpec
 import com.learnhuayu.core.model.PracticeSpec
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -49,6 +54,7 @@ class SessionExtraPracticeTest {
     private val attemptRepository = FakeAttemptRepository()
     private val responseWorkflow = FakeResponseTranscriptionWorkflow()
     private val exerciseWorkflow = FakeExerciseGenerationWorkflow()
+    private val speechWorkflow = FakeSpeechWorkflow()
     private val contentRepository = FakeBundledContentRepository(items = itemsById)
     private val registry = ModuleRegistry(
         setOf(
@@ -86,6 +92,7 @@ class SessionExtraPracticeTest {
         exerciseWorkflow = exerciseWorkflow,
         referenceClipReader = FakeReferenceClipReader(),
         evidenceSource = FakeAttemptEvidenceSource(),
+        speechWorkflow = speechWorkflow,
         clock = fixedClock,
     )
 
@@ -305,6 +312,139 @@ class SessionExtraPracticeTest {
         assertTrue(exerciseWorkflow.requests.isEmpty())
     }
 
+    @Test
+    fun `a generated item voices its pinyin and replays the cached clip`() = runTest {
+        speechWorkflow.returns(WorkflowResult.Success(SynthesizedSpeech(bytes = ttsBytes, contentType = "audio/wav")))
+        exerciseWorkflow.returns(WorkflowResult.Success(GeneratedExercises(items = listOf(ma3Exercise))))
+        player.playedSources.clear()
+        recordingStore.requestedLabels.clear()
+        val viewModel = createViewModel()
+        viewModel.reachLastBundledItem()
+        player.playedSources.clear()
+        viewModel.onKeepPractisingClick()
+
+        viewModel.onChoiceSelected("ma2")
+        viewModel.onNext()
+
+        val extra = viewModel.uiState.value.currentItem
+        assertEquals(ContentSource.GENERATED, extra?.source)
+        assertEquals(SpeechSynthesisRequest.Pinyin(pinyin = "ma3"), speechWorkflow.requests.single())
+        assertEquals(listOf(GENERATED_AUDIO_LABEL), recordingStore.requestedLabels)
+        val extraClip = player.playedSources.filterIsInstance<AudioSource.LocalFile>().singleOrNull()
+        assertEquals(
+            "expected one cached generated clip, was: ${player.playedSources}",
+            File(attemptFile.path).absolutePath,
+            extraClip?.path?.let { File(it).absolutePath },
+        )
+        val requestsAfterFirstPlay = speechWorkflow.requests.size
+
+        viewModel.onPlayReferenceClick()
+
+        assertEquals(requestsAfterFirstPlay, speechWorkflow.requests.size)
+        val replayed = player.playedSources.filterIsInstance<AudioSource.LocalFile>()
+        assertTrue(
+            "expected the cached clip replayed last, was: $replayed",
+            replayed.isNotEmpty() && replayed.last() == extraClip,
+        )
+        viewModel.onChoiceSelected("ma3")
+
+        assertTrue(viewModel.uiState.value.canAdvance)
+    }
+
+    @Test
+    fun `a 501 tts failure keeps the missing-clip behavior and stays finishable`() = runTest {
+        speechWorkflow.returns(WorkflowResult.Failure(WorkflowFailure.ProviderNotConfigured("tts is not configured")))
+        exerciseWorkflow.returns(WorkflowResult.Success(GeneratedExercises(items = listOf(ma3Exercise))))
+        player.playedSources.clear()
+        val viewModel = createViewModel()
+        viewModel.reachLastBundledItem()
+        player.playedSources.clear()
+        viewModel.onKeepPractisingClick()
+
+        viewModel.onChoiceSelected("ma2")
+        viewModel.onNext()
+
+        val extra = viewModel.uiState.value.currentItem
+        assertEquals(ContentSource.GENERATED, extra?.source)
+        assertEquals(listOf(SpeechSynthesisRequest.Pinyin(pinyin = "ma3")), speechWorkflow.requests)
+        assertTrue(
+            "expected the missing-clip asset, was: ${player.playedSources}",
+            player.playedSources.contains(AudioSource.Asset("audio/")),
+        )
+
+        viewModel.onPlayReferenceClick()
+        viewModel.onChoiceSelected("ma3")
+        viewModel.onNext()
+
+        assertTrue(viewModel.uiState.value.finished)
+        assertTrue(viewModel.uiState.value.canAdvance)
+    }
+
+    @Test
+    fun `a thrown tts failure never crashes and the session continues`() = runTest {
+        speechWorkflow.throws(IllegalStateException("offline"))
+        exerciseWorkflow.returns(WorkflowResult.Success(GeneratedExercises(items = listOf(ma3Exercise))))
+        player.playedSources.clear()
+        val viewModel = createViewModel()
+        viewModel.reachLastBundledItem()
+        viewModel.onKeepPractisingClick()
+
+        viewModel.onChoiceSelected("ma2")
+        viewModel.onNext()
+
+        assertEquals(ContentSource.GENERATED, viewModel.uiState.value.currentItem?.source)
+        assertEquals(1, speechWorkflow.requests.size)
+
+        viewModel.onPlayReferenceClick()
+        viewModel.onChoiceSelected("ma3")
+        viewModel.onNext()
+
+        assertTrue(viewModel.uiState.value.finished)
+    }
+
+    @Test
+    fun `feedback uses the cached generated clip as the reference`() = runTest {
+        speechWorkflow.returns(WorkflowResult.Success(SynthesizedSpeech(bytes = ttsBytes, contentType = "audio/wav")))
+        exerciseWorkflow.returns(WorkflowResult.Success(GeneratedExercises(items = listOf(ma3Exercise))))
+        val reader = FakeReferenceClipReader()
+        val feedback = FakePronunciationFeedbackWorkflow(feedbackWorkflowResult())
+        val speakViewModel = SessionViewModel(
+            registry = feedbackRegistry,
+            contentRepository = contentRepository,
+            audioPlayer = player,
+            audioRecorder = recorder,
+            wavCodec = wavCodec,
+            recordingStore = recordingStore,
+            progressRepository = progressRepository,
+            attemptRepository = attemptRepository,
+            preferencesRepository = FakePreferencesRepository(),
+            feedbackWorkflow = feedback,
+            responseWorkflow = responseWorkflow,
+            exerciseWorkflow = exerciseWorkflow,
+            referenceClipReader = reader,
+            evidenceSource = FakeAttemptEvidenceSource(),
+            speechWorkflow = speechWorkflow,
+            clock = fixedClock,
+        )
+        speakViewModel.load(MODULE_ID, "practice", feedbackPracticeSpec.id)
+        speakViewModel.onNext()
+        speakViewModel.onNext()
+        speakViewModel.onKeepPractisingClick()
+        speakViewModel.onNext()
+
+        speakViewModel.onPermissionStatusChecked(true)
+        speakViewModel.onRecordClick()
+        speakViewModel.onRecordClick()
+        speakViewModel.onGetFeedbackClick()
+
+        val request = feedback.requests.single()
+        assertEquals("ma3", request.pinyin)
+        assertArrayEquals(ttsBytes, request.referenceAudio.bytes)
+        assertEquals(com.learnhuayu.core.ai.AudioFormat.WAV, request.referenceAudio.format)
+        assertTrue(reader.requestedPaths.isEmpty())
+        assertEquals(FeedbackUiState.Available(feedbackWorkflowResult().value), speakViewModel.uiState.value.feedback)
+    }
+
     private companion object {
         const val MODULE_ID = "tones"
         val recordedAt: Instant = Instant.parse("2026-09-13T09:00:00Z")
@@ -342,5 +482,68 @@ class SessionExtraPracticeTest {
             pinyin = pinyin,
             targetTones = targetTones,
         )
+
+        val ma3Exercise = GeneratedExercise(
+            type = ExerciseItemType.WORD,
+            meaning = "horse",
+            pinyin = "ma3",
+            targetTones = listOf(3),
+            rationale = "same syllable family",
+        )
+
+        val ttsBytes = byteArrayOf(9, 8, 7, 6)
+
+        fun feedbackWorkflowResult(): WorkflowResult.Success<PronunciationFeedback> = WorkflowResult.Success(
+            PronunciationFeedback(
+                weakestUnit = "ma1",
+                issue = "the tone is flat",
+                tip = "start higher",
+                encouragement = "good effort",
+                replayHint = "listen to ma1 again",
+            ),
+        )
+
+        val feedbackPracticeSpec = PracticeSpec(
+            id = "tones-practice-say-and-repeat",
+            moduleId = MODULE_ID,
+            title = "Say and repeat the tone",
+            contentItemIds = listOf(ma1.id, ma2.id),
+            mode = DrillMode.SPEAK_AND_REPEAT_FEEDBACK,
+        )
+
+        val feedbackRegistry = ModuleRegistry(
+            setOf(
+                FakeLearningModule(
+                    id = MODULE_ID,
+                    title = "Tones",
+                    lessonSpecs = listOf(lessonSpec),
+                    practiceSpecs = listOf(listenAndChooseSpec, feedbackPracticeSpec),
+                ),
+            ),
+        )
+    }
+
+    class FakeSpeechWorkflow(
+        private var result: WorkflowResult<SynthesizedSpeech> =
+            WorkflowResult.Failure(WorkflowFailure.BaseUrlMissing()),
+        private var failure: Throwable? = null,
+    ) : SpeechSynthesisWorkflow {
+
+        val requests = mutableListOf<SpeechSynthesisRequest>()
+
+        fun returns(result: WorkflowResult<SynthesizedSpeech>) {
+            this.result = result
+            this.failure = null
+        }
+
+        fun throws(failure: Throwable) {
+            this.failure = failure
+        }
+
+        override suspend fun synthesize(request: SpeechSynthesisRequest): WorkflowResult<SynthesizedSpeech> {
+            requests += request
+            failure?.let { throw it }
+            return result
+        }
     }
 }
