@@ -236,9 +236,12 @@ class RaymondViewModel @Inject constructor(
 
     private fun onRecorderState(state: RecorderState) {
         _uiState.update {
+            val failure = state as? RecorderState.Failed
             it.copy(
                 recorderState = state,
-                errorMessage = (state as? RecorderState.Failed)?.message ?: it.errorMessage,
+                // Recorder failures carry technical detail, so surface the friendly
+                // type-instead note rather than the raw message (WF-7 fallback intact).
+                errorMessage = if (failure != null) RAYMOND_RECORDER_ERROR_MESSAGE else it.errorMessage,
             )
         }
     }
