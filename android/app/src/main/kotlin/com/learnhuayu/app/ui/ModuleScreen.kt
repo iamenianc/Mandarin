@@ -67,15 +67,28 @@ fun ModuleScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             when {
-                uiState.loading -> Text(
-                    text = stringResource(R.string.module_loading),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                uiState.loading -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.module_loading),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = stringResource(R.string.qol_module_loading_detail),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
 
-                uiState.notFound -> Text(
-                    text = stringResource(R.string.module_not_found),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                uiState.notFound -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.module_not_found),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = stringResource(R.string.qol_module_not_found_guidance),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
 
                 else -> {
                     Section(
@@ -106,10 +119,16 @@ private fun ColumnScope.Section(
     Text(text = title, style = MaterialTheme.typography.titleMedium)
     if (items.isEmpty()) {
         Text(text = emptyText, style = MaterialTheme.typography.bodyMedium)
+        Text(
+            text = stringResource(R.string.qol_module_empty_guidance),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     } else {
         items.forEach { (id, itemTitle) ->
             LargeTapTarget(
                 label = itemTitle,
+                supportingText = stringResource(R.string.qol_home_module_support),
                 onClick = { onItemClick(id) },
                 modifier = Modifier.fillMaxWidth(),
             )
