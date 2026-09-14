@@ -50,7 +50,8 @@ import java.time.ZoneOffset
  * Covers the daily LAMP field loop view model with fakes for WF-9, WF-10, WF-3 and the five
  * repositories: generation success, generation failure falling back to the bundled mission,
  * progression through all five locals, in-mission replies carrying no coaching, debrief entry
- * persistence, and the TTS-unavailable path.
+ * persistence, the TTS-unavailable path, the WF-10 scripted-line fallback with persisted
+ * turns, and the WF-3 501 text-only paths.
  */
 class FieldViewModelTest {
 
@@ -222,6 +223,100 @@ class FieldViewModelTest {
         val exchange = viewModel.uiState.value.exchanges.single()
         assertEquals("hao3 de5, gei3 ni3", exchange.reply.replyText)
         assertFalse(exchange.audioAvailable)
+    }
+
+    @Test
+    fun `turn failure falls back to the next scripted line with persisted turns`() {
+        turns.result = WorkflowResult.Failure(WorkflowFailure.NetworkError("offline"))
+        generation.result = WorkflowResult.Success(TEST_GENERATED)
+        val viewModel = viewModel()
+        viewModel.startRehearsal("market greeting")
+        viewModel.onPermissionResult(granted = true)
+        viewModel.onStartMission()
+
+        viewModel.onRecordClick()
+        viewModel.onRecordClick()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.sending)
+        assertNull(state.errorMessage)
+        val exchange = state.exchanges.single()
+        assertEquals("ni3 hao3", exchange.reply.replyText)
+        assertFalse(exchange.audioAvailable)
+        assertEquals(2, missionTurns.upserted.size)
+        val sessionId = state.sessionId
+        assertTrue(missionTurns.upserted.all { it.sessionId == sessionId })
+
+        viewModel.onRecordClick()
+        viewModel.onRecordClick()
+
+        val walked = viewModel.uiState.value.exchanges
+        assertEquals(2, walked.size)
+        assertEquals("ni3 hao3", walked[0].reply.replyText)
+        assertEquals("xie4 xie5", walked[1].reply.replyText)
+        assertTrue(walked.all { !it.audioAvailable })
+        assertEquals(4, missionTurns.upserted.size)
+    }
+
+    @Test
+    fun `turn failure on the bundled mission falls back to the bundled script`() {
+        turns.result = WorkflowResult.Failure(WorkflowFailure.NetworkError("offline"))
+        generation.result = WorkflowResult.Failure(WorkflowFailure.NetworkError("offline"))
+        val viewModel = viewModel()
+        viewModel.startRehearsal("market greeting")
+        viewModel.onPermissionResult(granted = true)
+        viewModel.onStartMission()
+
+        viewModel.onRecordClick()
+        viewModel.onRecordClick()
+
+        val state = viewModel.uiState.value
+        val exchange = state.exchanges.single()
+        assertEquals(BundledFieldMission.script.first().pinyin, exchange.reply.replyText)
+        assertFalse(exchange.audioAvailable)
+        assertNull(state.errorMessage)
+        assertEquals(2, missionTurns.upserted.size)
+    }
+
+    @Test
+    fun `speech provider unconfigured yields text-only exchange without crashing`() {
+        speech.result = WorkflowResult.Failure(
+            WorkflowFailure.ProviderNotConfigured("speech synthesis provider not configured"),
+        )
+        generation.result = WorkflowResult.Success(TEST_GENERATED)
+        val viewModel = viewModel()
+        viewModel.startRehearsal("market greeting")
+        viewModel.onPermissionResult(granted = true)
+        viewModel.onStartMission()
+
+        viewModel.onRecordClick()
+        viewModel.onRecordClick()
+
+        val state = viewModel.uiState.value
+        assertFalse(state.sending)
+        val exchange = state.exchanges.single()
+        assertEquals("hao3 de5, gei3 ni3", exchange.reply.replyText)
+        assertFalse(exchange.audioAvailable)
+        assertNull(state.errorMessage)
+        assertEquals(2, missionTurns.upserted.size)
+    }
+
+    @Test
+    fun `rehearsal playback with speech provider unconfigured keeps no stuck loading`() {
+        speech.result = WorkflowResult.Failure(
+            WorkflowFailure.ProviderNotConfigured("speech synthesis provider not configured"),
+        )
+        generation.result = WorkflowResult.Success(TEST_GENERATED)
+        val viewModel = viewModel()
+
+        viewModel.startRehearsal("market greeting")
+        viewModel.onPlayScriptTurn(TEST_GENERATED.script.first())
+
+        val state = viewModel.uiState.value
+        assertFalse(state.sending)
+        assertNull(state.errorMessage)
+        assertTrue(state.exchanges.isEmpty())
+        assertTrue(speech.requests.single() is SpeechSynthesisRequest.ReplyText)
     }
 
     private fun viewModel(): FieldViewModel = FieldViewModel(

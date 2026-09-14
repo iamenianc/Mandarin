@@ -88,8 +88,9 @@ data class FieldExchange(
  * succeeds. Sessions and turns persist via [MissionSessionRepository] and
  * [MissionTurnRepository]; debrief entries persist via [DebriefEntryRepository] tied to the
  * mission session. Every failure path keeps the loop moving: generation failure falls back to
- * the bundled mission, a TTS failure just skips audio, and a WF-10 failure shows the reply
- * text as unavailable without losing the session.
+ * the bundled mission, a TTS failure just skips audio, and a WF-10 failure falls back to the
+ * next scripted line from the mission script with no audio, keeping session and turn
+ * persistence working offline.
  */
 @HiltViewModel
 class FieldViewModel @Inject constructor(
@@ -395,17 +396,20 @@ class FieldViewModel @Inject constructor(
             } catch (error: Exception) {
                 null
             }
-            applyReply(sessionId = sessionId, persona = persona, result = result)
+            applyReply(sessionId = sessionId, mission = mission, persona = persona, result = result)
         }
     }
 
     private suspend fun applyReply(
         sessionId: String,
+        mission: FieldMission,
         persona: LocalPersona,
         result: WorkflowResult<LocalTurnReply>?,
     ) {
         val success = result as? WorkflowResult.Success
-        if (success == null) {
+        val isFallback = success == null
+        val reply = success?.value ?: scriptedFallbackReply(mission)
+        if (reply == null) {
             _uiState.update { it.copy(sending = false, errorMessage = FIELD_OFFLINE_MESSAGE) }
             return
         }
@@ -421,20 +425,37 @@ class FieldViewModel @Inject constructor(
                 id = UUID.randomUUID().toString(),
                 sessionId = sessionId,
                 speaker = MissionSpeaker.LOCAL,
-                transcript = success.value.replyText,
+                transcript = reply.replyText,
             ),
         )
-        val audioAvailable = playReplyText(text = success.value.replyText, voice = persona.voiceProfile)
+        val audioAvailable = if (isFallback) {
+            false
+        } else {
+            playReplyText(text = reply.replyText, voice = persona.voiceProfile)
+        }
         _uiState.update { state ->
             state.copy(
                 sending = false,
                 exchanges = state.exchanges + FieldExchange(
-                    reply = success.value,
+                    reply = reply,
                     audioAvailable = audioAvailable,
                 ),
                 errorMessage = null,
             )
         }
+    }
+
+    /**
+     * WF-10 fallback (`docs/08-ai-workflows.md`): the next scripted line from the mission
+     * script keeps the exchange moving offline. The index follows completed exchanges so
+     * repeated offline turns walk the script in order. Returns null only when the mission
+     * carries no script to fall back to.
+     */
+    private fun scriptedFallbackReply(mission: FieldMission): LocalTurnReply? {
+        if (mission.scriptTurns.isEmpty()) return null
+        val index = _uiState.value.exchanges.size % mission.scriptTurns.size
+        val turn = mission.scriptTurns[index]
+        return LocalTurnReply(replyText = turn.pinyin)
     }
 
     /**
