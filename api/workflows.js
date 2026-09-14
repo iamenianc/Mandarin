@@ -14,8 +14,12 @@ const MUSE_SPARK = 'meta/muse-spark-1.3-contributor';
 const STT_MODEL = 'openai/gpt-4o-transcribe';
 
 const TEXT_BODY_BYTES = 64 * 1024;
-const TWO_CLIP_BODY_BYTES = 4 * 1024 * 1024;
-const ONE_CLIP_BODY_BYTES = 2 * 1024 * 1024;
+// Body caps must hold base64 audio (4 chars per 3 decoded bytes, ~33%
+// inflation) plus the JSON envelope, so each cap is sized above the
+// base64 expansion of its audio budget: one 2 MiB part encodes to ~2.8 MiB
+// (cap 3 MiB); two parts encode to ~5.6 MiB (cap 6 MiB).
+const TWO_CLIP_BODY_BYTES = 6 * 1024 * 1024;
+const ONE_CLIP_BODY_BYTES = 3 * 1024 * 1024;
 const MAX_AUDIO_PART_BYTES = 2 * 1024 * 1024;
 
 const ITEM_TYPES = new Set(['word', 'phrase', 'minimalPair', 'dialogue']);
@@ -118,8 +122,13 @@ export const WORKFLOWS = [
       if (body.targetTones !== undefined && !isToneArray(body.targetTones)) {
         return fail('targetTones must be an array of integers between 1 and 5');
       }
-      if (body.learnerLevel !== undefined && !isNonEmptyString(body.learnerLevel)) {
-        return fail('learnerLevel must be a non-empty string');
+      if (body.learnerLevel !== undefined) {
+        if (!isNonEmptyString(body.learnerLevel)) {
+          return fail('learnerLevel must be a non-empty string');
+        }
+        if (containsHanzi(body.learnerLevel)) {
+          return fail('learnerLevel must not contain Chinese characters');
+        }
       }
       if (body.acousticEvidence !== undefined) {
         if (!isPlainObject(body.acousticEvidence)) return fail('acousticEvidence must be an object');
@@ -181,11 +190,21 @@ export const WORKFLOWS = [
       if (!isNonEmptyString(body.scenario) || containsHanzi(body.scenario)) {
         return fail('scenario must be a non-empty string without Chinese characters');
       }
-      if (body.conversationState !== undefined && !isPlainObject(body.conversationState)) {
-        return fail('conversationState must be an object');
+      if (body.conversationState !== undefined) {
+        if (!isPlainObject(body.conversationState)) {
+          return fail('conversationState must be an object');
+        }
+        if (containsHanziDeep(body.conversationState)) {
+          return fail('conversationState must not contain Chinese characters');
+        }
       }
-      if (body.targetDifficulty !== undefined && !isNonEmptyString(body.targetDifficulty)) {
-        return fail('targetDifficulty must be a non-empty string');
+      if (body.targetDifficulty !== undefined) {
+        if (!isNonEmptyString(body.targetDifficulty)) {
+          return fail('targetDifficulty must be a non-empty string');
+        }
+        if (containsHanzi(body.targetDifficulty)) {
+          return fail('targetDifficulty must not contain Chinese characters');
+        }
       }
       return {
         value: {
@@ -236,8 +255,14 @@ export const WORKFLOWS = [
       const text = hasPinyin ? body.pinyin : body.replyText;
       if (!isNonEmptyString(text)) return fail('the synthesis text must be a non-empty string');
       if (containsHanzi(text)) return fail('the synthesis text must not contain Chinese characters');
-      if (body.voice !== undefined && !isNonEmptyString(body.voice)) return fail('voice must be a non-empty string');
-      if (body.language !== undefined && !isNonEmptyString(body.language)) return fail('language must be a non-empty string');
+      if (body.voice !== undefined) {
+        if (!isNonEmptyString(body.voice)) return fail('voice must be a non-empty string');
+        if (containsHanzi(body.voice)) return fail('voice must not contain Chinese characters');
+      }
+      if (body.language !== undefined) {
+        if (!isNonEmptyString(body.language)) return fail('language must be a non-empty string');
+        if (containsHanzi(body.language)) return fail('language must not contain Chinese characters');
+      }
       return {
         value: {
           input: text.trim(),
@@ -261,11 +286,21 @@ export const WORKFLOWS = [
     validateInput(body) {
       const audioCheck = validateAudio(body, 1);
       if (audioCheck.error) return audioCheck;
-      if (body.expectedOptions !== undefined && !isStringArray(body.expectedOptions)) {
-        return fail('expectedOptions must be an array of strings');
+      if (body.expectedOptions !== undefined) {
+        if (!isStringArray(body.expectedOptions)) {
+          return fail('expectedOptions must be an array of strings');
+        }
+        if (containsHanziDeep(body.expectedOptions)) {
+          return fail('expectedOptions must not contain Chinese characters');
+        }
       }
-      if (body.keywords !== undefined && !isStringArray(body.keywords)) {
-        return fail('keywords must be an array of strings');
+      if (body.keywords !== undefined) {
+        if (!isStringArray(body.keywords)) {
+          return fail('keywords must be an array of strings');
+        }
+        if (containsHanziDeep(body.keywords)) {
+          return fail('keywords must not contain Chinese characters');
+        }
       }
       return {
         value: {
@@ -313,9 +348,19 @@ export const WORKFLOWS = [
         return fail('attemptCounts must be an object of non-negative numbers');
       }
       if (!isStringArray(body.feedbackThemes)) return fail('feedbackThemes must be an array of strings');
-      if (body.moduleIds !== undefined && !isStringArray(body.moduleIds)) return fail('moduleIds must be an array of strings');
-      if (body.lessonIds !== undefined && !isStringArray(body.lessonIds)) return fail('lessonIds must be an array of strings');
-      if (body.debriefThemes !== undefined && !isStringArray(body.debriefThemes)) return fail('debriefThemes must be an array of strings');
+      if (containsHanziDeep(body.feedbackThemes)) return fail('feedbackThemes must not contain Chinese characters');
+      if (body.moduleIds !== undefined) {
+        if (!isStringArray(body.moduleIds)) return fail('moduleIds must be an array of strings');
+        if (containsHanziDeep(body.moduleIds)) return fail('moduleIds must not contain Chinese characters');
+      }
+      if (body.lessonIds !== undefined) {
+        if (!isStringArray(body.lessonIds)) return fail('lessonIds must be an array of strings');
+        if (containsHanziDeep(body.lessonIds)) return fail('lessonIds must not contain Chinese characters');
+      }
+      if (body.debriefThemes !== undefined) {
+        if (!isStringArray(body.debriefThemes)) return fail('debriefThemes must be an array of strings');
+        if (containsHanziDeep(body.debriefThemes)) return fail('debriefThemes must not contain Chinese characters');
+      }
       return {
         value: {
           attemptCounts: counts,
@@ -370,9 +415,17 @@ export const WORKFLOWS = [
         if (!Array.isArray(body.history) || !body.history.every((entry) => isPlainObject(entry) && RAYMOND_ROLES.has(entry.role) && isNonEmptyString(entry.text))) {
           return fail('history must be an array of { role, text } entries with role user or raymond');
         }
+        if (containsHanziDeep(body.history)) {
+          return fail('history must not contain Chinese characters');
+        }
       }
-      if (body.learnerLevel !== undefined && !isNonEmptyString(body.learnerLevel)) {
-        return fail('learnerLevel must be a non-empty string');
+      if (body.learnerLevel !== undefined) {
+        if (!isNonEmptyString(body.learnerLevel)) {
+          return fail('learnerLevel must be a non-empty string');
+        }
+        if (containsHanzi(body.learnerLevel)) {
+          return fail('learnerLevel must not contain Chinese characters');
+        }
       }
       return {
         value: {
@@ -423,11 +476,24 @@ export const WORKFLOWS = [
       const audioError = rejectAudio(body);
       if (audioError) return audioError;
       if (!isNonEmptyString(body.moduleId)) return fail('moduleId must be a non-empty string');
+      if (containsHanzi(body.moduleId)) return fail('moduleId must not contain Chinese characters');
       if (!ITEM_TYPES.has(body.itemType)) return fail('itemType must be one of word, phrase, minimalPair, dialogue');
-      if (body.theme !== undefined && !isNonEmptyString(body.theme)) return fail('theme must be a non-empty string');
-      if (body.targetUnits !== undefined && !isStringArray(body.targetUnits)) return fail('targetUnits must be an array of strings');
-      if (body.difficulty !== undefined && !isNonEmptyString(body.difficulty)) return fail('difficulty must be a non-empty string');
-      if (body.feedbackThemes !== undefined && !isStringArray(body.feedbackThemes)) return fail('feedbackThemes must be an array of strings');
+      if (body.theme !== undefined) {
+        if (!isNonEmptyString(body.theme)) return fail('theme must be a non-empty string');
+        if (containsHanzi(body.theme)) return fail('theme must not contain Chinese characters');
+      }
+      if (body.targetUnits !== undefined) {
+        if (!isStringArray(body.targetUnits)) return fail('targetUnits must be an array of strings');
+        if (containsHanziDeep(body.targetUnits)) return fail('targetUnits must not contain Chinese characters');
+      }
+      if (body.difficulty !== undefined) {
+        if (!isNonEmptyString(body.difficulty)) return fail('difficulty must be a non-empty string');
+        if (containsHanzi(body.difficulty)) return fail('difficulty must not contain Chinese characters');
+      }
+      if (body.feedbackThemes !== undefined) {
+        if (!isStringArray(body.feedbackThemes)) return fail('feedbackThemes must be an array of strings');
+        if (containsHanziDeep(body.feedbackThemes)) return fail('feedbackThemes must not contain Chinese characters');
+      }
       if (body.count !== undefined && !(Number.isInteger(body.count) && body.count > 0 && body.count <= 25)) {
         return fail('count must be an integer between 1 and 25');
       }
@@ -494,12 +560,26 @@ export const WORKFLOWS = [
       if (!isNonEmptyString(body.theme) || containsHanzi(body.theme)) {
         return fail('theme must be a non-empty string without Chinese characters');
       }
-      if (body.moduleContext !== undefined && !isNonEmptyString(body.moduleContext) && !isPlainObject(body.moduleContext)) {
-        return fail('moduleContext must be a string or an object');
+      if (body.moduleContext !== undefined) {
+        if (!isNonEmptyString(body.moduleContext) && !isPlainObject(body.moduleContext)) {
+          return fail('moduleContext must be a string or an object');
+        }
+        if (containsHanziDeep(body.moduleContext)) {
+          return fail('moduleContext must not contain Chinese characters');
+        }
       }
-      if (body.coveredContent !== undefined && !isStringArray(body.coveredContent)) return fail('coveredContent must be an array of strings');
-      if (body.learnerLevel !== undefined && !isNonEmptyString(body.learnerLevel)) return fail('learnerLevel must be a non-empty string');
-      if (body.debriefThemes !== undefined && !isStringArray(body.debriefThemes)) return fail('debriefThemes must be an array of strings');
+      if (body.coveredContent !== undefined) {
+        if (!isStringArray(body.coveredContent)) return fail('coveredContent must be an array of strings');
+        if (containsHanziDeep(body.coveredContent)) return fail('coveredContent must not contain Chinese characters');
+      }
+      if (body.learnerLevel !== undefined) {
+        if (!isNonEmptyString(body.learnerLevel)) return fail('learnerLevel must be a non-empty string');
+        if (containsHanzi(body.learnerLevel)) return fail('learnerLevel must not contain Chinese characters');
+      }
+      if (body.debriefThemes !== undefined) {
+        if (!isStringArray(body.debriefThemes)) return fail('debriefThemes must be an array of strings');
+        if (containsHanziDeep(body.debriefThemes)) return fail('debriefThemes must not contain Chinese characters');
+      }
       if (body.exchangeLength !== undefined && !(Number.isInteger(body.exchangeLength) && body.exchangeLength > 0 && body.exchangeLength <= 20)) {
         return fail('exchangeLength must be an integer between 1 and 20');
       }
@@ -564,14 +644,29 @@ export const WORKFLOWS = [
         if (!cleaned) return fail('mission.script turns must include pinyin, meaning, and targetTones with integers 1-5');
         script.push(cleaned);
       }
-      if (body.mission.goal !== undefined && !isNonEmptyString(body.mission.goal)) {
-        return fail('mission.goal must be a non-empty string');
+      if (body.mission.goal !== undefined) {
+        if (!isNonEmptyString(body.mission.goal)) {
+          return fail('mission.goal must be a non-empty string');
+        }
+        if (containsHanzi(body.mission.goal)) {
+          return fail('mission.goal must not contain Chinese characters');
+        }
       }
-      if (body.conversationState !== undefined && !isPlainObject(body.conversationState)) {
-        return fail('conversationState must be an object');
+      if (body.conversationState !== undefined) {
+        if (!isPlainObject(body.conversationState)) {
+          return fail('conversationState must be an object');
+        }
+        if (containsHanziDeep(body.conversationState)) {
+          return fail('conversationState must not contain Chinese characters');
+        }
       }
-      if (body.targetDifficulty !== undefined && !isNonEmptyString(body.targetDifficulty)) {
-        return fail('targetDifficulty must be a non-empty string');
+      if (body.targetDifficulty !== undefined) {
+        if (!isNonEmptyString(body.targetDifficulty)) {
+          return fail('targetDifficulty must be a non-empty string');
+        }
+        if (containsHanzi(body.targetDifficulty)) {
+          return fail('targetDifficulty must not contain Chinese characters');
+        }
       }
       if (containsHanziDeep({ persona, script })) {
         return fail('persona and mission script must not contain Chinese characters');

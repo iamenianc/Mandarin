@@ -139,18 +139,22 @@ async function handleSpeechSynthesis(env, workflow, value) {
 async function chat(request, env) {
   const raw = await request.text();
   if (raw.length > MAX_BODY_BYTES) {
-    return json({ error: 'payload too large' }, 413);
+    return json({ error: 'payload too large', status: 413 }, 413);
   }
 
   let body;
   try {
     body = JSON.parse(raw);
   } catch {
-    return json({ error: 'invalid json' }, 400);
+    return json({ error: 'invalid json', status: 400 }, 400);
+  }
+
+  if (!isPlainObject(body)) {
+    return json({ error: 'body must be a JSON object', status: 400 }, 400);
   }
 
   if (!Array.isArray(body.messages) || body.messages.length === 0) {
-    return json({ error: 'messages must be a non-empty array' }, 400);
+    return json({ error: 'messages must be a non-empty array', status: 400 }, 400);
   }
 
   const upstream = await fetch(OPENROUTER_URL, {
@@ -174,7 +178,12 @@ async function chat(request, env) {
     return json({ error: 'upstream error', status: upstream.status }, 502);
   }
 
-  const data = await upstream.json();
+  let data;
+  try {
+    data = await upstream.json();
+  } catch {
+    return json({ error: 'invalid upstream response', status: 502 }, 502);
+  }
   return json({ content: data.choices?.[0]?.message?.content ?? null });
 }
 
