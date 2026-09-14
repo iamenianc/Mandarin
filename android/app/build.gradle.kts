@@ -148,6 +148,7 @@ dependencies {
     implementation(project(":feature:fundamentals"))
     implementation(project(":feature:field"))
     implementation(project(":feature:raymond"))
+    implementation(project(":feature:conversation"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.activity.compose)
