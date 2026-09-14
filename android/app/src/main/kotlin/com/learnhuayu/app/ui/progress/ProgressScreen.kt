@@ -253,7 +253,7 @@ private fun MostPractisedSection(items: List<PractisedItem>) {
             )
             return
         }
-        items.forEach { item ->`
+        items.forEach { item ->
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier.padding(12.dp),

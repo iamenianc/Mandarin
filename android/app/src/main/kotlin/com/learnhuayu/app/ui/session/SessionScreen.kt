@@ -275,9 +275,11 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
         }
 
         if (uiState.permission == MicrophonePermission.Denied &&
-            (uiState.mode == DrillMode.SPEAK_AND_REPEAT ||
-                uiState.mode == DrillMode.SPEAK_AND_REPEAT_FEEDBACK ||
-                uiState.mode == DrillMode.LISTEN_AND_ANSWER_SPOKEN)
+            (
+                uiState.mode == DrillMode.SPEAK_AND_REPEAT ||
+                    uiState.mode == DrillMode.SPEAK_AND_REPEAT_FEEDBACK ||
+                    uiState.mode == DrillMode.LISTEN_AND_ANSWER_SPOKEN
+                )
         ) {
             Text(
                 text = stringResource(R.string.qol_session_mic_denied),
