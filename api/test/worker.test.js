@@ -188,6 +188,7 @@ test('WF-1 rejects an oversize audio part with 413', async (t) => {
   });
   t.after(mock.restore);
 
+  // 2796204 chars decode to 2097153 bytes, just over the 2 MiB part cap.
   const oversize = 'A'.repeat(2796204);
   const response = await worker.fetch(post('/v1/wf/pronunciation-feedback', {
     pinyin: 'ni3 hao3',
@@ -197,6 +198,45 @@ test('WF-1 rejects an oversize audio part with 413', async (t) => {
   assert.equal(response.status, 413);
   assert.deepEqual(await response.json(), { error: 'audio part too large', status: 413 });
   assert.equal(mock.calls.length, 0);
+});
+
+test('WF-1 accepts the full 2 MiB per-part audio budget under the 6 MiB body cap', async (t) => {
+  const output = {
+    weakestUnit: 'ni3',
+    issue: 'issue',
+    tip: 'tip',
+    encouragement: 'encouragement',
+    replayHint: 'replay',
+  };
+  const mock = withFetch(() => chatContent(output));
+  t.after(mock.restore);
+
+  // 2 MiB decoded needs a multiple-of-4 base64 length; 2796200 chars decode to
+  // 2097150 bytes (just under 2 MiB), while 2796204 chars decode to 2097153
+  // bytes (just over). Two just-under parts encode to ~5.6 MiB of JSON.
+  const fullPart = 'A'.repeat(2796200);
+  const response = await worker.fetch(post('/v1/wf/pronunciation-feedback', {
+    pinyin: 'ni3 hao3',
+    audio: [audioPart(fullPart), audioPart(fullPart)],
+  }), ENV);
+
+  assert.equal(response.status, 200);
+  assert.equal(mock.calls.length, 1);
+});
+
+test('WF-2 accepts the full 2 MiB audio part under the 3 MiB body cap', async (t) => {
+  const output = { replyText: 'ni3 hao3 ma5?' };
+  const mock = withFetch(() => chatContent(output));
+  t.after(mock.restore);
+
+  const fullPart = 'A'.repeat(2796200);
+  const response = await worker.fetch(post('/v1/wf/conversation-turn', {
+    scenario: 'greeting a neighbour',
+    audio: [audioPart(fullPart)],
+  }), ENV);
+
+  assert.equal(response.status, 200);
+  assert.equal(mock.calls.length, 1);
 });
 
 test('WF-1 accepts the neutral tone 5 in targetTones', async (t) => {
@@ -605,6 +645,256 @@ test('WF-3 returns 501 while unconfigured and proxies when configured', async (t
   assert.deepEqual(JSON.parse(mock.calls[0].init.body), { input: 'ni3 hao3', voice: 'kokoro', language: 'zh' });
 });
 
+test('WF-1 rejects hanzi in learnerLevel and acousticEvidence', async (t) => {
+  const mock = withFetch(() => {
+    throw new Error('upstream must not be called');
+  });
+  t.after(mock.restore);
+
+  const levelResponse = await worker.fetch(post('/v1/wf/pronunciation-feedback', {
+    pinyin: 'ni3 hao3',
+    learnerLevel: HANZI,
+    audio: [audioPart(), audioPart()],
+  }), ENV);
+  assert.equal(levelResponse.status, 400);
+  assert.match((await levelResponse.json()).error, /learnerLevel/);
+
+  const evidenceResponse = await worker.fetch(post('/v1/wf/pronunciation-feedback', {
+    pinyin: 'ni3 hao3',
+    acousticEvidence: { version: 1, note: HANZI },
+    audio: [audioPart(), audioPart()],
+  }), ENV);
+  assert.equal(evidenceResponse.status, 400);
+  assert.match((await evidenceResponse.json()).error, /Chinese characters/);
+
+  // Valid pinyin levels and tone-numbered evidence still pass validation.
+  const validEvidence = withFetch(() => chatContent({
+    weakestUnit: 'ni3',
+    issue: 'issue',
+    tip: 'tip',
+    encouragement: 'encouragement',
+    replayHint: 'replay',
+  }));
+  t.after(validEvidence.restore);
+  const valid = await worker.fetch(post('/v1/wf/pronunciation-feedback', {
+    pinyin: 'ni3 hao3',
+    learnerLevel: 'beginner ni3',
+    acousticEvidence: { version: 1, syllables: [{ pinyin: 'ni3', expectedTone: 3 }] },
+    audio: [audioPart(), audioPart()],
+  }), ENV);
+  assert.equal(valid.status, 200);
+  assert.equal(mock.calls.length, 0);
+  assert.equal(validEvidence.calls.length, 1);
+});
+
+test('WF-2 rejects hanzi in conversationState and targetDifficulty', async () => {
+  const stateResponse = await worker.fetch(post('/v1/wf/conversation-turn', {
+    scenario: 'greeting a neighbour',
+    conversationState: { lastReply: HANZI },
+    audio: [audioPart()],
+  }), ENV);
+  assert.equal(stateResponse.status, 400);
+  assert.match((await stateResponse.json()).error, /Chinese characters/);
+
+  const difficultyResponse = await worker.fetch(post('/v1/wf/conversation-turn', {
+    scenario: 'greeting a neighbour',
+    targetDifficulty: HANZI,
+    audio: [audioPart()],
+  }), ENV);
+  assert.equal(difficultyResponse.status, 400);
+  assert.match((await difficultyResponse.json()).error, /targetDifficulty/);
+});
+
+test('WF-5 rejects hanzi in aggregated metadata fields', async () => {
+  const base = { attemptCounts: { tones: 1 }, feedbackThemes: [] };
+  const cases = [
+    { ...base, feedbackThemes: [HANZI] },
+    { ...base, moduleIds: [HANZI] },
+    { ...base, lessonIds: [HANZI] },
+    { ...base, debriefThemes: [HANZI] },
+  ];
+  for (const body of cases) {
+    const response = await worker.fetch(post('/v1/wf/progress-summary', body), ENV);
+    assert.equal(response.status, 400, JSON.stringify(body));
+    assert.match((await response.json()).error, /Chinese characters/);
+  }
+});
+
+test('WF-7 rejects hanzi in history and learnerLevel but keeps valid pinyin', async (t) => {
+  const historyResponse = await worker.fetch(post('/v1/wf/mandarin-qa', {
+    question: 'How do tones work?',
+    history: [{ role: 'user', text: HANZI }],
+  }), ENV);
+  assert.equal(historyResponse.status, 400);
+  assert.match((await historyResponse.json()).error, /Chinese characters/);
+
+  const levelResponse = await worker.fetch(post('/v1/wf/mandarin-qa', {
+    question: 'How do tones work?',
+    learnerLevel: HANZI,
+  }), ENV);
+  assert.equal(levelResponse.status, 400);
+  assert.match((await levelResponse.json()).error, /learnerLevel/);
+
+  const mock = withFetch(() => chatContent({
+    answerText: 'The first tone is high and level.',
+    examples: [{ pinyin: 'ma1', meaning: 'mother' }],
+    followUps: [],
+  }));
+  t.after(mock.restore);
+  const valid = await worker.fetch(post('/v1/wf/mandarin-qa', {
+    question: 'What does ma1 mean?',
+    history: [{ role: 'user', text: 'What is ma1?' }],
+    learnerLevel: 'beginner',
+  }), ENV);
+  assert.equal(valid.status, 200);
+});
+
+test('WF-8 rejects hanzi in text metadata fields', async () => {
+  const base = { moduleId: 'tones', itemType: 'word' };
+  const cases = [
+    [{ ...base, moduleId: HANZI }, /moduleId/],
+    [{ ...base, theme: HANZI }, /theme/],
+    [{ ...base, targetUnits: [HANZI] }, /targetUnits/],
+    [{ ...base, difficulty: HANZI }, /difficulty/],
+    [{ ...base, feedbackThemes: [HANZI] }, /feedbackThemes/],
+  ];
+  for (const [body, error] of cases) {
+    const response = await worker.fetch(post('/v1/wf/exercise-generation', body), ENV);
+    assert.equal(response.status, 400, JSON.stringify(body));
+    assert.match((await response.json()).error, error);
+  }
+});
+
+test('WF-9 rejects hanzi in mission context fields', async () => {
+  const base = { theme: 'buying fruit' };
+  const cases = [
+    [{ ...base, moduleContext: HANZI }, /moduleContext/],
+    [{ ...base, moduleContext: { moduleId: HANZI } }, /moduleContext/],
+    [{ ...base, coveredContent: [HANZI] }, /coveredContent/],
+    [{ ...base, learnerLevel: HANZI }, /learnerLevel/],
+    [{ ...base, debriefThemes: [HANZI] }, /debriefThemes/],
+  ];
+  for (const [body, error] of cases) {
+    const response = await worker.fetch(post('/v1/wf/field-mission-generation', body), ENV);
+    assert.equal(response.status, 400, JSON.stringify(body));
+    assert.match((await response.json()).error, error);
+  }
+});
+
+test('WF-10 rejects hanzi in mission goal, conversationState, and targetDifficulty', async () => {
+  const goalResponse = await worker.fetch(post('/v1/wf/local-turn', {
+    audio: [audioPart()],
+    persona: LOCAL,
+    mission: { script: [SCRIPT_TURN], goal: HANZI },
+  }), ENV);
+  assert.equal(goalResponse.status, 400);
+  assert.match((await goalResponse.json()).error, /goal/);
+
+  const stateResponse = await worker.fetch(post('/v1/wf/local-turn', {
+    audio: [audioPart()],
+    persona: LOCAL,
+    mission: { script: [SCRIPT_TURN] },
+    conversationState: { lastReply: HANZI },
+  }), ENV);
+  assert.equal(stateResponse.status, 400);
+  assert.match((await stateResponse.json()).error, /Chinese characters/);
+
+  const difficultyResponse = await worker.fetch(post('/v1/wf/local-turn', {
+    audio: [audioPart()],
+    persona: LOCAL,
+    mission: { script: [SCRIPT_TURN] },
+    targetDifficulty: HANZI,
+  }), ENV);
+  assert.equal(difficultyResponse.status, 400);
+  assert.match((await difficultyResponse.json()).error, /targetDifficulty/);
+});
+
+test('WF-3 rejects hanzi in voice and language but keeps tone-numbered pinyin', async (t) => {
+  const voiceResponse = await worker.fetch(post('/v1/wf/speech-synthesis', {
+    pinyin: 'ni3 hao3',
+    voice: HANZI,
+  }), ENV);
+  assert.equal(voiceResponse.status, 400);
+  assert.match((await voiceResponse.json()).error, /voice/);
+
+  const languageResponse = await worker.fetch(post('/v1/wf/speech-synthesis', {
+    pinyin: 'ni3 hao3',
+    language: HANZI,
+  }), ENV);
+  assert.equal(languageResponse.status, 400);
+  assert.match((await languageResponse.json()).error, /language/);
+
+  const mock = withFetch(() => new Response(new Uint8Array([1, 2, 3]), {
+    status: 200,
+    headers: { 'content-type': 'audio/wav' },
+  }));
+  t.after(mock.restore);
+  const valid = await worker.fetch(post('/v1/wf/speech-synthesis', {
+    pinyin: 'ni3 hao3 ma5?',
+    voice: 'kokoro',
+    language: 'cmn',
+  }), { ...ENV, TTS_PROVIDER_URL: 'https://tts.example.com/speak' });
+  assert.equal(valid.status, 200);
+  assert.deepEqual(JSON.parse(mock.calls[0].init.body), { input: 'ni3 hao3 ma5?', voice: 'kokoro', language: 'cmn' });
+});
+
+test('WF-3 keeps the 501-when-unconfigured contract and documents the provider request', async (t) => {
+  const unconfigured = await worker.fetch(post('/v1/wf/speech-synthesis', { replyText: 'ni3 hao3' }), ENV);
+  assert.equal(unconfigured.status, 501);
+  assert.deepEqual(await unconfigured.json(), {
+    error: 'speech synthesis provider not configured',
+    status: 501,
+  });
+
+  // Whitespace-only provider URL counts as unconfigured, not as an upstream error.
+  const blank = await worker.fetch(post('/v1/wf/speech-synthesis', { replyText: 'ni3 hao3' }), {
+    ...ENV,
+    TTS_PROVIDER_URL: '   ',
+  });
+  assert.equal(blank.status, 501);
+
+  // Optional fields are omitted from the provider payload when absent.
+  const mock = withFetch(() => new Response(new Uint8Array([1]), {
+    status: 200,
+    headers: { 'content-type': 'audio/mpeg' },
+  }));
+  t.after(mock.restore);
+  const minimal = await worker.fetch(post('/v1/wf/speech-synthesis', {
+    replyText: 'ni3 hao3',
+  }), { ...ENV, TTS_PROVIDER_URL: 'https://tts.example.com/speak' });
+  assert.equal(minimal.status, 200);
+  assert.deepEqual(JSON.parse(mock.calls[0].init.body), { input: 'ni3 hao3' });
+  assert.equal(mock.calls[0].init.headers.Authorization, undefined);
+
+  // A non-audio provider response maps to 502 without leaking the body.
+  const nonAudio = withFetch(() => new Response('{}', {
+    status: 200,
+    headers: { 'content-type': 'application/json' },
+  }));
+  t.after(nonAudio.restore);
+  const rejected = await worker.fetch(post('/v1/wf/speech-synthesis', {
+    replyText: 'ni3 hao3',
+  }), { ...ENV, TTS_PROVIDER_URL: 'https://tts.example.com/speak' });
+  assert.equal(rejected.status, 502);
+  assert.deepEqual(await rejected.json(), { error: 'invalid upstream response', status: 502 });
+});
+
+test('WF-4 rejects hanzi in expectedOptions and keywords', async () => {
+  const optionsResponse = await worker.fetch(post('/v1/wf/response-transcription', {
+    audio: [audioPart()],
+    expectedOptions: [HANZI],
+  }), ENV);
+  assert.equal(optionsResponse.status, 400);
+  assert.match((await optionsResponse.json()).error, /expectedOptions/);
+
+  const keywordsResponse = await worker.fetch(post('/v1/wf/response-transcription', {
+    audio: [audioPart()],
+    keywords: [HANZI],
+  }), ENV);
+  assert.equal(keywordsResponse.status, 400);
+  assert.match((await keywordsResponse.json()).error, /keywords/);
+});
+
 test('WF-3 requires exactly one synthesis text', async () => {
   const both = await worker.fetch(post('/v1/wf/speech-synthesis', { pinyin: 'ni3 hao3', replyText: 'hello' }), ENV);
   assert.equal(both.status, 400);
@@ -660,7 +950,39 @@ test('POST /v1/chat keeps the documented behavior', async (t) => {
 
   const empty = await worker.fetch(post('/v1/chat', { messages: [] }), ENV);
   assert.equal(empty.status, 400);
+  assert.deepEqual(await empty.json(), { error: 'messages must be a non-empty array', status: 400 });
+
+  const nullBody = await worker.fetch(post('/v1/chat', 'null'), ENV);
+  assert.equal(nullBody.status, 400);
+  assert.deepEqual(await nullBody.json(), { error: 'body must be a JSON object', status: 400 });
+  assert.equal(mock.calls.length, 1);
+
+  const arrayBody = await worker.fetch(post('/v1/chat', '[]'), ENV);
+  assert.equal(arrayBody.status, 400);
+  assert.deepEqual(await arrayBody.json(), { error: 'body must be a JSON object', status: 400 });
+  assert.equal(mock.calls.length, 1);
+
+  const missingMessages = await worker.fetch(post('/v1/chat', {}), ENV);
+  assert.equal(missingMessages.status, 400);
+  assert.deepEqual(await missingMessages.json(), { error: 'messages must be a non-empty array', status: 400 });
+
+  const invalidJson = await worker.fetch(post('/v1/chat', '{not json'), ENV);
+  assert.equal(invalidJson.status, 400);
+  assert.deepEqual(await invalidJson.json(), { error: 'invalid json', status: 400 });
 
   const oversize = await worker.fetch(post('/v1/chat', `{"messages":[],"pad":"${'x'.repeat(70 * 1024)}"}`), ENV);
   assert.equal(oversize.status, 413);
+  assert.deepEqual(await oversize.json(), { error: 'payload too large', status: 413 });
+
+  const upstreamDown = withFetch(() => jsonResponse({ error: 'boom' }, 500));
+  t.after(upstreamDown.restore);
+  const failed = await worker.fetch(post('/v1/chat', { messages: [{ role: 'user', content: 'hi' }] }), ENV);
+  assert.equal(failed.status, 502);
+  assert.deepEqual(await failed.json(), { error: 'upstream error', status: 500 });
+
+  const upstreamGarbage = withFetch(() => new Response('not json', { status: 200, headers: { 'content-type': 'text/plain' } }));
+  t.after(upstreamGarbage.restore);
+  const garbage = await worker.fetch(post('/v1/chat', { messages: [{ role: 'user', content: 'hi' }] }), ENV);
+  assert.equal(garbage.status, 502);
+  assert.deepEqual(await garbage.json(), { error: 'invalid upstream response', status: 502 });
 });
