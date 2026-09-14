@@ -84,7 +84,7 @@ learned them the hard way.
 For each worktree session, check in order:
 
 1. Agent Manager activity (`busy`/`idle`) and any pending question or permission request.
-2. Git state in the worktree: `status --short`, recent commits, and the diff versus `master`.
+2. Git state in the worktree: `status --short`, recent commits, and the diff versus `main`.
 3. For build or test work, the live process: CPU time, network connections, and the log
    file the tool writes.
 
