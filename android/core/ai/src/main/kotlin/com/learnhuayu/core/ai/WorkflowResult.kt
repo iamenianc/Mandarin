@@ -25,6 +25,12 @@ sealed class WorkflowFailure(open val message: String, open val httpStatus: Int?
 
     data class NetworkError(override val message: String, val cause: Throwable? = null) : WorkflowFailure(message, null)
 
+    data class Timeout(
+        override val message: String,
+        val timeoutMillis: Long? = null,
+        val cause: Throwable? = null,
+    ) : WorkflowFailure(message, null)
+
     data class BaseUrlMissing(
         override val message: String = "worker base url is not configured",
     ) : WorkflowFailure(message, null)

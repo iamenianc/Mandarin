@@ -2,6 +2,7 @@ package com.learnhuayu.core.ai
 
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
@@ -12,12 +13,17 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.serialization.DeserializationStrategy
 import kotlinx.serialization.SerializationException
+import java.net.SocketTimeoutException
+import java.util.concurrent.CancellationException as ConcurrentCancellationException
 
 class WorkerWorkflows internal constructor(
     private val client: HttpClient,
     private val config: WorkerHttpConfig,
+    private val timeouts: WorkflowTimeouts = WorkflowTimeouts(),
+    private val timeoutRunner: WorkflowTimeoutRunner = RealTimeoutRunner,
 ) : PronunciationFeedbackWorkflow,
     ConversationTurnWorkflow,
     SpeechSynthesisWorkflow,
@@ -28,7 +34,11 @@ class WorkerWorkflows internal constructor(
     FieldMissionGenerationWorkflow,
     LocalTurnWorkflow {
 
-    override suspend fun evaluate(request: PronunciationFeedbackRequest): WorkflowResult<PronunciationFeedback> = postJson(WORKFLOW_PRONUNCIATION_FEEDBACK, PronunciationFeedback.serializer()) {
+    override suspend fun evaluate(request: PronunciationFeedbackRequest): WorkflowResult<PronunciationFeedback> = postJson(
+        WORKFLOW_PRONUNCIATION_FEEDBACK,
+        PronunciationFeedback.serializer(),
+        timeoutMillis = timeouts.pronunciationFeedbackMillis,
+    ) {
         setBody(
             PronunciationFeedbackBody(
                 pinyin = request.pinyin,
@@ -40,7 +50,11 @@ class WorkerWorkflows internal constructor(
         )
     }
 
-    override suspend fun respond(request: ConversationTurnRequest): WorkflowResult<ConversationTurnReply> = postJson(WORKFLOW_CONVERSATION_TURN, ConversationTurnReply.serializer()) {
+    override suspend fun respond(request: ConversationTurnRequest): WorkflowResult<ConversationTurnReply> = postJson(
+        WORKFLOW_CONVERSATION_TURN,
+        ConversationTurnReply.serializer(),
+        timeoutMillis = timeouts.conversationTurnMillis,
+    ) {
         setBody(
             ConversationTurnBody(
                 scenario = request.scenario,
@@ -51,7 +65,11 @@ class WorkerWorkflows internal constructor(
         )
     }
 
-    override suspend fun synthesize(request: SpeechSynthesisRequest): WorkflowResult<SynthesizedSpeech> = execute(WORKFLOW_SPEECH_SYNTHESIS, { setBody(request.toBody()) }) { response ->
+    override suspend fun synthesize(request: SpeechSynthesisRequest): WorkflowResult<SynthesizedSpeech> = execute(
+        WORKFLOW_SPEECH_SYNTHESIS,
+        timeoutMillis = timeouts.speechSynthesisMillis,
+        block = { setBody(request.toBody()) },
+    ) { response ->
         val contentType = response.contentType()?.toString()
         if (contentType == null || !contentType.startsWith("audio/")) {
             WorkflowResult.Failure(
@@ -62,7 +80,11 @@ class WorkerWorkflows internal constructor(
         }
     }
 
-    override suspend fun transcribe(request: ResponseTranscriptionRequest): WorkflowResult<ResponseTranscription> = postJson(WORKFLOW_RESPONSE_TRANSCRIPTION, ResponseTranscription.serializer()) {
+    override suspend fun transcribe(request: ResponseTranscriptionRequest): WorkflowResult<ResponseTranscription> = postJson(
+        WORKFLOW_RESPONSE_TRANSCRIPTION,
+        ResponseTranscription.serializer(),
+        timeoutMillis = timeouts.responseTranscriptionMillis,
+    ) {
         setBody(
             ResponseTranscriptionBody(
                 audio = listOf(request.audio.toInputAudioPart()),
@@ -72,7 +94,11 @@ class WorkerWorkflows internal constructor(
         )
     }
 
-    override suspend fun summarize(request: ProgressSummaryRequest): WorkflowResult<ProgressSummary> = postJson(WORKFLOW_PROGRESS_SUMMARY, ProgressSummary.serializer()) {
+    override suspend fun summarize(request: ProgressSummaryRequest): WorkflowResult<ProgressSummary> = postJson(
+        WORKFLOW_PROGRESS_SUMMARY,
+        ProgressSummary.serializer(),
+        timeoutMillis = timeouts.progressSummaryMillis,
+    ) {
         setBody(
             ProgressSummaryBody(
                 attemptCounts = request.attemptCounts,
@@ -84,7 +110,11 @@ class WorkerWorkflows internal constructor(
         )
     }
 
-    override suspend fun ask(request: MandarinQaRequest): WorkflowResult<MandarinQaAnswer> = postJson(WORKFLOW_MANDARIN_QA, MandarinQaAnswer.serializer()) {
+    override suspend fun ask(request: MandarinQaRequest): WorkflowResult<MandarinQaAnswer> = postJson(
+        WORKFLOW_MANDARIN_QA,
+        MandarinQaAnswer.serializer(),
+        timeoutMillis = timeouts.mandarinQaMillis,
+    ) {
         setBody(
             MandarinQaBody(
                 question = request.question,
@@ -95,7 +125,11 @@ class WorkerWorkflows internal constructor(
         )
     }
 
-    override suspend fun generate(request: ExerciseGenerationRequest): WorkflowResult<GeneratedExercises> = postJson(WORKFLOW_EXERCISE_GENERATION, GeneratedExercises.serializer()) {
+    override suspend fun generate(request: ExerciseGenerationRequest): WorkflowResult<GeneratedExercises> = postJson(
+        WORKFLOW_EXERCISE_GENERATION,
+        GeneratedExercises.serializer(),
+        timeoutMillis = timeouts.exerciseGenerationMillis,
+    ) {
         setBody(
             ExerciseGenerationBody(
                 moduleId = request.moduleId,
@@ -110,7 +144,11 @@ class WorkerWorkflows internal constructor(
     }
 
     override suspend fun generate(request: FieldMissionGenerationRequest): WorkflowResult<GeneratedMission> = when (
-        val result = postJson(WORKFLOW_FIELD_MISSION_GENERATION, GeneratedMissionBody.serializer()) {
+        val result = postJson(
+            WORKFLOW_FIELD_MISSION_GENERATION,
+            GeneratedMissionBody.serializer(),
+            timeoutMillis = timeouts.fieldMissionGenerationMillis,
+        ) {
             setBody(
                 FieldMissionGenerationBody(
                     theme = request.theme,
@@ -132,7 +170,11 @@ class WorkerWorkflows internal constructor(
         is WorkflowResult.Failure -> result
     }
 
-    override suspend fun respond(request: LocalTurnRequest): WorkflowResult<LocalTurnReply> = postJson(WORKFLOW_LOCAL_TURN, LocalTurnReply.serializer()) {
+    override suspend fun respond(request: LocalTurnRequest): WorkflowResult<LocalTurnReply> = postJson(
+        WORKFLOW_LOCAL_TURN,
+        LocalTurnReply.serializer(),
+        timeoutMillis = timeouts.localTurnMillis,
+    ) {
         setBody(
             LocalTurnBody(
                 persona = request.persona,
@@ -150,13 +192,15 @@ class WorkerWorkflows internal constructor(
     private suspend fun <T> postJson(
         slug: String,
         deserializer: DeserializationStrategy<T>,
+        timeoutMillis: Long,
         block: HttpRequestBuilder.() -> Unit,
-    ): WorkflowResult<T> = execute(slug, block) { response ->
+    ): WorkflowResult<T> = execute(slug, timeoutMillis, block) { response ->
         decode(response.bodyAsText(), deserializer)
     }
 
     private suspend fun <T> execute(
         slug: String,
+        timeoutMillis: Long,
         block: HttpRequestBuilder.() -> Unit,
         onSuccess: suspend (HttpResponse) -> WorkflowResult<T>,
     ): WorkflowResult<T> {
@@ -164,9 +208,11 @@ class WorkerWorkflows internal constructor(
             return WorkflowResult.Failure(WorkflowFailure.BaseUrlMissing())
         }
         return try {
-            val response = client.post(endpoint(slug)) {
-                contentType(ContentType.Application.Json)
-                block()
+            val response = timeoutRunner.run(timeoutMillis) {
+                client.post(endpoint(slug)) {
+                    contentType(ContentType.Application.Json)
+                    block()
+                }
             }
             if (response.status.isSuccess()) {
                 onSuccess(response)
@@ -174,9 +220,37 @@ class WorkerWorkflows internal constructor(
                 WorkflowResult.Failure(failureFor(response.status.value, response.bodyAsText()))
             }
         } catch (cancellation: CancellationException) {
-            throw cancellation
+            if (cancellation is TimeoutCancellationException) {
+                WorkflowResult.Failure(
+                    WorkflowFailure.Timeout("the $slug workflow timed out after ${timeoutMillis}ms", timeoutMillis, cancellation),
+                )
+            } else {
+                throw cancellation
+            }
+        } catch (concurrentCancellation: ConcurrentCancellationException) {
+            // The Ktor engine can abort the call with its own cancellation type when the
+            // budget above fires (observed as "Timed out waiting for N ms"). Map it to
+            // Failure like any other timeout so caller fallback paths trigger. In the
+            // rare case this stems from external cancellation rather than the budget,
+            // the benign outcome is a fallback UI update during teardown.
+            WorkflowResult.Failure(
+                WorkflowFailure.Timeout(
+                    "the $slug workflow timed out after ${timeoutMillis}ms",
+                    timeoutMillis,
+                    concurrentCancellation,
+                ),
+            )
         } catch (exception: Exception) {
-            WorkflowResult.Failure(WorkflowFailure.NetworkError(exception.message ?: "network error", exception))
+            val timeoutCause = generateSequence<Throwable>(exception) { it.cause }.firstOrNull {
+                it is HttpRequestTimeoutException || it is SocketTimeoutException
+            }
+            if (timeoutCause != null) {
+                WorkflowResult.Failure(
+                    WorkflowFailure.Timeout("the $slug workflow timed out", timeoutMillis, timeoutCause as Exception),
+                )
+            } else {
+                WorkflowResult.Failure(WorkflowFailure.NetworkError(exception.message ?: "network error", exception))
+            }
         }
     }
 
@@ -218,9 +292,9 @@ class WorkerWorkflows internal constructor(
         private const val WORKFLOW_FIELD_MISSION_GENERATION = "field-mission-generation"
         private const val WORKFLOW_LOCAL_TURN = "local-turn"
 
-        fun create(baseUrl: String): WorkerWorkflows {
+        fun create(baseUrl: String, timeouts: WorkflowTimeouts = WorkflowTimeouts()): WorkerWorkflows {
             val config = WorkerHttpConfig(baseUrl = baseUrl)
-            return WorkerWorkflows(workerHttpClient(OkHttp.create(), config), config)
+            return WorkerWorkflows(workerHttpClient(OkHttp.create(), config), config, timeouts)
         }
     }
 }

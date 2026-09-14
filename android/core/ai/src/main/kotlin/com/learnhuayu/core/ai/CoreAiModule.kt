@@ -17,6 +17,9 @@ internal abstract class WorkerWorkflowModule {
     @Multibinds
     abstract fun workerHttpConfigs(): Set<@JvmSuppressWildcards WorkerHttpConfig>
 
+    @Multibinds
+    abstract fun workflowTimeoutConfigs(): Set<@JvmSuppressWildcards WorkflowTimeouts>
+
     @Binds
     abstract fun bindPronunciationFeedbackWorkflow(workflows: WorkerWorkflows): PronunciationFeedbackWorkflow
 
@@ -58,5 +61,18 @@ internal object WorkerHttpModule {
 
     @Provides
     @Singleton
-    fun provideWorkerWorkflows(client: HttpClient, config: WorkerHttpConfig): WorkerWorkflows = WorkerWorkflows(client, config)
+    fun provideWorkflowTimeouts(configs: Set<@JvmSuppressWildcards WorkflowTimeouts>): WorkflowTimeouts = configs.firstOrNull() ?: WorkflowTimeouts()
+
+    @Provides
+    @Singleton
+    fun provideWorkflowTimeoutRunner(): WorkflowTimeoutRunner = RealTimeoutRunner
+
+    @Provides
+    @Singleton
+    fun provideWorkerWorkflows(
+        client: HttpClient,
+        config: WorkerHttpConfig,
+        timeouts: WorkflowTimeouts,
+        timeoutRunner: WorkflowTimeoutRunner,
+    ): WorkerWorkflows = WorkerWorkflows(client, config, timeouts, timeoutRunner)
 }

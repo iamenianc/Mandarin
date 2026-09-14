@@ -2,6 +2,7 @@ package com.learnhuayu.core.ai
 
 import com.google.common.truth.Truth.assertThat
 import io.ktor.client.engine.mock.MockRequestHandleScope
+import io.ktor.client.plugins.HttpRequestTimeoutException
 import io.ktor.client.request.HttpRequestData
 import io.ktor.client.request.HttpResponseData
 import io.ktor.http.HttpStatusCode
@@ -96,6 +97,14 @@ class WorkerFailureMappingTest {
         val failure = evaluate { throw IOException("offline") }
 
         assertThat(failure).isInstanceOf(WorkflowFailure.NetworkError::class.java)
+    }
+
+    @Test
+    fun `maps engine timeouts to Timeout`() = runTest {
+        val failure = timeoutWorkflows { throw HttpRequestTimeoutException("timeout", 1_000L, null) }
+            .evaluate(feedbackRequest()).failureOrNull()
+
+        assertThat(failure).isInstanceOf(WorkflowFailure.Timeout::class.java)
     }
 
     @Test

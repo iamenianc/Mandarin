@@ -20,10 +20,22 @@ internal val testJson = Json { ignoreUnknownKeys = true }
 
 internal fun testWorkflows(
     baseUrl: String = TEST_BASE_URL,
+    timeouts: WorkflowTimeouts = WorkflowTimeouts(),
+    timeoutRunner: WorkflowTimeoutRunner = NoTimeoutRunner,
     handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData,
 ): WorkerWorkflows {
     val config = WorkerHttpConfig(baseUrl = baseUrl)
-    return WorkerWorkflows(workerHttpClient(MockEngine(handler), config), config)
+    return WorkerWorkflows(workerHttpClient(MockEngine(handler), config), config, timeouts, timeoutRunner)
+}
+
+internal fun timeoutWorkflows(
+    baseUrl: String = TEST_BASE_URL,
+    timeouts: WorkflowTimeouts = WorkflowTimeouts(),
+    runner: WorkflowTimeoutRunner = RealTimeoutRunner,
+    handler: suspend MockRequestHandleScope.(HttpRequestData) -> HttpResponseData,
+): WorkerWorkflows {
+    val config = WorkerHttpConfig(baseUrl = baseUrl)
+    return WorkerWorkflows(workerHttpClient(MockEngine(handler), config), config, timeouts, runner)
 }
 
 internal fun MockRequestHandleScope.jsonResponse(
