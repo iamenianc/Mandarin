@@ -20,6 +20,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -28,11 +29,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlin.math.roundToInt
 
 /**
  * Capture states for [RecordButton]. The button is a stateless control: the caller owns
@@ -51,17 +57,33 @@ internal fun recordButtonLabel(state: RecordButtonState): String = when (state) 
 }
 
 internal fun recordButtonStateDescription(state: RecordButtonState): String = when (state) {
-    RecordButtonState.Idle -> "Idle"
-    RecordButtonState.Recording -> "Recording"
-    RecordButtonState.Processing -> "Processing"
+    RecordButtonState.Idle -> "Idle. Tap to start recording."
+    RecordButtonState.Recording -> "Recording. Tap to stop."
+    RecordButtonState.Processing -> "Processing. Wait for saving to finish."
 }
 
 internal fun recordButtonActionEnabled(state: RecordButtonState): Boolean = state != RecordButtonState.Processing
 
 internal fun playbackButtonLabel(hasPlayed: Boolean): String = if (hasPlayed) "Replay" else "Play"
 
+internal fun playbackButtonDescription(hasPlayed: Boolean, playing: Boolean): String = when {
+    playing -> "Playing reference audio"
+    hasPlayed -> "Replay the reference audio"
+    else -> "Play the reference audio"
+}
+
+internal fun playbackButtonDescriptionForAttempt(hasPlayed: Boolean, playing: Boolean): String = when {
+    playing -> "Playing your recording"
+    hasPlayed -> "Replay your recording"
+    else -> "Play your recording"
+}
+
+internal fun levelMeterDescription(levelPercent: Int): String = "Microphone input level $levelPercent percent"
+
 /**
  * Plays the reference audio, turning into a replay control once audio has played (FR-2).
+ * The button announces whether audio is playing so listening-first learners know the state
+ * without watching the screen.
  */
 @Composable
 fun PlaybackButton(
@@ -69,10 +91,15 @@ fun PlaybackButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    playing: Boolean = false,
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier,
+        modifier = modifier
+            .testTag(if (hasPlayed) "playback-replay" else "playback-play")
+            .semantics {
+                stateDescription = if (playing) "Playing" else "Idle"
+            },
         enabled = enabled,
     ) {
         Icon(
@@ -82,6 +109,32 @@ fun PlaybackButton(
         Spacer(modifier = Modifier.width(MaterialTheme.spacing.small))
         Text(text = playbackButtonLabel(hasPlayed))
     }
+}
+
+/**
+ * Announces the microphone input level as a progress range, so TalkBack reads a value
+ * instead of a silent bar (`docs/03-design.md`). Text remains scalable theme typography
+ * supplied by the caller.
+ */
+@Composable
+fun LevelMeter(
+    level: Float,
+    modifier: Modifier = Modifier,
+) {
+    val clamped = level.coerceIn(0f, 1f)
+    val percent = (clamped * 100).roundToInt()
+    LinearProgressIndicator(
+        progress = { clamped },
+        modifier = modifier
+            .testTag("input-level-meter")
+            .semantics {
+                contentDescription = levelMeterDescription(percent)
+                progressBarRangeInfo = ProgressBarRangeInfo(
+                    current = clamped,
+                    range = 0f..1f,
+                )
+            },
+    )
 }
 
 /**
@@ -98,7 +151,15 @@ fun RecordButton(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.semantics { stateDescription = recordButtonStateDescription(state) },
+        modifier = modifier
+            .testTag(
+                when (state) {
+                    RecordButtonState.Idle -> "record-idle"
+                    RecordButtonState.Recording -> "record-recording"
+                    RecordButtonState.Processing -> "record-processing"
+                },
+            )
+            .semantics { stateDescription = recordButtonStateDescription(state) },
         enabled = enabled && recordButtonActionEnabled(state),
         colors = if (state == RecordButtonState.Recording) {
             ButtonDefaults.buttonColors(
@@ -203,9 +264,11 @@ private fun AudioDrillControlsPreview() {
         ) {
             PlaybackButton(hasPlayed = false, onClick = {})
             PlaybackButton(hasPlayed = true, onClick = {})
+            PlaybackButton(hasPlayed = true, playing = true, onClick = {})
             RecordButton(state = RecordButtonState.Idle, onClick = {})
             RecordButton(state = RecordButtonState.Recording, onClick = {})
             RecordButton(state = RecordButtonState.Processing, onClick = {})
+            LevelMeter(level = 0.42f, modifier = Modifier.fillMaxWidth())
             LargeTapTarget(
                 label = "ni3 hao3",
                 supportingText = "Tap the card to hear it again",

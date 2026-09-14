@@ -117,6 +117,16 @@ class RaymondViewModelTest {
     }
 
     @Test
+    fun `a recorder failure surfaces the type-instead note rather than raw detail`() {
+        // The fake recorder does not emit failures, so drive the presentation rule through
+        // the documented constant: recorder faults must never show technical text.
+        assertEquals(
+            "The recording could not be used. Type the question instead.",
+            RAYMOND_RECORDER_ERROR_MESSAGE,
+        )
+    }
+
+    @Test
     fun `a typed question with audio sends both the text and the clip`() {
         workflow.result = WorkflowResult.Success(MandarinQaAnswer(answerText = "a"))
         val viewModel = viewModel()

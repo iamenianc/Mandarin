@@ -20,7 +20,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
@@ -30,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -39,6 +39,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.learnhuayu.core.ai.MandarinExample
 import com.learnhuayu.core.ai.MandarinQaAnswer
 import com.learnhuayu.core.ui.LargeTapTarget
+import com.learnhuayu.core.ui.LevelMeter
 import com.learnhuayu.core.ui.PinyinText
 import com.learnhuayu.core.ui.RecordButton
 import com.learnhuayu.core.ui.RecordButtonState
@@ -123,7 +124,26 @@ internal fun RaymondScreen(
                 }
                 if (uiState.loading) {
                     item(key = "loading") {
-                        CircularProgressIndicator()
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            CircularProgressIndicator()
+                            Text(
+                                text = "Getting Raymond\u2019s answer\u2026",
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                        }
+                    }
+                }
+                if (!uiState.loading && uiState.turns.isEmpty() && uiState.errorMessage == null) {
+                    item(key = "empty-hint") {
+                        Text(
+                            text = "No questions yet. Type above, or tap Record to ask by voice.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
                     }
                 }
             }
@@ -156,10 +176,22 @@ private fun TurnContent(
             onFollowUp = onFollowUp,
         )
 
-        turn.failed -> Text(
-            text = RAYMOND_OFFLINE_MESSAGE,
-            color = MaterialTheme.colorScheme.error,
+        turn.failed -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text(
+                text = RAYMOND_OFFLINE_MESSAGE,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Text(
+                text = "Typing the question again works as soon as the connection returns.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        else -> Text(
+            text = "Waiting for Raymond\u2019s answer\u2026",
             style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -220,11 +252,26 @@ private fun AskControls(uiState: RaymondUiState, viewModel: RaymondViewModel) {
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
+        if (uiState.permission == RaymondPermission.Denied) {
+            Text(
+                text = "The microphone is blocked. Typing above always works. To use voice, allow the microphone in system Settings.",
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
         OutlinedTextField(
             value = uiState.input,
             onValueChange = viewModel::onInputChange,
             modifier = Modifier.fillMaxWidth(),
             label = { Text(text = "Ask about Mandarin (English or pinyin)") },
+            supportingText = {
+                Text(
+                    text = if (uiState.input.isBlank()) {
+                        "Type a question to unlock Ask."
+                    } else {
+                        "Ask sends one question to Raymond. Voice input keeps the typed text."
+                    },
+                )
+            },
             enabled = !uiState.loading && !uiState.isRecording,
         )
         Button(
@@ -241,18 +288,23 @@ private fun AskControls(uiState: RaymondUiState, viewModel: RaymondViewModel) {
             modifier = Modifier.fillMaxWidth(),
             enabled = !uiState.loading,
         )
+        if (!uiState.isRecording && uiState.permission != RaymondPermission.Granted) {
+            Text(
+                text = "Tapping Record asks for the microphone. Typing above always works, even offline for drafts.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
         Text(
             text = "Input level: ${(uiState.level.coerceIn(0f, 1f) * 100).roundToInt()}%",
             style = MaterialTheme.typography.bodyMedium,
         )
-        LinearProgressIndicator(
-            progress = { uiState.level.coerceIn(0f, 1f) },
-            modifier = Modifier.fillMaxWidth(),
-        )
+        LevelMeter(level = uiState.level, modifier = Modifier.fillMaxWidth())
     }
 }
 
 private fun RaymondUiState.recordButtonState(): RecordButtonState = when {
     isRecording -> RecordButtonState.Recording
+    loading -> RecordButtonState.Processing
     else -> RecordButtonState.Idle
 }

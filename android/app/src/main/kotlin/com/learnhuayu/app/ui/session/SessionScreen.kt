@@ -22,7 +22,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -49,6 +48,7 @@ import com.learnhuayu.core.model.ContentItem
 import com.learnhuayu.core.model.DrillMode
 import com.learnhuayu.core.ui.HangulAidText
 import com.learnhuayu.core.ui.LargeTapTarget
+import com.learnhuayu.core.ui.LevelMeter
 import com.learnhuayu.core.ui.PinyinText
 import com.learnhuayu.core.ui.PlaybackButton
 import com.learnhuayu.core.ui.RecordButton
@@ -99,10 +99,26 @@ fun SessionScreen(
     BackHandler(enabled = uiState.hasProgress && !uiState.finished) { requestExit() }
 
     if (showExitDialog) {
+        val recordingNote = if (uiState.isRecording) {
+            stringResource(R.string.qol_session_leave_recording_note)
+        } else {
+            null
+        }
         AlertDialog(
             onDismissRequest = { showExitDialog = false },
             title = { Text(text = stringResource(R.string.session_leave_title)) },
-            text = { Text(text = stringResource(R.string.session_leave_message)) },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(text = stringResource(R.string.session_leave_message))
+                    if (recordingNote != null) {
+                        Text(
+                            text = recordingNote,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            },
             confirmButton = {
                 TextButton(
                     onClick = {
@@ -147,11 +163,28 @@ fun SessionScreen(
         ) {
             when {
                 uiState.loading -> LoadingState()
-                uiState.notFound -> Text(
-                    text = stringResource(R.string.session_not_found),
-                    modifier = Modifier.padding(16.dp),
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+                uiState.notFound -> Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.session_not_found),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Text(
+                        text = stringResource(R.string.qol_session_not_found_guidance),
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                    Button(
+                        onClick = onBack,
+                        modifier = Modifier.fillMaxWidth(),
+                    ) {
+                        Text(text = stringResource(R.string.qol_session_not_found_back))
+                    }
+                }
 
                 uiState.finished -> FinishedState(uiState = uiState, onDone = onBack)
                 uiState.currentItem != null -> SessionBody(uiState = uiState, viewModel = viewModel)
@@ -224,7 +257,7 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
 
         uiState.errorMessage?.let { message ->
             Text(
-                text = stringResource(R.string.session_error, message),
+                text = stringResource(R.string.qol_session_reference_error, message),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -235,7 +268,21 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
         }
         uiState.recorderError?.let { message ->
             Text(
-                text = stringResource(R.string.session_error, message),
+                text = stringResource(R.string.qol_session_recorder_error, message),
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+
+        if (uiState.permission == MicrophonePermission.Denied &&
+            (
+                uiState.mode == DrillMode.SPEAK_AND_REPEAT ||
+                    uiState.mode == DrillMode.SPEAK_AND_REPEAT_FEEDBACK ||
+                    uiState.mode == DrillMode.LISTEN_AND_ANSWER_SPOKEN
+                )
+        ) {
+            Text(
+                text = stringResource(R.string.qol_session_mic_denied),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodyMedium,
             )
@@ -246,7 +293,15 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
             onClick = viewModel::onPlayReferenceClick,
             modifier = Modifier.fillMaxWidth(),
             enabled = !uiState.processing && !uiState.isRecording,
+            playing = uiState.referencePlayback.state.isPlaying,
         )
+        if (uiState.processing || uiState.isRecording) {
+            Text(
+                text = stringResource(R.string.qol_session_playback_busy),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
 
         when (uiState.mode) {
             DrillMode.LESSON -> LessonContent(uiState = uiState, item = item)
@@ -287,11 +342,17 @@ private fun SessionBody(uiState: SessionUiState, viewModel: SessionViewModel) {
             KeepPractisingRow(uiState = uiState, viewModel = viewModel)
         }
         uiState.extraMessage?.let { message ->
-            Text(
-                text = message,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodyMedium,
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = message,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = stringResource(R.string.qol_session_extra_unavailable),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
         }
     }
 }
@@ -319,6 +380,7 @@ private fun ChoiceContent(
     uiState.choices.forEach { choice ->
         LargeTapTarget(
             label = choice,
+            supportingText = if (uiState.answerRevealed) stringResource(R.string.qol_session_choice_locked) else null,
             onClick = { viewModel.onChoiceSelected(choice) },
             modifier = Modifier.fillMaxWidth(),
             enabled = !uiState.answerRevealed,
@@ -394,6 +456,12 @@ private fun SpokenAnswerContent(
         ) {
             Text(text = stringResource(R.string.session_spoken_answer_action))
         }
+
+        uiState.attemptAudioRef == null && !uiState.isRecording && !uiState.processing -> Text(
+            text = stringResource(R.string.qol_session_spoken_record_first),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 
     if (uiState.spokenAnswerFallback) {
@@ -419,6 +487,13 @@ private fun RecordControls(uiState: SessionUiState, viewModel: SessionViewModel)
         onClick = viewModel::onRecordClick,
         modifier = Modifier.fillMaxWidth(),
     )
+    if (uiState.permission == MicrophonePermission.NotRequested && !uiState.isRecording) {
+        Text(
+            text = stringResource(R.string.qol_audio_not_requested_hint),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
     Text(
         text = stringResource(
             R.string.audio_check_input_level,
@@ -426,16 +501,21 @@ private fun RecordControls(uiState: SessionUiState, viewModel: SessionViewModel)
         ),
         style = MaterialTheme.typography.bodyMedium,
     )
-    LinearProgressIndicator(
-        progress = { uiState.level.coerceIn(0f, 1f) },
-        modifier = Modifier.fillMaxWidth(),
-    )
+    LevelMeter(level = uiState.level, modifier = Modifier.fillMaxWidth())
     PlaybackButton(
         hasPlayed = uiState.attemptPlayback.hasPlayed,
         onClick = viewModel::onPlayAttemptClick,
         modifier = Modifier.fillMaxWidth(),
         enabled = uiState.attemptAudioRef != null && !uiState.processing && !uiState.isRecording,
+        playing = uiState.attemptPlayback.state.isPlaying,
     )
+    if (uiState.attemptAudioRef == null && !uiState.isRecording && !uiState.processing) {
+        Text(
+            text = stringResource(R.string.qol_session_record_first),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
 }
 
 @Composable
@@ -455,12 +535,21 @@ private fun FeedbackPanel(uiState: SessionUiState, viewModel: SessionViewModel) 
     val busy = uiState.processing || uiState.isRecording
 
     when (val feedback = uiState.feedback) {
-        FeedbackUiState.None -> Button(
-            onClick = viewModel::onGetFeedbackClick,
-            modifier = Modifier.fillMaxWidth(),
-            enabled = !busy,
-        ) {
-            Text(text = stringResource(R.string.session_get_feedback))
+        FeedbackUiState.None -> Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Button(
+                onClick = viewModel::onGetFeedbackClick,
+                modifier = Modifier.fillMaxWidth(),
+                enabled = !busy,
+            ) {
+                Text(text = stringResource(R.string.session_get_feedback))
+            }
+            if (busy) {
+                Text(
+                    text = stringResource(R.string.qol_session_feedback_busy),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
 
         FeedbackUiState.Loading -> Column(
@@ -547,41 +636,59 @@ private fun KeepPractisingRow(uiState: SessionUiState, viewModel: SessionViewMod
         }
         return
     }
-    Button(
-        onClick = viewModel::onKeepPractisingClick,
-        modifier = Modifier.fillMaxWidth(),
-        enabled = uiState.showKeepPractising && !uiState.isRecording && !uiState.processing,
-    ) {
-        Text(text = stringResource(R.string.session_keep_practising))
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Button(
+            onClick = viewModel::onKeepPractisingClick,
+            modifier = Modifier.fillMaxWidth(),
+            enabled = uiState.showKeepPractising && !uiState.isRecording && !uiState.processing,
+        ) {
+            Text(text = stringResource(R.string.session_keep_practising))
+        }
+        if (!uiState.showKeepPractising && (uiState.isRecording || uiState.processing)) {
+            Text(
+                text = stringResource(R.string.qol_session_feedback_busy),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
     }
 }
 
 @Composable
 private fun NavigationRow(uiState: SessionUiState, viewModel: SessionViewModel) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        if (uiState.mode == DrillMode.LESSON) {
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+        ) {
+            if (uiState.mode == DrillMode.LESSON) {
+                Button(
+                    onClick = viewModel::onPrevious,
+                    modifier = Modifier.weight(1f),
+                    enabled = uiState.index > 0 && !uiState.isRecording && !uiState.processing,
+                ) {
+                    Text(text = stringResource(R.string.session_previous))
+                }
+            }
             Button(
-                onClick = viewModel::onPrevious,
+                onClick = viewModel::onNext,
                 modifier = Modifier.weight(1f),
-                enabled = uiState.index > 0 && !uiState.isRecording && !uiState.processing,
+                enabled = uiState.canAdvance,
             ) {
-                Text(text = stringResource(R.string.session_previous))
+                Text(
+                    text = if (uiState.isLastItem) {
+                        stringResource(R.string.session_finish)
+                    } else {
+                        stringResource(R.string.session_next)
+                    },
+                )
             }
         }
-        Button(
-            onClick = viewModel::onNext,
-            modifier = Modifier.weight(1f),
-            enabled = uiState.canAdvance,
-        ) {
+        if (!uiState.canAdvance && !uiState.isRecording && !uiState.processing) {
             Text(
-                text = if (uiState.isLastItem) {
-                    stringResource(R.string.session_finish)
-                } else {
-                    stringResource(R.string.session_next)
-                },
+                text = stringResource(R.string.qol_session_answer_to_continue),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

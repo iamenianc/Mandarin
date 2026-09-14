@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Home screen-level guidance. -->
+    <string name="qol_home_modules_title">Learning modules</string>
+    <string name="qol_home_features_title">More to explore</string>
+    <string name="qol_home_empty_title">Nothing to open yet</string>
+    <string name="qol_home_empty_body">No learning modules were found. Wait for the bundled lessons to load, then try the audio check.</string>
+    <string name="qol_home_module_support">Lessons and practice with audio. Pinyin with tone numbers stays on screen.</string>
+    <string name="qol_home_feature_raymond_support">Ask anything about Mandarin. Pinyin examples with tone numbers.</string>
+    <string name="qol_home_feature_progress_support">Practice history and recurring themes, with a spoken summary.</string>
+    <string name="qol_home_feature_settings_support">Consent, Hangul aid, and stored data.</string>
+    <string name="qol_home_feature_generic_support">Open to continue.</string>
+
+    <!-- Module screen-level guidance. -->
+    <string name="qol_module_loading_detail">Getting the lessons and practice ready. The list appears when loading finishes.</string>
+    <string name="qol_module_not_found_guidance">This module could not be opened. Go back and choose another module.</string>
+    <string name="qol_module_empty_guidance">Nothing here yet. Try another module. Bundled lessons work offline.</string>
+    <string name="qol_module_back_action">Go back</string>
+
+    <!-- Session screen-level guidance. Fallback behavior is unchanged; copy only clarifies. -->
+    <string name="qol_session_mic_denied">The microphone is blocked. Recording needs it. Allow the microphone in system Settings, or keep doing the listening taps, which work without it.</string>
+    <string name="qol_session_reference_error">Reference audio issue: %1$s. Keep going. Tap Play to try again.</string>
+    <string name="qol_session_recorder_error">Recording issue: %1$s. Check the microphone, then record again. Listening taps still work.</string>
+    <string name="qol_session_playback_busy">Wait until recording and saving finish, then play again.</string>
+    <string name="qol_session_record_first">Record first, then listen back and get feedback.</string>
+    <string name="qol_session_answer_to_continue">Answer above to unlock Next.</string>
+    <string name="qol_session_choice_locked">Answer locked. Tap Next to continue.</string>
+    <string name="qol_session_not_found_guidance">This session could not be opened. Go back and choose another lesson or practice.</string>
+    <string name="qol_session_not_found_back">Go back</string>
+    <string name="qol_session_leave_recording_note">A recording in progress stops when the session is left.</string>
+    <string name="qol_session_extra_unavailable">No extra practice right now. Replay the bundled set above, or finish to save progress.</string>
+    <string name="qol_session_feedback_busy">Wait until recording and saving finish, then get feedback.</string>
+    <string name="qol_session_spoken_record_first">Record the answer first, or tap a choice below. Tapping always works, even offline.</string>
+
+    <!-- Audio check screen-level guidance. -->
+    <string name="qol_audio_permission_guidance">If the system prompt does not appear again, open system Settings, allow the microphone for LearnHuayu, then try again.</string>
+    <string name="qol_audio_not_requested_hint">Tapping Record asks for the microphone. Listening still works without it.</string>
+    <string name="qol_audio_record_first">Record first, then listen back.</string>
+    <string name="qol_audio_busy_hint">Wait until recording and saving finish, then play again.</string>
+    <string name="qol_audio_error_guidance">Check the microphone and speaker, then try again. Listening drills work offline.</string>
+
+    <!-- Progress screen-level guidance. WF-5 fallback behavior is unchanged. -->
+    <string name="qol_progress_empty_action">Start with the Tones module: hear each tone, then say it back.</string>
+    <string name="qol_progress_no_summary">The spoken summary needs a connection. The local themes below still work.</string>
+    <string name="qol_progress_most_practised_empty">Nothing practised yet. Items appear after the first lesson.</string>
+
+    <!-- Settings screen-level guidance. -->
+    <string name="qol_settings_consent_off">Off: spoken feedback and voice questions pause. Listening drills and bundled practice keep working.</string>
+    <string name="qol_settings_consent_on">On: recordings are sent only to answer a request, such as feedback or a voice question.</string>
+    <string name="qol_settings_hangul_on">On: Hangul shows beside pinyin. Pinyin with tone numbers stays visible.</string>
+    <string name="qol_settings_hangul_off">Off: pinyin with tone numbers stays visible.</string>
+</resources>

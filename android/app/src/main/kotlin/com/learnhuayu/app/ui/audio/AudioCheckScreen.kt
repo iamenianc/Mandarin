@@ -17,7 +17,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -34,6 +33,7 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.learnhuayu.app.R
+import com.learnhuayu.core.ui.LevelMeter
 import com.learnhuayu.core.ui.PlaybackButton
 import com.learnhuayu.core.ui.RecordButton
 import com.learnhuayu.core.ui.RecordButtonState
@@ -104,15 +104,34 @@ fun AudioCheckScreen(
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium,
                 )
-                Button(onClick = viewModel::onRequestPermission) {
+                Text(
+                    text = stringResource(R.string.qol_audio_permission_guidance),
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Button(
+                    onClick = viewModel::onRequestPermission,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
                     Text(text = stringResource(R.string.audio_check_permission_retry))
                 }
+            }
+
+            if (uiState.permission == MicrophonePermission.NotRequested) {
+                Text(
+                    text = stringResource(R.string.qol_audio_not_requested_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
 
             uiState.errorMessage?.let { message ->
                 Text(
                     text = stringResource(R.string.audio_check_error, message),
                     color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+                Text(
+                    text = stringResource(R.string.qol_audio_error_guidance),
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
@@ -126,7 +145,15 @@ fun AudioCheckScreen(
                 onClick = viewModel::onPlayReferenceClick,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = !uiState.processing && !uiState.isRecording,
+                playing = uiState.referencePlayback.state.isPlaying,
             )
+            if (uiState.processing || uiState.isRecording) {
+                Text(
+                    text = stringResource(R.string.qol_audio_busy_hint),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
 
             Text(
                 text = stringResource(R.string.audio_check_recording_title),
@@ -144,16 +171,21 @@ fun AudioCheckScreen(
                 ),
                 style = MaterialTheme.typography.bodyMedium,
             )
-            LinearProgressIndicator(
-                progress = { uiState.level.coerceIn(0f, 1f) },
-                modifier = Modifier.fillMaxWidth(),
-            )
+            LevelMeter(level = uiState.level, modifier = Modifier.fillMaxWidth())
             PlaybackButton(
                 hasPlayed = uiState.recordingPlayback.hasPlayed,
                 onClick = viewModel::onPlayRecordingClick,
                 modifier = Modifier.fillMaxWidth(),
                 enabled = uiState.hasRecordingPlayback,
+                playing = uiState.recordingPlayback.state.isPlaying,
             )
+            if (!uiState.hasRecording && !uiState.isRecording && !uiState.processing) {
+                Text(
+                    text = stringResource(R.string.qol_audio_record_first),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
         }
     }
 }

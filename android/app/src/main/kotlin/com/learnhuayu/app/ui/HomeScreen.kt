@@ -60,16 +60,50 @@ fun HomeScreen(
                     }
                 }
             }
+            if (uiState.features.isNotEmpty()) {
+                item(key = "features-title") {
+                    Text(
+                        text = stringResource(R.string.qol_home_features_title),
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                }
+            }
             items(uiState.features, key = { "feature-${it.id}" }) { feature ->
                 Card(
                     onClick = { onFeatureClick(feature.id) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(
-                        text = feature.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(16.dp),
-                    )
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = feature.title,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Text(
+                            text = featureSupportingText(feature.id),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+            }
+            item(key = "modules-title") {
+                Text(
+                    text = stringResource(R.string.qol_home_modules_title),
+                    style = MaterialTheme.typography.titleMedium,
+                )
+            }
+            if (uiState.modules.isEmpty() && uiState.features.isEmpty()) {
+                item(key = "empty") {
+                    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+                        Text(
+                            text = stringResource(R.string.qol_home_empty_title),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Text(
+                            text = stringResource(R.string.qol_home_empty_body),
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
                 }
             }
             items(uiState.modules, key = { it.id }) { module ->
@@ -77,13 +111,27 @@ fun HomeScreen(
                     onClick = { onModuleClick(module.id) },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(
-                        text = module.title,
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(16.dp),
-                    )
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = module.title,
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Text(
+                            text = stringResource(R.string.qol_home_module_support),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun featureSupportingText(featureId: String): String = when (featureId) {
+    "raymond" -> stringResource(R.string.qol_home_feature_raymond_support)
+    "progress" -> stringResource(R.string.qol_home_feature_progress_support)
+    "settings" -> stringResource(R.string.qol_home_feature_settings_support)
+    else -> stringResource(R.string.qol_home_feature_generic_support)
 }
