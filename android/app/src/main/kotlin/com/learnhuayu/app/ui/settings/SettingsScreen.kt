@@ -125,6 +125,13 @@ private fun ConsentSection(
             onChange = onChange,
         )
         Text(
+            text = stringResource(
+                if (checked) R.string.qol_settings_consent_on else R.string.qol_settings_consent_off,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+        Text(
             text = stringResource(R.string.settings_consent_version, consentVersion),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -150,6 +157,13 @@ private fun HangulSection(
             label = stringResource(R.string.settings_hangul_toggle),
             checked = checked,
             onChange = onChange,
+        )
+        Text(
+            text = stringResource(
+                if (checked) R.string.qol_settings_hangul_on else R.string.qol_settings_hangul_off,
+            ),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

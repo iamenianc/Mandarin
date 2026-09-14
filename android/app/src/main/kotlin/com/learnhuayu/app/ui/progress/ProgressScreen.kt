@@ -66,7 +66,16 @@ internal fun ProgressScreen(
                     .padding(innerPadding),
                 contentAlignment = Alignment.Center,
             ) {
-                CircularProgressIndicator()
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    CircularProgressIndicator()
+                    Text(
+                        text = stringResource(R.string.progress_loading),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
             }
 
             !uiState.hasHistory -> EmptyState(modifier = Modifier.padding(innerPadding))
@@ -95,6 +104,11 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         Text(
             text = stringResource(R.string.progress_empty_body),
             style = MaterialTheme.typography.bodyLarge,
+        )
+        Text(
+            text = stringResource(R.string.qol_progress_empty_action),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -162,6 +176,13 @@ private fun SummaryCard(uiState: ProgressUiState, onPlaySummary: () -> Unit) {
             uiState.summaryText?.let { summary ->
                 Text(text = summary, style = MaterialTheme.typography.bodyLarge)
             }
+            if (uiState.summaryText == null && uiState.message == null) {
+                Text(
+                    text = stringResource(R.string.qol_progress_no_summary),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             Button(
                 onClick = onPlaySummary,
                 modifier = Modifier.fillMaxWidth(),
@@ -171,6 +192,13 @@ private fun SummaryCard(uiState: ProgressUiState, onPlaySummary: () -> Unit) {
                     text = stringResource(
                         if (uiState.playing) R.string.progress_playing_summary else R.string.progress_play_summary,
                     ),
+                )
+            }
+            if (!uiState.canPlaySummary && !uiState.playing) {
+                Text(
+                    text = stringResource(R.string.qol_progress_no_summary),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             Text(
@@ -217,7 +245,15 @@ private fun MostPractisedSection(items: List<PractisedItem>) {
             text = stringResource(R.string.progress_most_practised_title),
             style = MaterialTheme.typography.titleMedium,
         )
-        items.forEach { item ->
+        if (items.isEmpty()) {
+            Text(
+                text = stringResource(R.string.qol_progress_most_practised_empty),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            return
+        }
+        items.forEach { item ->`
             Card(modifier = Modifier.fillMaxWidth()) {
                 Column(
                     modifier = Modifier.padding(12.dp),
